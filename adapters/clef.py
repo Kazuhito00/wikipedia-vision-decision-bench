@@ -13,12 +13,35 @@ from __future__ import annotations
 
 from . import _common as C
 
-LIMITS = dict(max_images=4, max_choice_options=None, max_score_levels=None, gpu=True, note="option limits not stated by the runtime")
+LIMITS = dict(max_images=4, max_choice_options=None, max_score_levels=None, gpu=True,
+              note="option limits not stated by the runtime; on CUDA the main graph runs with graph optimization disabled (onnxruntime Memcpy bug)")
+
+
+def _cuda_graph_workaround():
+    """On CUDA the main graph (model-fp32*.onnx) fails in onnxruntime 1.31 with `MemcpyToHost ... CUDA failure 1: invalid argument`
+    (Colab A100, diagnosed with colab/diagnose_clef_cuda.py: every condition fails except graph_optimization_level = ORT_DISABLE_ALL;
+    the CUDA output then equals the CPU output exactly). The runtime builds its own SessionOptions, so wrap its session factory:
+    only for the main graph and only when a CUDA provider is requested. CPU runs are not touched."""
+    import importlib
+
+    import onnxruntime as ort
+    rt = importlib.import_module("clef_decide.runtime")
+    if getattr(rt._create_session, "_bench_wrapped", False):
+        return
+    orig = rt._create_session
+
+    def wrapped(path, options, providers=None, require_gpu=False, **kw):
+        if providers and any("CUDA" in str(p) for p in providers) and str(path).replace("\\", "/").rsplit("/", 1)[-1].startswith("model-fp32"):
+            options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_DISABLE_ALL
+        return orig(path, options, providers, require_gpu, **kw)
+    wrapped._bench_wrapped = True
+    rt._create_session = wrapped
 
 
 def build(model_dir=None, threads=8, providers=None, lang="en", part="wiki", variant=None, key="clef"):
     R = C.import_runtime("clef_decide", "uv pip install git+https://github.com/Kazuhito00/Clef-Flash-ONNX-CPU@<tag>")
     Decider, choice, noul, score = R.Decider, R.choice, R.noul, R.score
+    _cuda_graph_workaround()
     d = Decider(C.model_dir_of(model_dir, "CLEF_MODEL_DIR"), intra_op_threads=threads, load_vision=True, providers=providers)
 
     def ask(state, images, kind, instr, options):
