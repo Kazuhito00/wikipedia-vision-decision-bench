@@ -20,7 +20,7 @@
   --m0:#6a9bf0; --m0b:#34508a; --m1:#f0a04a; --m1b:#7d5522; --m2:#4cc795; --m2b:#25624a; --m3:#bb86e3; --m3b:#5d3c75;
   --good:#4cc795; --bad:#ee7676; --warn:#e3b73d; --accent:#6a9bf0; --shadow:none; color-scheme:dark;}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:56px}
+html{scroll-behavior:smooth;scroll-padding-top:112px}
 body{margin:0;background:var(--bg);color:var(--ink);line-height:1.55;font-size:15px;
   font-family:"Yu Gothic UI","Yu Gothic","Meiryo","Hiragino Sans","Noto Sans JP","Segoe UI",system-ui,-apple-system,sans-serif}
 a{color:var(--accent)}
@@ -31,6 +31,11 @@ header.top a{text-decoration:none;color:var(--mute);font-size:13px;padding:4px 8
 header.top a:hover{background:var(--soft);color:var(--ink)}
 header.top strong{font-size:14px;margin-right:6px}
 header.top button{margin-left:auto}
+.pick{position:sticky;top:44px;z-index:15;background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.pick .in{max-width:1200px;margin:0 auto;padding:6px 16px;display:flex;gap:8px 12px;align-items:center;flex-wrap:wrap}
+.pick label{font-size:12px;color:var(--mute);display:flex;align-items:center;gap:5px;min-width:0}
+.pick select{max-width:min(46vw,300px)}
+.pick .hint{font-size:11.5px;color:var(--mute)}
 main{max-width:1200px;margin:0 auto;padding:16px}
 section{margin:0 0 28px}
 h1{font-size:24px;margin:12px 0 4px}
@@ -47,15 +52,18 @@ p.lead,p.sub{color:var(--mute);margin:4px 0 12px;max-width:80ch}
 .kpi .s{font-size:12px;color:var(--mute)} .kpi .bar{height:5px;background:var(--soft);border-radius:3px;margin-top:6px;overflow:hidden}
 .kpi .bar i{display:block;height:100%}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--mute);margin:0 0 8px}
-.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.legend i,.dot{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px;flex:none}
 .rows{display:grid;grid-template-columns:minmax(70px,max-content) minmax(0,1fr);gap:5px 10px;align-items:center}
 .rows .lab{font-size:13px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.rows.wide .lab{max-width:230px}
 .rows .lab small{display:block;color:var(--mute);font-size:11px;line-height:1.1}
 .bars{display:grid;gap:2px}
 .b{position:relative;height:15px;background:var(--soft);border-radius:3px;overflow:hidden}
+.rows.wide .b{height:19px}
 .b i{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
 .b span{position:absolute;left:6px;top:0;font-size:11px;line-height:15px;font-weight:600;color:#fff;text-shadow:0 0 2px rgba(0,0,0,.75),0 0 4px rgba(0,0,0,.5)}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.rows.wide .b span{line-height:19px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px;align-items:center}
 button,select,input[type=text],input[type=number]{font:inherit;font-size:13px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 10px}
 button{cursor:pointer} button:hover{background:var(--soft)}
 button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -65,11 +73,20 @@ th:first-child,td:first-child{text-align:left} th{color:var(--mute);font-weight:
 td.l,th.l{text-align:left}
 .scroll{overflow-x:auto}
 details{margin-top:8px} summary{cursor:pointer;color:var(--mute);font-size:13px}
+table.cmp td,table.cmp th{white-space:nowrap;padding:5px 7px}
+table.cmp th button{background:none;border:0;padding:0;font:inherit;font-size:12px;font-weight:600;color:var(--mute);cursor:pointer}
+table.cmp th button.on{background:none;color:var(--ink)}
+table.cmp th.sep,table.cmp td.sep{border-left:1px solid var(--line)}
+table.cmp .st{position:sticky;left:0;background:var(--card);z-index:1;box-shadow:1px 0 0 var(--line)}
+table.cmp td.v{font-variant-numeric:tabular-nums;min-width:50px}
+table.cmp td.na{color:var(--mute)}
+table.cmp .ab button{padding:0 5px;font-size:10.5px;border-radius:5px;margin-left:3px}
+table.cmp tr.selA td.st,table.cmp tr.selB td.st{font-weight:700}
 .heat{display:grid;gap:2px;font-size:11px}
 .heat .c{padding:4px 2px;text-align:center;border-radius:4px;min-height:34px;display:flex;flex-direction:column;justify-content:center;line-height:1.15;color:var(--ink)}
 .heat .c small{font-size:9.5px;opacity:.75}
 .heat .h{color:var(--mute);font-weight:600;text-align:center;padding:2px;overflow:hidden;text-overflow:ellipsis;font-size:10.5px;align-self:end}
-.heat .r{color:var(--mute);font-weight:600;text-align:right;padding-right:4px;align-self:center;font-size:11px}
+.heat .r{color:var(--mute);font-weight:600;text-align:right;padding-right:4px;align-self:center;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chip{display:inline-block;padding:1px 7px;border-radius:99px;font-size:11px;background:var(--soft);color:var(--mute);margin:1px 2px 1px 0;white-space:nowrap}
 .chip.good{background:color-mix(in srgb,var(--good) 20%,transparent);color:var(--good)}
 .chip.bad{background:color-mix(in srgb,var(--bad) 20%,transparent);color:var(--bad)}
@@ -81,15 +98,17 @@ svg .grid{stroke:var(--line);stroke-width:1}
 svg .ax{stroke:var(--mute);stroke-width:1}
 .stack{display:flex;height:20px;border-radius:5px;overflow:hidden;font-size:11px;color:#fff;margin:2px 0}
 .stack div{display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;min-width:0}
-.s-both{background:var(--good)} .s-a{background:var(--m1)} .s-b{background:var(--m0)} .s-none{background:var(--bad)}
+.s-both{background:var(--good)} .s-none{background:var(--bad)}
 .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
-.filters label{font-size:12px;color:var(--mute);display:flex;flex-direction:column;gap:2px}
+.filters label{font-size:12px;color:var(--mute);display:flex;flex-direction:column;gap:2px;min-width:0}
+.filters select{max-width:100%}
 .list{display:grid;gap:8px}
 .q{display:grid;grid-template-columns:72px 1fr;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;cursor:pointer;align-items:start}
 .q:hover{border-color:var(--accent)}
+.q>div{min-width:0}
 .q img,.q .ph{width:72px;height:72px;object-fit:cover;border-radius:6px;background:var(--soft)}
 .q .ph{display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mute);text-align:center}
-.q .t{font-size:14px;font-weight:600} .q .m{font-size:12px;color:var(--mute)}
+.q .t{font-size:14px;font-weight:600;overflow-wrap:anywhere} .q .m{font-size:12px;color:var(--mute)}
 .ans{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .modal{position:fixed;inset:0;background:rgba(10,14,24,.6);display:none;z-index:50;padding:12px;overflow:auto}
 .modal.open{display:block}
@@ -102,56 +121,70 @@ svg .ax{stroke:var(--mute);stroke-width:1}
 .pager{display:flex;gap:6px;align-items:center;margin:10px 0;flex-wrap:wrap}
 footer{max-width:1200px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:12px}
 ul.n{margin:6px 0;padding-left:20px} ul.n li{margin:3px 0}
-@media (max-width:600px){main{padding:12px}.kpi .v{font-size:23px}.rows .lab{max-width:96px;font-size:12px}.modal .pic{float:none;margin:0 0 8px}.modal .pic img{max-width:60vw}}
+@media (max-width:600px){main{padding:12px}.kpi .v{font-size:23px}.rows .lab{max-width:96px;font-size:12px}.rows.wide .lab{max-width:130px}.modal .pic{float:none;margin:0 0 8px}.modal .pic img{max-width:60vw}
+  .pick{position:static}.pick select{max-width:calc(100vw - 80px)}html{scroll-padding-top:56px}.pick .hint{display:none}}
 </style>
 </head>
 <body>
 <header class="top"><div class="in">
   <strong>v1 まとめ</strong>
-  <a href="#summary">サマリー</a><a href="#breakdown">正答率</a><a href="#heat">ヒートマップ</a><a href="#compare">モデル比較</a>
+  <a href="#summary">比較表</a><a href="#all">全モデル</a><a href="#detail">詳細</a><a href="#compare">A/B 比較</a>
   <a href="#speed">速度</a><a href="#cost">費用</a><a href="#calib">較正</a><a href="#label">ラベル検査</a><a href="#dataset">データセット</a><a href="#explorer">質問探索</a><a href="#notes">注意</a>
   <button id="theme" type="button" title="ライト/ダーク切替">◐</button>
 </div></header>
+<div class="pick" id="pickbar"><div class="in">
+  <b style="font-size:13px">比較対象</b>
+  <label>A <select id="selA"></select></label>
+  <label>B <select id="selB"></select></label>
+  <button type="button" id="swap" title="A と B を入れ替え">⇄</button>
+  <span class="hint">「詳細」「A/B 比較」「速度」「質問探索」はここで選んだ A / B だけを描きます</span>
+</div></div>
 <main id="app">
 <h1>Wikipedia 画像セット v1 まとめ</h1>
 <p class="lead" id="lead"></p>
 <div class="note"><b>このページは生成物です。</b> Wikimedia Commons 由来の写真と合成図のサムネイルを埋め込んでいるため、ローカル専用です（<code>*.html</code> は git 管理外）。公開・コミットしないでください。再生成: <code>uv run python -m report.v1_report</code></div>
+<div id="warn"></div>
 
-<section id="summary"><h2>サマリー</h2><div class="kpis" id="kpis"></div>
-<div class="grid g2" style="margin-top:14px">
-  <div class="card"><h3>全体と言語別の正答率</h3><div id="overall"></div></div>
-  <div class="card"><h3>両モデルの一致（質問×言語 <span id="vn"></span> 件）</h3><div id="vennTop"></div></div>
-</div></section>
-
-<section id="breakdown"><h2>切り口別の正答率</h2>
-<p class="sub">正答数 ÷ 出題数（未回答は不正解）。棒は第 1 実行（JEVision は CPU）の結果。GPU は CPU と答えが一致するため別掲せず「速度」で扱います。</p>
-<div class="tabs" id="langTabs"></div><div class="legend" id="legend1"></div>
-<div class="grid g2" id="bd"></div></section>
-
-<section id="heat"><h2>ヒートマップ</h2>
-<p class="sub">セルは正答率と出題数。n が 8 未満のセルは参考値（薄く表示）。</p>
-<div class="tabs" id="heatTabs"></div><div class="grid g2" id="heatGrid"></div></section>
-
-<section id="compare"><h2>モデル間の比較</h2>
-<div class="grid g2">
-  <div class="card"><h3>カテゴリ別の正答率：JEVision 対 OpenAI</h3><p class="sub" style="margin:0 0 6px">1 点 = 1 カテゴリ（群・origin・形式・難度・image_type・skill など）。点の大きさは出題数。対角線より上が OpenAI の優位。</p><div id="scatter"></div></div>
-  <div class="card"><h3>正誤の重なり（円の面積は正答数に比例）</h3><div id="venn"></div><div id="vennTabs" class="tabs"></div><div id="vennStack"></div></div>
-</div>
-<div class="card" style="margin-top:14px"><h3>文章のみの問題と画像付きの問題</h3><div id="textimg"></div></div>
+<section id="summary"><h2>モデル比較表</h2>
+<div class="kpis" id="kpis"></div>
+<div class="card" style="margin-top:14px"><h3>全 run の比較（見出しを押すと並べ替え）</h3>
+  <p class="sub" style="margin:0 0 8px">1 行 = 1 run（モデル × デバイス）。正答数 ÷ 出題数、未回答は不正解。色が濃い緑ほど高い正答率。時間は 1 問あたりの中央値で、<b>較正が外れた CPU 時間は載せません</b>（「—」）。</p>
+  <div class="scroll"><table class="cmp" id="cmp"></table></div>
+  <p class="sub" id="cmpNote" style="margin:8px 0 0;font-size:12px"></p></div>
+<div class="card" style="margin-top:14px"><h3>全体正答率（高い順）</h3><div id="rank"></div></div>
 </section>
 
-<section id="speed"><h2>速度：CPU と GPU</h2><div id="speedBody"></div></section>
+<section id="all"><h2>全モデル一覧</h2>
+<p class="sub">全 run を行に並べたヒートマップ（セル = 正答率）。n が 8 未満のセルは薄く表示。</p>
+<div class="card"><div class="tabs" id="dimTabs"></div><div class="tabs" id="langTabsAll"></div><div id="allHeat"></div></div>
+<div class="grid g2" style="margin-top:14px">
+  <div class="card"><h3>全 run が外した問題 / run 間で分かれた問題</h3><div id="splitBody"></div></div>
+  <div class="card"><h3>群別の内訳（質問 × 言語）</h3><div id="splitGroup"></div></div>
+</div></section>
 
-<section id="cost"><h2>OpenAI の費用概算</h2><div id="costBody"></div></section>
+<section id="detail"><h2>詳細：切り口別の正答率（A / B）</h2>
+<p class="sub">正答数 ÷ 出題数（未回答は不正解）。上の「比較対象」で選んだ A / B だけを描きます。</p>
+<div class="tabs" id="langTabs"></div><div class="legend" id="legend1"></div>
+<div class="grid g2" id="bd"></div>
+<h2>詳細：ヒートマップ（A / B）</h2>
+<p class="sub">セルは正答率と出題数。n が 8 未満のセルは参考値（薄く表示）。言語は上のタブに連動。</p>
+<div class="tabs" id="heatTabs"></div><div class="grid g2" id="heatGrid"></div></section>
+
+<section id="compare"><h2>A / B の比較</h2>
+<div id="cmpAB"></div></section>
+
+<section id="speed"><h2>速度</h2><div id="speedBody"></div></section>
+
+<section id="cost"><h2>API の費用概算</h2><div id="costBody"></div></section>
 
 <section id="calib"><h2>較正値と有効性</h2><div id="calibBody"></div></section>
 
-<section id="label"><h2>ラベル検査（両モデルが外した問）</h2><div id="labelBody"></div></section>
+<section id="label"><h2>ラベル検査（解析時の候補）</h2><div id="labelBody"></div></section>
 
 <section id="dataset"><h2>データセット概要</h2><div id="dsBody"></div></section>
 
 <section id="explorer"><h2>質問エクスプローラ</h2>
-<p class="sub">質問文・選択肢・正解・各モデルの答えを見られます。カードを押すと詳細。</p>
+<p class="sub">質問文・選択肢・正解・答えを見られます。カードには A / B の答え、押すと全 run の答えを出します。</p>
 <div class="filters" id="filters"></div><div class="pager" id="pagerTop"></div><div class="list" id="list"></div><div class="pager" id="pagerBot"></div></section>
 
 <section id="notes"><h2>注意事項</h2><div class="card" id="notesBody"></div></section>
@@ -170,18 +203,26 @@ const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp
 const pc = (c, n, d) => n ? (100 * c / n).toFixed(d == null ? 1 : d) + "%" : "—";
 const fmt = n => n == null ? "—" : Number(n).toLocaleString("en-US");
 const fx = (v, d) => v == null ? "—" : Number(v).toFixed(d == null ? 1 : d);
-const runLabel = k => (D.runs.find(r => r.key === k) || {}).label || k;
-const modelOf = k => D.models.find(m => m.runs.some(r => r.key === k));
-const MI = {}; D.models.forEach((m, i) => m.runs.forEach((r, j) => { MI[r.key] = [i, j]; }));
-const col = k => { const [i, j] = MI[k]; return "var(--m" + (i % 4) + (j ? "b" : "") + ")"; };
-const mcol = i => "var(--m" + (i % 4) + ")";
-const PR = D.prim;                       // primary run per model
-const A = PR[0], B = PR[1] || PR[0];
-const nameA = modelOf(A).short, nameB = modelOf(B).short;
+const RUNS = D.runs, RK = RUNS.map(r => r.key), R = {};
+RUNS.forEach(r => { R[r.key] = r; });
 const OV = D.aggs.all.overall;
+const acc = (a, k) => a && a.n ? a.c[k] / a.n : null;
+const rlabel = k => R[k] ? R[k].label : k;
+const rcol = k => R[k].device === "cuda" ? "color-mix(in srgb," + R[k].color + " 58%,var(--card))" : R[k].color;
+const dot = k => '<i class="dot" style="background:' + rcol(k) + '"></i>';
+const ORDER = RK.slice().sort((a, b) => OV.c[b] - OV.c[a] || RK.indexOf(a) - RK.indexOf(b));
+const GROUPS = ["photo", "biz", "rsn", "txt"];
+const S = {A: RK[0], B: "", lang: "all", sort: "overall", dir: -1, dim: "group", heat: "A", cmpLang: "all"};
+(function () {
+  const others = ORDER.filter(k => R[k].model !== R[S.A].model);
+  S.B = others[0] || ORDER.find(k => k !== S.A) || "";
+})();
+const hasB = () => !!S.B && S.B !== S.A;
+const picked = () => hasB() ? [S.A, S.B] : [S.A];
+const mdl = k => D.speed.models[R[k].model] || null;
 
 /* theme */
-(function(){
+(function () {
   const r = document.documentElement; let t = null;
   try { t = localStorage.getItem("v1theme"); } catch (e) {}
   if (t) r.setAttribute("data-theme", t);
@@ -192,126 +233,196 @@ const OV = D.aggs.all.overall;
   };
 })();
 
-/* ---- pieces ---- */
-function legend(runs) { return runs.map(k => '<span><i style="background:' + col(k) + '"></i>' + esc(runLabel(k)) + "</span>").join(""); }
-function barRows(rows, runs, o) {
+/* ---- helpers ---- */
+const accBg = v => { const t = Math.max(0, Math.min(1, (v - 30) / 70)); return "color-mix(in srgb,var(--good) " + (t * 70).toFixed(0) + "%,color-mix(in srgb,var(--bad) " + ((1 - t) * 45).toFixed(0) + "%,var(--card)))"; };
+function legend(keys) { return keys.map(k => "<span>" + dot(k) + esc(rlabel(k)) + "</span>").join(""); }
+function barRows(rows, keys, o) {
   o = o || {};
-  return '<div class="rows">' + rows.map(r => {
-    const bars = runs.map(k => {
+  return '<div class="rows' + (o.wide ? " wide" : "") + '">' + rows.map(r => {
+    const bars = keys.map(k => {
       const p = r.n ? 100 * r.c[k] / r.n : 0;
-      return '<div class="b" title="' + esc(runLabel(k)) + ': ' + r.c[k] + '/' + r.n + '"><i style="width:' + p.toFixed(2) + '%;background:' + col(k) + '"></i><span>' + pc(r.c[k], r.n) + '</span></div>';
+      return '<div class="b" title="' + esc(rlabel(k)) + ': ' + r.c[k] + '/' + r.n + '"><i style="width:' + p.toFixed(2) + '%;background:' + rcol(k) + '"></i><span>' + pc(r.c[k], r.n) + "</span></div>";
     }).join("");
-    return '<div class="lab" title="' + esc(r.label) + '">' + esc(r.label) + '<small>n=' + fmt(r.n) + '</small></div><div class="bars">' + bars + '</div>';
+    return '<div class="lab" title="' + esc(r.label) + '">' + esc(r.label) + '<small>n=' + fmt(r.n) + '</small></div><div class="bars">' + bars + "</div>";
   }).join("") + "</div>";
 }
 function countRows(rows, color) {
   const mx = Math.max(...rows.map(r => r.n), 1), tot = rows.reduce((a, r) => a + r.n, 0);
   return '<div class="rows">' + rows.map(r => '<div class="lab" title="' + esc(r.label) + '">' + esc(r.label) + '</div><div class="bars"><div class="b"><i style="width:' +
-    (100 * r.n / mx).toFixed(2) + '%;background:' + (color || "var(--accent)") + '"></i><span style="left:calc(' + (100 * r.n / mx).toFixed(2) + '% + 6px);color:var(--ink);text-shadow:none;white-space:nowrap">' + fmt(r.n) + ' · ' + pc(r.n, tot) + '</span></div></div>').join("") + "</div>";
+    (100 * r.n / mx).toFixed(2) + '%;background:' + (color || "var(--accent)") + '"></i><span style="left:calc(' + (100 * r.n / mx).toFixed(2) + '% + 6px);color:var(--ink);text-shadow:none;white-space:nowrap">' + fmt(r.n) + ' · ' + pc(r.n, tot) + "</span></div></div>").join("") + "</div>";
 }
-function tableOf(rows, runs) {
-  return '<div class="scroll"><table><tr><th>カテゴリ</th><th>n</th>' + runs.map(k => "<th>" + esc(runLabel(k)) + "</th>").join("") + "</tr>" +
-    rows.map(r => "<tr><td>" + esc(r.label) + "</td><td>" + fmt(r.n) + "</td>" + runs.map(k => "<td>" + pc(r.c[k], r.n) + " <span class='chip'>" + r.c[k] + "</span></td>").join("") + "</tr>").join("") + "</table></div>";
+function tableOf(rows, keys) {
+  return '<div class="scroll"><table><tr><th>カテゴリ</th><th>n</th>' + keys.map(k => "<th>" + esc(rlabel(k)) + "</th>").join("") + "</tr>" +
+    rows.map(r => "<tr><td>" + esc(r.label) + "</td><td>" + fmt(r.n) + "</td>" + keys.map(k => "<td>" + pc(r.c[k], r.n) + " <span class='chip'>" + r.c[k] + "</span></td>").join("") + "</tr>").join("") + "</table></div>";
 }
+function tabs(el, items, cur, on) {
+  el.innerHTML = items.map(([k, t]) => '<button type="button" data-k="' + esc(k) + '" class="' + (k === cur ? "on" : "") + '">' + esc(t) + "</button>").join("");
+  el.onclick = e => { const b = e.target.closest("button"); if (!b) return; [...el.querySelectorAll("button")].forEach(x => x.classList.toggle("on", x === b)); on(b.dataset.k); };
+}
+const timeStat = (k, lg) => D.speed.runs.find(r => r.run === k && r.lang === (lg || "all")) || {};
 
-/* ---- lead + KPI ---- */
-(function(){
-  const ds = D.ds;
-  $("#lead").textContent = "v1 データセット " + ds.total + " 問（英語 " + (ds.lang.find(x => x.label === "en+ja").n) + " 問は英日両方、日本語のみ " +
-    (ds.lang.find(x => x.label === "ja only") || {n: 0}).n + " 問）を英語・日本語で出題した合計 " + fmt(ds.asked) + " 件の回答の集計。モデル: " + D.models.map(m => m.name).join(" / ") + "。";
-  const k = [];
-  k.push('<div class="kpi"><div class="l">質問 / 出題数</div><div class="v">' + fmt(ds.total) + '</div><div class="s">× 言語 = ' + fmt(ds.asked) + ' 件・画像 ' + fmt(ds.images) + ' 枚</div></div>');
-  D.models.forEach((m, i) => {
-    const r = m.runs[0].key;
-    k.push('<div class="kpi"><div class="l">' + esc(m.short) + ' 正答率</div><div class="v" style="color:' + mcol(i) + '">' + pc(OV.c[r], OV.n) + '</div><div class="s">' + fmt(OV.c[r]) + ' / ' + fmt(OV.n) + '</div><div class="bar"><i style="width:' + (100 * OV.c[r] / OV.n) + '%;background:' + mcol(i) + '"></i></div></div>');
+/* ---- explorer records (shared by the overview counts and the explorer) ---- */
+const RECS = [];
+D.items.forEach(it => Object.keys(it.l).forEach(lg => {
+  const L = it.l[lg], a = L.a; let nok = 0;
+  RK.forEach(k => { nok += a[k][1]; });
+  RECS.push({it, lg, L, nok, search: (it.id + " " + L.q + " " + L.s + " " + L.o.join(" ") + " " + L.e).toLowerCase()});
+}));
+const NR = RK.length;
+const kindOf = r => r.nok === 0 ? "allwrong" : r.nok === NR ? "allright" : "split";
+
+/* ---- lead + warnings ---- */
+(function () {
+  const ds = D.ds, nm = [...new Set(RUNS.map(r => r.model))].length;
+  $("#lead").textContent = "v1 データセット " + fmt(ds.total) + " 問を英語・日本語で出題した、比較対象の " + fmt(OV.n) + " 件（質問 × 言語）の集計。モデル " + nm + " 種・run " + RUNS.length + " 件（結果ファイル results/runs/v1 から自動検出）。";
+  const w = [];
+  if (D.dropped) w.push('<div class="note"><b>注意</b>: 全 run が答えた組だけを比べています。答えていない ' + fmt(D.dropped) + " 件（質問 × 言語）は集計から外しています。</div>");
+  if (D.placeholder) w.push('<div class="note"><b>文章のみの問題の本文がありません</b>: ' + fmt(D.placeholder) + " 件（質問 × 言語）は、この機械に Wikipedia の本文が無く本文欄が「[passage …]」の代わりの表示です（本文はコミット対象外）。正誤の集計には影響しません。</div>");
+  $("#warn").innerHTML = w.join("");
+})();
+
+/* ---- 1. comparison table ---- */
+const lgAcc = (k, l) => acc(D.aggs.all.lang.find(x => x.label === l), k);
+const grAcc = (k, g) => acc(D.aggs.all.group.find(x => x.label === g), k);
+const tOf = (k, dev) => R[k].device === dev ? (timeStat(k).median != null ? timeStat(k).median : null) : null;
+const COLS = [
+  {id: "overall", l: "全体", get: k => acc(OV, k), t: "acc"},
+  {id: "en", l: "en", get: k => lgAcc(k, "en"), t: "acc", sep: 1}, {id: "ja", l: "ja", get: k => lgAcc(k, "ja"), t: "acc"},
+].concat(GROUPS.map((g, i) => ({id: g, l: g, get: k => grAcc(k, g), t: "acc", sep: i === 0 ? 1 : 0}))).concat([
+  {id: "cpu", l: "CPU 時間 (ms)", get: k => tOf(k, "cpu"), t: "time", sep: 1}, {id: "gpu", l: "GPU 時間 (ms)", get: k => tOf(k, "cuda"), t: "time"},
+  {id: "api", l: "API 往復 (ms)", get: k => tOf(k, "remote"), t: "time"}, {id: "w", l: "重み (GB)", get: k => R[k].weights_gb, t: "gb", sep: 1}]);
+const colRange = {};
+COLS.filter(c => c.t === "time").forEach(c => { const v = RK.map(c.get).filter(x => x != null); colRange[c.id] = [Math.min(...v), Math.max(...v)]; });
+function timeBg(c, v) {
+  const [lo, hi] = colRange[c.id]; if (!(hi > lo)) return "";
+  const t = 1 - (Math.log(v) - Math.log(lo)) / (Math.log(hi) - Math.log(lo));
+  return "background:color-mix(in srgb,var(--accent) " + (t * 38).toFixed(0) + "%,var(--card))";
+}
+function sortVal(k) {
+  if (S.sort === "name") return RK.indexOf(k);
+  const c = COLS.find(x => x.id === S.sort); return c ? c.get(k) : null;
+}
+function drawTable() {
+  const keys = RK.slice().sort((a, b) => {
+    const x = sortVal(a), y = sortVal(b);
+    if (x == null && y == null) return RK.indexOf(a) - RK.indexOf(b);
+    if (x == null) return 1; if (y == null) return -1;
+    return (x - y) * (S.sort === "name" ? 1 : S.dir) || RK.indexOf(a) - RK.indexOf(b);
   });
-  const v = D.venn.all;
-  k.push('<div class="kpi"><div class="l">両モデルが外した</div><div class="v" style="color:var(--bad)">' + fmt(v.none) + '</div><div class="s">' + pc(v.none, v.n) + '（同じ誤答 ' + fmt(D.venn.same_wrong) + '）</div></div>');
-  k.push('<div class="kpi"><div class="l">' + esc(nameA) + 'だけ外した</div><div class="v">' + fmt(v.b_only) + '</div><div class="s">' + esc(nameB) + ' は正解</div></div>');
-  const sp = D.speed;
-  if (sp.agree) {
-    k.push('<div class="kpi"><div class="l">CPU と GPU の答えの一致</div><div class="v">' + pc(sp.agree.same_got, sp.agree.n, 2) + '</div><div class="s">' + fmt(sp.agree.same_got) + ' / ' + fmt(sp.agree.n) + '</div></div>');
-    k.push('<div class="kpi"><div class="l">GPU の速さ（中央値の比）</div><div class="v">' + fx(sp.ratio.median, 1) + '×</div><div class="s">合計時間比 ' + fx(sp.ratio.total, 1) + '×</div></div>');
-  }
-  const c0 = D.cost[0];
-  if (c0) {
-    const tok = Object.values(c0.input_tokens).reduce((a, b) => a + (b || 0), 0);
-    k.push('<div class="kpi"><div class="l">OpenAI 費用（仮定価格）</div><div class="v">$' + fx(tok / 1e6 * D.pricing.usd_per_m_input, 3) + '</div><div class="s">入力 ' + fmt(tok) + ' トークン</div></div>');
-  }
+  const arrow = id => S.sort === id ? (S.dir < 0 ? " ▼" : " ▲") : "";
+  let h = '<tr><th class="l st"><button type="button" data-s="name" class="' + (S.sort === "name" ? "on" : "") + '">run（モデル × デバイス）' + (S.sort === "name" ? " ▲" : "") + "</button></th>" +
+    COLS.map(c => '<th class="' + (c.sep ? "sep" : "") + '"><button type="button" data-s="' + c.id + '" class="' + (S.sort === c.id ? "on" : "") + '">' + esc(c.l) + arrow(c.id) + "</button></th>").join("") + "</tr>";
+  keys.forEach(k => {
+    const r = R[k];
+    h += '<tr class="' + (k === S.A ? "selA" : k === S.B ? "selB" : "") + '"><td class="st">' + dot(k) + esc(r.label) + ' <span class="chip">' + (r.kind === "api" ? "api" : "local") + '</span><span class="ab"><button type="button" data-a="' + k + '" title="A にする" class="' + (k === S.A ? "on" : "") + '">A</button><button type="button" data-b="' + k + '" title="B にする" class="' + (k === S.B ? "on" : "") + '">B</button></span></td>';
+    COLS.forEach(c => {
+      const v = c.get(k), cls = "v" + (c.sep ? " sep" : "");
+      if (v == null) {
+        const why = (c.id === "cpu" && r.device === "cpu" && r.timing === "invalid") ? ' title="較正が外れた測定のため時間は載せません"' : "";
+        h += '<td class="' + cls + ' na"' + why + ">—</td>"; return;
+      }
+      if (c.t === "acc") {
+        const grp = c.id === "overall" ? OV : c.id === "en" || c.id === "ja" ? D.aggs.all.lang.find(x => x.label === c.id) : D.aggs.all.group.find(x => x.label === c.id);
+        h += '<td class="' + cls + '" style="background:' + accBg(100 * v) + '" title="' + grp.c[k] + " / " + grp.n + '">' + (100 * v).toFixed(1) + "</td>";
+      } else if (c.t === "time") {
+        const mark = (c.id === "cpu" && r.timing === "uncal") ? '<sup title="較正の記録がありません（静かな機械か未確認）">※</sup>' : c.id === "gpu" ? '<sup title="GPU 実行は較正記録なし（参考値）">参考</sup>' : "";
+        h += '<td class="' + cls + '" style="' + timeBg(c, v) + '">' + fmt(Math.round(v)) + mark + "</td>";
+      } else h += '<td class="' + cls + '" title="配布サイズの概算（リポジトリの記述）">' + fx(v, v < 10 ? 1 : 0) + "</td>";
+    });
+    h += "</tr>";
+  });
+  $("#cmp").innerHTML = h;
+}
+(function () {
+  const dev = {cpu: "CPU", cuda: "GPU", remote: "API 往復"};
+  const note = [];
+  if (RUNS.some(r => r.timing === "invalid")) note.push("較正が外れた run の時間は載せていません（「較正値と有効性」参照）。");
+  if (RUNS.some(r => r.timing === "uncal" && r.device === "cpu")) note.push("※ CPU 時間に較正の記録がない run は、静かな機械で測ったか未確認です。");
+  note.push("GPU 時間は参考値、API 往復はネットワーク込みで機械に依存しません。重み (GB) はリポジトリの記述にある配布サイズの概算で、空欄は記述なし（実行に要するメモリではありません）。");
+  $("#cmpNote").textContent = note.join(" ");
+  $("#cmp").onclick = e => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.a) { S.A = b.dataset.a; if (S.B === S.A) S.B = ""; syncPick(); renderPicked(); drawTable(); return; }
+    if (b.dataset.b) { S.B = S.B === b.dataset.b ? "" : b.dataset.b; syncPick(); renderPicked(); drawTable(); return; }
+    const id = b.dataset.s; if (!id) return;
+    if (S.sort === id) S.dir = -S.dir; else { S.sort = id; S.dir = -1; }
+    drawTable();
+  };
+  drawTable();
+  const top = ORDER[0], a2 = RK.length > 1 ? D.aggs.all.overall : OV, k = [];
+  k.push('<div class="kpi"><div class="l">質問 / 出題数</div><div class="v">' + fmt(D.ds.total) + '</div><div class="s">比較 ' + fmt(OV.n) + " 件（質問 × 言語）・画像 " + fmt(D.ds.images) + " 枚</div></div>");
+  k.push('<div class="kpi"><div class="l">モデル / run</div><div class="v">' + [...new Set(RUNS.map(r => r.model))].length + " / " + RUNS.length + '</div><div class="s">自動検出</div></div>');
+  k.push('<div class="kpi"><div class="l">最高の正答率</div><div class="v" style="color:' + R[top].color + '">' + pc(OV.c[top], OV.n) + '</div><div class="s">' + esc(rlabel(top)) + " · " + fmt(OV.c[top]) + " / " + fmt(OV.n) + '</div><div class="bar"><i style="width:' + (100 * OV.c[top] / OV.n) + "%;background:" + R[top].color + '"></i></div></div>');
+  const cnt = {allwrong: 0, split: 0, allright: 0}; RECS.forEach(r => { cnt[kindOf(r)]++; });
+  k.push('<div class="kpi"><div class="l">全 run が外した</div><div class="v" style="color:var(--bad)">' + fmt(cnt.allwrong) + '</div><div class="s">' + pc(cnt.allwrong, RECS.length) + "（質問 × 言語）</div></div>");
+  if (NR > 1) k.push('<div class="kpi"><div class="l">run 間で分かれた</div><div class="v">' + fmt(cnt.split) + '</div><div class="s">' + pc(cnt.split, RECS.length) + " · 全 run 正解 " + fmt(cnt.allright) + "</div></div>");
   $("#kpis").innerHTML = k.join("");
-  $("#vn").textContent = fmt(OV.n);
-  const lg = D.aggs.all.lang;
-  const rows = [{label: "全体", n: OV.n, c: OV.c}].concat(lg.map(x => ({label: x.label, n: x.n, c: x.c})));
-  $("#overall").innerHTML = '<div class="legend">' + legend(D.runs.map(r => r.key)) + "</div>" + barRows(rows, D.runs.map(r => r.key));
+  /* bar chart, highest first */
+  $("#rank").innerHTML = '<div class="rows wide">' + ORDER.map(k => '<div class="lab" title="' + esc(R[k].name + " / " + R[k].label) + '">' + dot(k) + esc(R[k].label) + '</div><div class="bars"><div class="b" title="' + OV.c[k] + " / " + OV.n + '"><i style="width:' + (100 * OV.c[k] / OV.n).toFixed(2) + "%;background:" + rcol(k) + '"></i><span>' + pc(OV.c[k], OV.n) + "</span></div></div>").join("") + "</div>";
 })();
 
-/* ---- venn (lens areas) ---- */
-function lens(r1, r2, d) {
-  if (d >= r1 + r2) return 0; if (d <= Math.abs(r1 - r2)) return Math.PI * Math.min(r1, r2) ** 2;
-  const a = r1 * r1 * Math.acos((d * d + r1 * r1 - r2 * r2) / (2 * d * r1)), b = r2 * r2 * Math.acos((d * d + r2 * r2 - r1 * r1) / (2 * d * r2));
-  return a + b - 0.5 * Math.sqrt((-d + r1 + r2) * (d + r1 - r2) * (d - r1 + r2) * (d + r1 + r2));
+/* ---- 3. all-model overview ---- */
+const ALLDIMS = [["group", "群"], ["lang", "言語"], ["difficulty", "難度"], ["kind", "形式"], ["origin", "origin"], ["modality", "画像の有無"], ["nopt", "選択肢数"], ["image_type", "image_type"], ["skill", "skill"]];
+function drawAllHeat() {
+  const a = S.dim === "lang" ? D.aggs.all : D.aggs[S.lang], cols = [{label: "全体", n: a.overall.n, c: a.overall.c}].concat(a[S.dim]);
+  const cell = (k, c) => {
+    const v = 100 * c.c[k] / c.n;
+    return '<div class="c" style="background:' + accBg(v) + (c.n < 8 ? ";opacity:.55" : "") + '" title="' + esc(rlabel(k) + " × " + c.label) + ": " + c.c[k] + "/" + c.n + '">' + v.toFixed(0) + "%</div>";
+  };
+  $("#allHeat").innerHTML = '<div class="scroll"><div class="heat" style="grid-template-columns:minmax(120px,max-content) repeat(' + cols.length + ',minmax(46px,1fr));min-width:' + (130 + cols.length * 50) + 'px"><div></div>' +
+    cols.map(c => '<div class="h" title="' + esc(c.label) + '">' + esc(c.label) + "<br><small>n=" + fmt(c.n) + "</small></div>").join("") +
+    ORDER.map(k => '<div class="r" title="' + esc(R[k].name) + '">' + dot(k) + esc(R[k].label) + "</div>" + cols.map(c => cell(k, c)).join("")).join("") + "</div></div>";
 }
-function vennSvg(v) {
-  const ta = v.both + v.a_only, tb = v.both + v.b_only, s = 1 / Math.PI;
-  const r1 = Math.sqrt(ta * s), r2 = Math.sqrt(tb * s);
-  let lo = Math.abs(r1 - r2), hi = r1 + r2;
-  for (let i = 0; i < 60; i++) { const mid = (lo + hi) / 2; if (lens(r1, r2, mid) > v.both) lo = mid; else hi = mid; }
-  const d = (lo + hi) / 2, W = 440, H = 250, sc = Math.min((W - 20) / (r1 + d + r2), (H - 60) / (2 * Math.max(r1, r2)));
-  const cy = H / 2 + 22, x1 = 10 + r1 * sc, x2 = x1 + d * sc;
-  const lab = (x, t, n) => '<text x="' + x + '" y="' + (cy - 2) + '" text-anchor="middle" style="fill:var(--ink);font-weight:700;font-size:13px">' + fmt(n) + '</text><text x="' + x + '" y="' + (cy + 13) + '" text-anchor="middle">' + t + "</text>";
-  const ox = (x1 + r1 * sc + x2 - r2 * sc) / 2;
-  return '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" role="img" aria-label="正誤のベン図"><circle cx="' + x1 + '" cy="' + cy + '" r="' + r1 * sc + '" fill="' + mcol(0) + '" fill-opacity=".38" stroke="' + mcol(0) + '"/>' +
-    '<circle cx="' + x2 + '" cy="' + cy + '" r="' + r2 * sc + '" fill="' + mcol(1) + '" fill-opacity=".38" stroke="' + mcol(1) + '"/>' +
-    lab(ox, "両方正解", v.both) +
-    '<text x="6" y="14" style="fill:' + mcol(0) + '">● ' + esc(nameA) + 'のみ正解 ' + fmt(v.a_only) + '</text><text x="6" y="30" style="fill:' + mcol(1) + '">● ' + esc(nameB) + 'のみ正解 ' + fmt(v.b_only) + '</text>' +
-    '<text x="' + (W - 6) + '" y="14" text-anchor="end">両方不正解 ' + fmt(v.none) + '</text></svg>';
-}
-function stackRow(label, v) {
-  const n = v.both + v.a_only + v.b_only + v.none, w = x => (100 * x / n).toFixed(2) + "%";
-  const seg = (c, x, t) => x ? '<div class="' + c + '" style="width:' + w(x) + '" title="' + t + ": " + x + '">' + (x / n > .06 ? x : "") + "</div>" : "";
-  return '<div style="font-size:12px;color:var(--mute);margin-top:6px">' + esc(label) + ' (n=' + fmt(n) + ')</div><div class="stack">' + seg("s-both", v.both, "両方正解") + seg("s-a", v.a_only, esc(nameA) + "のみ正解") + seg("s-b", v.b_only, esc(nameB) + "のみ正解") + seg("s-none", v.none, "両方不正解") + "</div>";
-}
-(function(){
-  const vt = k => '<button type="button" data-k="' + k + '" class="' + (k === "all" ? "on" : "") + '">' + ({all: "全体", en: "en", ja: "ja"}[k]) + "</button>";
-  $("#vennTabs").innerHTML = ["all", "en", "ja"].map(vt).join("");
-  const draw = k => { $("#venn").innerHTML = vennSvg(D.venn[k]); };
-  draw("all");
-  $("#vennTabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; [...$("#vennTabs").children].forEach(x => x.classList.toggle("on", x === b)); draw(b.dataset.k); };
-  const leg = '<div class="legend"><span><i style="background:var(--good)"></i>両方正解</span><span><i style="background:var(--m0)"></i>' + esc(nameA) + 'のみ正解</span><span><i style="background:var(--m1)"></i>' + esc(nameB) + 'のみ正解</span><span><i style="background:var(--bad)"></i>両方不正解</span></div>';
-  /* note: s-a/s-b colours follow model index */
-  $("#vennStack").innerHTML = leg + stackRow("全体", D.venn.all) + Object.keys(D.venn_group).map(g => stackRow("群 " + g, D.venn_group[g])).join("");
-  $("#vennTop").innerHTML = leg + stackRow("全体", D.venn.all) + stackRow("en", D.venn.en) + stackRow("ja", D.venn.ja) +
-    '<p class="sub" style="margin-top:8px">両方外した ' + fmt(D.venn.all.none) + ' 件のうち、2 モデルが同じ誤答を返したのは ' + fmt(D.venn.same_wrong) + ' 件。</p>';
-  /* make stack colours follow model colours */
-  document.querySelectorAll(".s-a").forEach(e => e.style.background = mcol(0));
-  document.querySelectorAll(".s-b").forEach(e => e.style.background = mcol(1));
+(function () {
+  tabs($("#dimTabs"), ALLDIMS, S.dim, k => { S.dim = k; drawAllHeat(); });
+  tabs($("#langTabsAll"), [["all", "全体"], ["en", "英語"], ["ja", "日本語"]], S.lang, k => { S.lang = k; drawAllHeat(); syncLangTabs(); drawBreakdown(); drawHeat(); });
+  drawAllHeat();
+  const c = {allwrong: 0, split: 0, allright: 0}, g = {};
+  RECS.forEach(r => { const x = kindOf(r); c[x]++; (g[r.it.g] = g[r.it.g] || {allwrong: 0, split: 0, allright: 0})[x]++; });
+  const row = (key, label, n, col) => '<div class="lab">' + label + '</div><div class="bars"><div class="b"><i style="width:' + (100 * n / RECS.length) + "%;background:" + col + '"></i><span>' + fmt(n) + " · " + pc(n, RECS.length) + "</span></div></div>";
+  $("#splitBody").innerHTML = '<div class="rows">' + row("", "全 run が外した", c.allwrong, "var(--bad)") + (NR > 1 ? row("", "run 間で分かれた", c.split, "var(--warn)") : "") + row("", "全 run が正解", c.allright, "var(--good)") + "</div>" +
+    '<div class="tabs" style="margin-top:10px"><button type="button" data-go="allwrong">全 run が外した問題を見る</button>' + (NR > 1 ? '<button type="button" data-go="split">分かれた問題を見る</button>' : "") + "</div>" +
+    '<p class="sub" style="margin:0;font-size:12px">「全 run」は CPU / GPU の別 run も数えます（同じモデルの 2 run はほぼ同じ答え）。見る = 質問エクスプローラに移動して絞り込み。</p>';
+  $("#splitBody").onclick = e => { const b = e.target.closest("button[data-go]"); if (!b) return; setTimeout(() => { F.out = b.dataset.go; F.page = 0; syncFilters(); render(); $("#explorer").scrollIntoView(); }, 0); };
+  $("#splitGroup").innerHTML = '<div class="scroll"><table><tr><th>群</th><th>全 run が外した</th><th>分かれた</th><th>全 run 正解</th></tr>' +
+    GROUPS.filter(x => g[x]).map(x => { const t = g[x].allwrong + g[x].split + g[x].allright; return "<tr><td>" + x + " <span class='chip'>n=" + fmt(t) + "</span></td><td>" + fmt(g[x].allwrong) + " <span class='chip bad'>" + pc(g[x].allwrong, t) + "</span></td><td>" + fmt(g[x].split) + " <span class='chip warn'>" + pc(g[x].split, t) + "</span></td><td>" + fmt(g[x].allright) + " <span class='chip good'>" + pc(g[x].allright, t) + "</span></td></tr>"; }).join("") + "</table></div>";
 })();
 
-/* ---- breakdown ---- */
+/* ---- 2. picker ---- */
+function fillSel(el, cur, none) {
+  el.innerHTML = (none ? '<option value="">（なし）</option>' : "") + ORDER.map(k => '<option value="' + esc(k) + '">' + esc(rlabel(k) + "（" + pc(OV.c[k], OV.n) + "）") + "</option>").join("");
+  el.value = cur;
+}
+function syncPick() { $("#selA").value = S.A; $("#selB").value = S.B; }
+function syncLangTabs() { [["#langTabs", S.lang], ["#langTabsAll", S.lang]].forEach(([id, v]) => [...$(id).querySelectorAll("button")].forEach(b => b.classList.toggle("on", b.dataset.k === v))); }
+(function () {
+  fillSel($("#selA"), S.A, false); fillSel($("#selB"), S.B, true);
+  $("#selA").onchange = e => { S.A = e.target.value; if (S.B === S.A) S.B = ""; syncPick(); renderPicked(); drawTable(); };
+  $("#selB").onchange = e => { S.B = e.target.value; renderPicked(); drawTable(); };
+  $("#swap").onclick = () => { if (!S.B) return; const t = S.A; S.A = S.B; S.B = t; syncPick(); renderPicked(); drawTable(); };
+})();
+
+/* ---- detail: breakdown ---- */
 const DIMS = [["group", "群（photo / biz / rsn / txt）"], ["origin", "origin（polished = 旧版を磨き直し / new = v1 新規）"], ["kind", "形式"], ["nopt", "選択肢数"], ["difficulty", "難度"],
   ["image_type", "image_type"], ["skill", "skill"], ["modality", "画像の有無"]];
-let bdLang = "all";
 function drawBreakdown() {
-  const a = D.aggs[bdLang];
-  $("#bd").innerHTML = DIMS.map(([k, t]) => '<div class="card"><h3>' + esc(t) + '</h3>' + barRows(a[k], PR) + '<details><summary>表で見る</summary>' + tableOf(a[k], D.runs.map(r => r.key)) + "</details></div>").join("") +
-    '<div class="card"><h3>選択肢数（詳細）</h3>' + tableOf(a.nopt_full, PR) + "</div>";
+  const a = D.aggs[S.lang], ks = picked();
+  $("#legend1").innerHTML = legend(ks);
+  $("#bd").innerHTML = DIMS.map(([k, t]) => '<div class="card"><h3>' + esc(t) + "</h3>" + barRows(a[k], ks) + "<details><summary>表で見る</summary>" + tableOf(a[k], ks) + "</details></div>").join("") +
+    '<div class="card"><h3>選択肢数（詳細）</h3>' + tableOf(a.nopt_full, ks) + "</div>";
 }
-(function(){
-  $("#langTabs").innerHTML = [["all", "全体"], ["en", "英語"], ["ja", "日本語"]].map(([k, t]) => '<button type="button" data-k="' + k + '" class="' + (k === "all" ? "on" : "") + '">' + t + "</button>").join("");
-  $("#langTabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; [...$("#langTabs").children].forEach(x => x.classList.toggle("on", x === b)); bdLang = b.dataset.k; drawBreakdown(); drawHeat(); };
-  $("#legend1").innerHTML = legend(PR);
-  drawBreakdown();
+(function () {
+  tabs($("#langTabs"), [["all", "全体"], ["en", "英語"], ["ja", "日本語"]], S.lang, k => { S.lang = k; syncLangTabs(); drawAllHeat(); drawBreakdown(); drawHeat(); });
 })();
 
-/* ---- heatmaps ---- */
-let heatMode = A;
+/* ---- detail: heat maps ---- */
 function heatHtml(h, mode, title) {
-  const cols = h.cols, rows = h.rows;
+  const cols = h.cols, rows = h.rows, ka = S.A, kb = S.B;
   const cell = (r, c) => {
     const x = h.cells[r + "|" + c]; if (!x) return '<div class="c" style="background:var(--soft);opacity:.5">·</div>';
     let v, bg;
-    if (mode === "gap") { v = (x.c[B] - x.c[A]) / x.n * 100; const t = Math.min(1, Math.abs(v) / 40); bg = "color-mix(in srgb," + (v >= 0 ? "var(--m1)" : "var(--m0)") + " " + (t * 75).toFixed(0) + "%,var(--card))"; }
-    else { v = 100 * x.c[mode] / x.n; const t = Math.max(0, (v - 30) / 70); bg = "color-mix(in srgb,var(--good) " + (t * 70).toFixed(0) + "%,color-mix(in srgb,var(--bad) " + ((1 - t) * 45).toFixed(0) + "%,var(--card)))"; }
+    if (mode === "gap") { v = (x.c[kb] - x.c[ka]) / x.n * 100; const t = Math.min(1, Math.abs(v) / 40); bg = "color-mix(in srgb," + (v >= 0 ? "var(--m1)" : "var(--m0)") + " " + (t * 75).toFixed(0) + "%,var(--card))"; }
+    else { v = 100 * x.c[mode === "B" ? kb : ka] / x.n; bg = accBg(v); }
     return '<div class="c" style="background:' + bg + (x.n < 8 ? ";opacity:.55" : "") + '" title="' + esc(r + " × " + c) + ": n=" + x.n + '">' + (mode === "gap" ? (v >= 0 ? "+" : "") + v.toFixed(0) + "pt" : v.toFixed(0) + "%") + "<small>n=" + x.n + "</small></div>";
   };
   return '<div class="card"><h3>' + esc(title) + '</h3><div class="scroll"><div class="heat" style="grid-template-columns:minmax(70px,max-content) repeat(' + cols.length + ',minmax(44px,1fr));min-width:' + (90 + cols.length * 48) + 'px"><div></div>' +
@@ -319,199 +430,248 @@ function heatHtml(h, mode, title) {
     rows.map(r => '<div class="r">' + esc(r) + "</div>" + cols.map(c => cell(r, c)).join("")).join("") + "</div></div></div>";
 }
 function drawHeat() {
-  const a = D.aggs[bdLang];
-  $("#heatGrid").innerHTML = heatHtml(a.heat_skill_itype, heatMode, "skill × image_type") + heatHtml(a.heat_diff_kind, heatMode, "難度 × 形式") +
-    heatHtml(a.heat_group_diff, heatMode, "群 × 難度") + heatHtml(a.heat_group_origin, heatMode, "群 × origin");
+  const a = D.aggs[S.lang];
+  if (S.heat !== "A" && !hasB()) S.heat = "A";
+  const t = [["A", rlabel(S.A) + " の正答率（A）"]];
+  if (hasB()) t.push(["B", rlabel(S.B) + " の正答率（B）"], ["gap", "B − A（差）"]);
+  tabs($("#heatTabs"), t, S.heat, k => { S.heat = k; drawHeat(); });
+  $("#heatGrid").innerHTML = heatHtml(a.heat_skill_itype, S.heat, "skill × image_type") + heatHtml(a.heat_diff_kind, S.heat, "難度 × 形式") +
+    heatHtml(a.heat_group_diff, S.heat, "群 × 難度") + heatHtml(a.heat_group_origin, S.heat, "群 × origin");
 }
-(function(){
-  const t = PR.map(k => [k, runLabel(k) + " の正答率"]).concat(PR.length > 1 ? [["gap", nameB + " − " + nameA + "（差）"]] : []);
-  $("#heatTabs").innerHTML = t.map(([k, n], i) => '<button type="button" data-k="' + k + '" class="' + (i === 0 ? "on" : "") + '">' + esc(n) + "</button>").join("") + '<span class="sub" style="align-self:center;margin:0">言語は「切り口別」のタブに連動</span>';
-  $("#heatTabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; [...$("#heatTabs").querySelectorAll("button")].forEach(x => x.classList.toggle("on", x === b)); heatMode = b.dataset.k; drawHeat(); };
-  drawHeat();
-})();
 
-/* ---- scatter of categories ---- */
-(function(){
+/* ---- A/B comparison: venn, scatter, text vs picture ---- */
+function lens(r1, r2, d) {
+  if (d >= r1 + r2) return 0; if (d <= Math.abs(r1 - r2)) return Math.PI * Math.min(r1, r2) ** 2;
+  const a = r1 * r1 * Math.acos((d * d + r1 * r1 - r2 * r2) / (2 * d * r1)), b = r2 * r2 * Math.acos((d * d + r2 * r2 - r1 * r1) / (2 * d * r2));
+  return a + b - 0.5 * Math.sqrt((-d + r1 + r2) * (d + r1 - r2) * (d - r1 + r2) * (d + r1 + r2));
+}
+function vennOf(filter) {
+  const v = {both: 0, a_only: 0, b_only: 0, none: 0, same_wrong: 0, n: 0};
+  RECS.forEach(r => {
+    if (!filter(r)) return; const a = r.L.a[S.A], b = r.L.a[S.B]; v.n++;
+    if (a[1] && b[1]) v.both++; else if (a[1]) v.a_only++; else if (b[1]) v.b_only++; else { v.none++; if (a[0] === b[0]) v.same_wrong++; }
+  });
+  return v;
+}
+function vennSvg(v) {
+  const ta = v.both + v.a_only, tb = v.both + v.b_only, s = 1 / Math.PI, na = rlabel(S.A), nb = rlabel(S.B);
+  const r1 = Math.sqrt(Math.max(ta, 1) * s), r2 = Math.sqrt(Math.max(tb, 1) * s);
+  let lo = Math.abs(r1 - r2), hi = r1 + r2;
+  for (let i = 0; i < 60; i++) { const mid = (lo + hi) / 2; if (lens(r1, r2, mid) > v.both) lo = mid; else hi = mid; }
+  const d = (lo + hi) / 2, W = 440, H = 250, sc = Math.min((W - 20) / (r1 + d + r2), (H - 60) / (2 * Math.max(r1, r2)));
+  const cy = H / 2 + 22, x1 = 10 + r1 * sc, x2 = x1 + d * sc, ca = rcol(S.A), cb = rcol(S.B);
+  const ox = (x1 + r1 * sc + x2 - r2 * sc) / 2;
+  return '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" role="img" aria-label="正誤のベン図"><circle cx="' + x1 + '" cy="' + cy + '" r="' + r1 * sc + '" style="fill:' + ca + ';fill-opacity:.38;stroke:' + ca + '"/>' +
+    '<circle cx="' + x2 + '" cy="' + cy + '" r="' + r2 * sc + '" style="fill:' + cb + ';fill-opacity:.38;stroke:' + cb + '"/>' +
+    '<text x="' + ox + '" y="' + (cy - 2) + '" text-anchor="middle" style="fill:var(--ink);font-weight:700;font-size:13px">' + fmt(v.both) + '</text><text x="' + ox + '" y="' + (cy + 13) + '" text-anchor="middle">両方正解</text>' +
+    '<text x="6" y="14" style="fill:' + ca + '">● ' + esc(na) + ' のみ正解 ' + fmt(v.a_only) + '</text><text x="6" y="30" style="fill:' + cb + '">● ' + esc(nb) + ' のみ正解 ' + fmt(v.b_only) + '</text>' +
+    '<text x="' + (W - 6) + '" y="14" text-anchor="end">両方不正解 ' + fmt(v.none) + "</text></svg>";
+}
+function stackRow(label, v) {
+  const n = v.n || 1, w = x => (100 * x / n).toFixed(2) + "%";
+  const seg = (c, x, t, bg) => x ? '<div class="' + c + '" style="width:' + w(x) + (bg ? ";background:" + bg : "") + '" title="' + t + ": " + x + '">' + (x / n > .06 ? x : "") + "</div>" : "";
+  return '<div style="font-size:12px;color:var(--mute);margin-top:6px">' + esc(label) + " (n=" + fmt(v.n) + ')</div><div class="stack">' + seg("s-both", v.both, "両方正解") + seg("", v.a_only, esc(rlabel(S.A)) + " のみ正解", rcol(S.A)) + seg("", v.b_only, esc(rlabel(S.B)) + " のみ正解", rcol(S.B)) + seg("s-none", v.none, "両方不正解") + "</div>";
+}
+function scatterSvg() {
   const pts = [], a = D.aggs.all;
-  ["group", "origin", "kind", "nopt", "difficulty", "image_type", "skill", "modality"].forEach(d => a[d].forEach(r => { if (r.n >= 20) pts.push({d, l: r.label, n: r.n, x: r.c[A] / r.n * 100, y: r.c[B] / r.n * 100}); }));
-  const W = 440, H = 400, L = 38, Bt = 30, T = 8, R = 10, lo = 20;
-  const X = v => L + (v - lo) / (100 - lo) * (W - L - R), Y = v => H - Bt - (v - lo) / (100 - lo) * (H - Bt - T);
+  ["group", "origin", "kind", "nopt", "difficulty", "image_type", "skill", "modality"].forEach(d => a[d].forEach(r => { if (r.n >= 20) pts.push({d, l: r.label, n: r.n, x: r.c[S.A] / r.n * 100, y: r.c[S.B] / r.n * 100}); }));
+  const W = 440, H = 400, L = 38, Bt = 30, T = 8, R_ = 10, lo = 20;
+  const X = v => L + (v - lo) / (100 - lo) * (W - L - R_), Y = v => H - Bt - (v - lo) / (100 - lo) * (H - Bt - T);
   let s = '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" role="img" aria-label="カテゴリ別正答率の散布図">';
-  for (let v = 20; v <= 100; v += 20) s += '<line class="grid" x1="' + X(v) + '" x2="' + X(v) + '" y1="' + T + '" y2="' + (H - Bt) + '"/><line class="grid" y1="' + Y(v) + '" y2="' + Y(v) + '" x1="' + L + '" x2="' + (W - R) + '"/><text x="' + X(v) + '" y="' + (H - Bt + 14) + '" text-anchor="middle">' + v + '%</text><text x="' + (L - 4) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + v + "%</text>";
+  for (let v = 20; v <= 100; v += 20) s += '<line class="grid" x1="' + X(v) + '" x2="' + X(v) + '" y1="' + T + '" y2="' + (H - Bt) + '"/><line class="grid" y1="' + Y(v) + '" y2="' + Y(v) + '" x1="' + L + '" x2="' + (W - R_) + '"/><text x="' + X(v) + '" y="' + (H - Bt + 14) + '" text-anchor="middle">' + v + '%</text><text x="' + (L - 4) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + v + "%</text>";
   s += '<line x1="' + X(lo) + '" y1="' + Y(lo) + '" x2="' + X(100) + '" y2="' + Y(100) + '" stroke="var(--mute)" stroke-dasharray="4 4"/>';
   const dc = {group: "var(--m0)", origin: "var(--m1)", kind: "var(--m2)", nopt: "var(--m3)", difficulty: "var(--bad)", image_type: "var(--m0b)", skill: "var(--m1b)", modality: "var(--m2b)"};
-  pts.forEach(p => { s += '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="' + (3 + Math.sqrt(p.n) / 9).toFixed(1) + '" fill="' + dc[p.d] + '" fill-opacity=".62" stroke="' + dc[p.d] + '"><title>' + esc(p.d + ": " + p.l) + " n=" + p.n + " " + nameA + " " + p.x.toFixed(1) + "% / " + nameB + " " + p.y.toFixed(1) + "%</title></circle>"; });
-  s += '<text x="' + (W / 2) + '" y="' + (H - 4) + '" text-anchor="middle">' + esc(nameA) + " 正答率</text><text transform='rotate(-90)' x='" + (-H / 2) + "' y='11' text-anchor='middle'>" + esc(nameB) + " 正答率</text></svg>";
-  $("#scatter").innerHTML = s + '<div class="legend">' + Object.keys(dc).map(k => '<span><i style="background:' + dc[k] + '"></i>' + k + "</span>").join("") + "</div>";
-})();
-
-/* ---- text only vs picture ---- */
-(function(){
-  const a = D.aggs.all, tx = a.modality.find(r => r.label === "text only"), pi = a.modality.find(r => r.label === "picture");
-  const g = a.group.find(r => r.label === "txt");
-  let h = '<div class="grid g2"><div>' + barRows(a.modality, D.runs.map(r => r.key)) + "</div><div>";
+  pts.forEach(p => { s += '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="' + (3 + Math.sqrt(p.n) / 9).toFixed(1) + '" fill="' + dc[p.d] + '" fill-opacity=".62" stroke="' + dc[p.d] + '"><title>' + esc(p.d + ": " + p.l) + " n=" + p.n + " " + esc(rlabel(S.A)) + " " + p.x.toFixed(1) + "% / " + esc(rlabel(S.B)) + " " + p.y.toFixed(1) + "%</title></circle>"; });
+  s += '<text x="' + (W / 2) + '" y="' + (H - 4) + '" text-anchor="middle">' + esc(rlabel(S.A)) + " 正答率 (A)</text><text transform='rotate(-90)' x='" + (-H / 2) + "' y='11' text-anchor='middle'>" + esc(rlabel(S.B)) + " 正答率 (B)</text></svg>";
+  return s + '<div class="legend">' + Object.keys(dc).map(k => '<span><i style="background:' + dc[k] + '"></i>' + k + "</span>").join("") + "</div>";
+}
+function drawCompare() {
+  const e = $("#cmpAB"), a = D.aggs.all, tx = a.modality.find(r => r.label === "text only"), pi = a.modality.find(r => r.label === "picture"), g = a.group.find(r => r.label === "txt"), ks = picked();
+  let h = "";
+  if (hasB()) {
+    h += '<div class="grid g2"><div class="card"><h3>カテゴリ別の正答率：A 対 B</h3><p class="sub" style="margin:0 0 6px">1 点 = 1 カテゴリ（群・origin・形式・難度・image_type・skill など、n ≥ 20）。点の大きさは出題数。対角線より上が B の優位。</p>' + scatterSvg() + "</div>" +
+      '<div class="card"><h3>正誤の重なり（円の面積は正答数に比例）</h3><div id="venn">' + vennSvg(vennOf(() => true)) + '</div><div class="tabs" id="vennTabs"></div><div id="vennStack"></div></div></div>';
+  } else h += '<div class="note info">B が未選択（または A と同じ）です。上の「比較対象」で B を選ぶと、散布図とベン図（一致）を描きます。</div>';
+  h += '<div class="card" style="margin-top:14px"><h3>文章のみの問題と画像付きの問題</h3><div class="grid g2"><div>' + barRows(a.modality, ks) + "</div><div>";
   if (tx && pi) {
-    h += "<table><tr><th>モデル</th><th>画像付き</th><th>文章のみ</th><th>差</th></tr>" + PR.map(k => "<tr><td>" + esc(runLabel(k)) + "</td><td>" + pc(pi.c[k], pi.n) + "</td><td>" + pc(tx.c[k], tx.n) + "</td><td>" +
-      (tx.c[k] / tx.n * 100 - pi.c[k] / pi.n * 100 >= 0 ? "+" : "") + (tx.c[k] / tx.n * 100 - pi.c[k] / pi.n * 100).toFixed(1) + "pt</td></tr>").join("") + "</table>";
+    h += "<table><tr><th>run</th><th>画像付き</th><th>文章のみ</th><th>差</th></tr>" + ks.map(k => { const dd = tx.c[k] / tx.n * 100 - pi.c[k] / pi.n * 100; return "<tr><td>" + dot(k) + esc(rlabel(k)) + "</td><td>" + pc(pi.c[k], pi.n) + "</td><td>" + pc(tx.c[k], tx.n) + "</td><td>" + (dd >= 0 ? "+" : "") + dd.toFixed(1) + "pt</td></tr>"; }).join("") + "</table>";
   }
-  h += '</div></div><div class="note info">文章のみの問題は txt 群（国・地域などを Wikipedia の記事から出題する 186 問、出題 ' + fmt(g ? g.n : 0) + ' 件）で、画像の読み取りを必要としないため<b>易しい対照</b>です。画像付きの問題との差は、画像を読む難しさの目安として見てください（問題の中身が違うため厳密な対照実験ではありません）。</div>';
-  $("#textimg").innerHTML = h;
-})();
+  h += '</div></div><div class="note info">文章のみの問題は txt 群（国・地域などを Wikipedia の記事から出題する問題、出題 ' + fmt(g ? g.n : 0) + ' 件）で、画像の読み取りを必要としないため<b>易しい対照</b>です。画像付きの問題との差は、画像を読む難しさの目安として見てください（問題の中身が違うため厳密な対照実験ではありません）。</div></div>';
+  e.innerHTML = h;
+  if (hasB()) {
+    const stacks = lg => {
+      const leg = '<div class="legend"><span><i style="background:var(--good)"></i>両方正解</span><span>' + dot(S.A) + esc(rlabel(S.A)) + ' のみ正解</span><span>' + dot(S.B) + esc(rlabel(S.B)) + ' のみ正解</span><span><i style="background:var(--bad)"></i>両方不正解</span></div>';
+      const f = lg === "all" ? (() => true) : (r => r.lg === lg), v = vennOf(f);
+      let s = leg + stackRow(lg === "all" ? "全体" : lg, v);
+      if (lg === "all") s += ["en", "ja"].map(l => stackRow(l, vennOf(r => r.lg === l))).join("") + GROUPS.map(x => stackRow("群 " + x, vennOf(r => r.it.g === x))).join("");
+      return s + '<p class="sub" style="margin-top:8px">両方外した ' + fmt(v.none) + " 件のうち、同じ誤答を返したのは " + fmt(v.same_wrong) + " 件。</p>";
+    };
+    $("#vennStack").innerHTML = stacks("all");
+    tabs($("#vennTabs"), [["all", "全体"], ["en", "en"], ["ja", "ja"]], "all", k => { $("#venn").innerHTML = vennSvg(vennOf(k === "all" ? (() => true) : (r => r.lg === k))); $("#vennStack").innerHTML = stacks(k); });
+  }
+}
 
 /* ---- speed ---- */
-(function(){
-  const sp = D.speed, e = $("#speedBody");
-  const st = (run, lg) => sp.runs.find(r => r.run === run && r.lang === lg) || {};
-  let h = "";
-  if (sp.agree) {
-    h += '<div class="kpis"><div class="kpi"><div class="l">答えの一致（CPU = GPU）</div><div class="v">' + pc(sp.agree.same_got, sp.agree.n, 2) + '</div><div class="s">不一致 ' + (sp.agree.n - sp.agree.same_got) + " 件</div></div>" +
-      '<div class="kpi"><div class="l">正誤の一致</div><div class="v">' + pc(sp.agree.same_ok, sp.agree.n, 2) + '</div><div class="s">' + fmt(sp.agree.same_ok) + " / " + fmt(sp.agree.n) + "</div></div>" +
-      '<div class="kpi"><div class="l">速度比（中央値、問ごと）</div><div class="v">' + fx(sp.ratio.median) + '×</div><div class="s">平均 ' + fx(sp.ratio.mean) + "× · 合計時間比 " + fx(sp.ratio.total) + "×</div></div>" +
-      '<div class="kpi"><div class="l">GPU の方が遅かった問</div><div class="v">' + fmt(sp.ratio.gpu_slower) + '</div><div class="s">/ ' + fmt(sp.ratio.n) + " 問</div></div></div>";
-    if (sp.agree.diff_ids.length) h += '<div class="note">答えが違った問（最大 50 件）: ' + sp.agree.diff_ids.map(esc).join(", ") + "</div>";
+function drawSpeed() {
+  const sp = D.speed, e = $("#speedBody"), m = mdl(S.A), tcol = {ok: "good", uncal: "warn", invalid: "bad", ref: "warn", api: ""}, tlab = {ok: "較正 OK", uncal: "較正記録なし", invalid: "較正外れ（非掲載）", ref: "参考値", api: "API 往復"};
+  let h = '<div class="card"><h3>1 問あたりの時間（ms）</h3><div class="scroll"><table><tr><th>run</th><th class="l">状態</th><th>中央値</th><th>平均</th><th>90%</th><th>99%</th><th>最大</th><th>合計 (s)</th><th>en 中央値</th><th>ja 中央値</th></tr>' +
+    ORDER.map(k => { const s = timeStat(k), ok = s.median != null, c = x => ok && x != null ? fmt(Math.round(x)) : "—";
+      return "<tr><td>" + dot(k) + esc(rlabel(k)) + '</td><td class="l"><span class="chip ' + tcol[R[k].timing] + '">' + tlab[R[k].timing] + "</span></td><td>" + c(s.median) + "</td><td>" + c(s.mean) + "</td><td>" + c(s.p90) + "</td><td>" + c(s.p99) + "</td><td>" + c(s.max) + "</td><td>" + c(s.total_s) + "</td><td>" + c(timeStat(k, "en").median) + "</td><td>" + c(timeStat(k, "ja").median) + "</td></tr>"; }).join("") +
+    '</table></div><p class="sub" style="margin:6px 0 0">API は往復時間（並列実行）で、機械には依存しません。ローカル実行は逐次で、先頭の問にはモデル読み込み直後の初回実行の時間が含まれます。較正が外れた run の時間は載せません。</p></div>';
+  /* the CPU / GPU panel of the model of A */
+  if (m) {
+    const ag = m, pairs = ag.pairs || [];
+    h += '<h3 style="margin:16px 0 8px">' + esc(R[S.A].name) + "：CPU と GPU</h3>";
+    h += '<div class="kpis"><div class="kpi"><div class="l">答えの一致（CPU = GPU）</div><div class="v">' + pc(ag.same_got, ag.n, 2) + '</div><div class="s">不一致 ' + (ag.n - ag.same_got) + " 件</div></div>" +
+      '<div class="kpi"><div class="l">正誤の一致</div><div class="v">' + pc(ag.same_ok, ag.n, 2) + '</div><div class="s">' + fmt(ag.same_ok) + " / " + fmt(ag.n) + "</div></div>" +
+      (ag.ratio ? '<div class="kpi"><div class="l">速度比（中央値、問ごと）</div><div class="v">' + fx(ag.ratio.median) + '×</div><div class="s">平均 ' + fx(ag.ratio.mean) + "× · 合計時間比 " + fx(ag.ratio.total) + '×</div></div><div class="kpi"><div class="l">GPU の方が遅かった問</div><div class="v">' + fmt(ag.ratio.gpu_slower) + '</div><div class="s">/ ' + fmt(ag.ratio.n) + " 問</div></div>" : "") + "</div>";
+    if (!ag.ratio) h += '<div class="note">この model の CPU か GPU の時間が較正外れのため、速度比は出しません。</div>';
+    if (ag.diff_ids.length) h += '<div class="note">答えが違った問（最大 50 件）: ' + ag.diff_ids.map(esc).join(", ") + "</div>";
+    if (pairs.length) {
+      const W = 440, H = 400, L = 40, Bt = 30, T = 8, R_ = 24, lo = 1, hi = 5, Lg = v => Math.log10(Math.max(v, 1));
+      const X = v => L + (Lg(v) - lo + 0.3) / (hi - lo + 0.3) * (W - L - R_), Y = v => H - Bt - (Lg(v) - lo + 0.3) / (hi - lo + 0.3) * (H - Bt - T);
+      let s = '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" role="img" aria-label="CPU 対 GPU の時間">';
+      [10, 100, 1000, 10000, 100000].forEach(v => { s += '<line class="grid" x1="' + X(v) + '" x2="' + X(v) + '" y1="' + T + '" y2="' + (H - Bt) + '"/><line class="grid" y1="' + Y(v) + '" y2="' + Y(v) + '" x1="' + L + '" x2="' + (W - R_) + '"/><text x="' + X(v) + '" y="' + (H - Bt + 14) + '" text-anchor="middle">' + fmt(v) + '</text><text x="' + (L - 4) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + "</text>"; });
+      s += '<line x1="' + X(10) + '" y1="' + Y(10) + '" x2="' + X(100000) + '" y2="' + Y(100000) + '" stroke="var(--mute)" stroke-dasharray="4 4"/><line x1="' + X(100) + '" y1="' + Y(10) + '" x2="' + X(100000) + '" y2="' + Y(1000) + '" stroke="var(--mute)" stroke-dasharray="1 5"/>';
+      s += '<g style="fill:' + R[S.A].color + ';fill-opacity:.32">' + pairs.map(p => '<circle cx="' + X(p[0]).toFixed(1) + '" cy="' + Y(p[1]).toFixed(1) + '" r="1.7"/>').join("") + "</g>";
+      s += '<text x="' + (W / 2) + '" y="' + (H - 4) + '" text-anchor="middle">CPU の時間 (ms, 対数)</text><text transform="rotate(-90)" x="' + (-H / 2) + '" y="11" text-anchor="middle">GPU の時間 (ms, 対数)</text></svg>';
+      h += '<div class="card" style="margin-top:14px"><h3>CPU 対 GPU（1 点 = 1 問、破線: 同じ時間 / 点線: GPU が 10 倍速い）</h3>' + s + "</div>";
+    }
   }
-  h += '<div class="grid g2" style="margin-top:14px"><div class="card"><h3>1 問あたりの時間（ms）</h3><div class="scroll"><table><tr><th>実行</th><th>言語</th><th>中央値</th><th>平均</th><th>90%</th><th>99%</th><th>最大</th><th>合計 (s)</th></tr>' +
-    sp.runs.filter(r => r.lang !== "all").concat(sp.runs.filter(r => r.lang === "all")).map(r => "<tr><td>" + esc(runLabel(r.run)) + "</td><td>" + r.lang + "</td><td>" + fmt(Math.round(r.median)) + "</td><td>" + fmt(Math.round(r.mean)) + "</td><td>" + fmt(r.p90) + "</td><td>" + fmt(r.p99) + "</td><td>" + fmt(r.max) + "</td><td>" + fmt(Math.round(r.total_s)) + "</td></tr>").join("") +
-    '</table></div><p class="sub" style="margin:6px 0 0">OpenAI は API の往復時間（3 並列）で、機械には依存しません。ローカル実行は逐次で、先頭の問にはモデル読み込み直後の初回実行の時間が含まれます。</p></div>';
-  if (sp.pairs.length) {
-    const W = 440, H = 400, L = 40, Bt = 30, T = 8, R = 24, lo = 1, hi = 5, Lg = v => Math.log10(Math.max(v, 1));
-    const X = v => L + (Lg(v) - lo + 0.3) / (hi - lo + 0.3) * (W - L - R), Y = v => H - Bt - (Lg(v) - lo + 0.3) / (hi - lo + 0.3) * (H - Bt - T);
-    let s = '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" role="img" aria-label="CPU 対 GPU の時間">';
-    [10, 100, 1000, 10000, 100000].forEach(v => { s += '<line class="grid" x1="' + X(v) + '" x2="' + X(v) + '" y1="' + T + '" y2="' + (H - Bt) + '"/><line class="grid" y1="' + Y(v) + '" y2="' + Y(v) + '" x1="' + L + '" x2="' + (W - R) + '"/><text x="' + X(v) + '" y="' + (H - Bt + 14) + '" text-anchor="middle">' + fmt(v) + '</text><text x="' + (L - 4) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + fmt(v) + "</text>"; });
-    s += '<line x1="' + X(10) + '" y1="' + Y(10) + '" x2="' + X(100000) + '" y2="' + Y(100000) + '" stroke="var(--mute)" stroke-dasharray="4 4"/>';
-    s += '<line x1="' + X(100) + '" y1="' + Y(10) + '" x2="' + X(100000) + '" y2="' + Y(1000) + '" stroke="var(--mute)" stroke-dasharray="1 5"/>';
-    s += "<g fill='" + mcol(0) + "' fill-opacity='.32'>" + sp.pairs.map(p => '<circle cx="' + X(p[0]).toFixed(1) + '" cy="' + Y(p[1]).toFixed(1) + '" r="1.7"/>').join("") + "</g>";
-    s += '<text x="' + (W / 2) + '" y="' + (H - 4) + '" text-anchor="middle">CPU の時間 (ms, 対数)</text><text transform="rotate(-90)" x="' + (-H / 2) + '" y="11" text-anchor="middle">GPU の時間 (ms, 対数)</text></svg>';
-    h += '<div class="card"><h3>CPU 対 GPU（1 点 = 1 問、破線: 同じ時間 / 点線: GPU が 10 倍速い）</h3>' + s + "</div>";
-  }
-  h += "</div>";
-  if (sp.hist) {
-    const W = 880, H = 200, L = 40, Bt = 28, T = 8, R = 10, ed = sp.hist.edges, nb = ed.length - 1, keys = Object.keys(sp.hist.counts);
-    const mx = Math.max(...keys.map(k => Math.max(...sp.hist.counts[k])), 1), bw = (W - L - R) / nb, Y = v => H - Bt - v / mx * (H - Bt - T);
+  /* distribution of A and B */
+  const keys = picked().filter(k => sp.hist.counts[k]);
+  if (keys.length) {
+    const W = 880, H = 200, L = 40, Bt = 28, T = 8, R_ = 10, ed = sp.hist.edges, nb = ed.length - 1;
+    const mx = Math.max(...keys.map(k => Math.max(...sp.hist.counts[k])), 1), bw = (W - L - R_) / nb, Y = v => H - Bt - v / mx * (H - Bt - T);
     let s = '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" role="img" aria-label="時間の分布">';
     for (let i = 0; i < nb; i += 4) s += '<text x="' + (L + i * bw) + '" y="' + (H - Bt + 14) + '" text-anchor="middle">' + fmt(Math.round(ed[i])) + "</text>";
-    s += '<line class="ax" x1="' + L + '" x2="' + (W - R) + '" y1="' + (H - Bt) + '" y2="' + (H - Bt) + '"/>';
+    s += '<line class="ax" x1="' + L + '" x2="' + (W - R_) + '" y1="' + (H - Bt) + '" y2="' + (H - Bt) + '"/>';
     [0, .5, 1].forEach(f => { s += '<text x="' + (L - 4) + '" y="' + (Y(mx * f) + 4) + '" text-anchor="end">' + Math.round(mx * f) + "</text>"; });
-    keys.forEach(k => { s += '<polyline fill="none" stroke="' + col(k) + '" stroke-width="2" points="' + sp.hist.counts[k].map((c, i) => (L + (i + .5) * bw).toFixed(1) + "," + Y(c).toFixed(1)).join(" ") + '"/>'; });
+    keys.forEach(k => { s += '<polyline fill="none" style="stroke:' + rcol(k) + '" stroke-width="2" points="' + sp.hist.counts[k].map((c, i) => (L + (i + .5) * bw).toFixed(1) + "," + Y(c).toFixed(1)).join(" ") + '"/>'; });
     s += '<text x="' + (W / 2) + '" y="' + (H - 3) + '" text-anchor="middle">1 問あたりの時間 (ms, 対数の階級)</text></svg>';
-    h += '<div class="card" style="margin-top:14px"><h3>時間の分布（問数）</h3><div class="legend">' + legend(keys) + "</div>" + s + "</div>";
+    h += '<div class="card" style="margin-top:14px"><h3>時間の分布（問数）: A / B</h3><div class="legend">' + legend(keys) + "</div>" + s + "</div>";
   }
-  h += '<div class="card" style="margin-top:14px"><h3>群別の中央値（ms）</h3><div class="scroll"><table><tr><th>実行</th>' + ["photo", "biz", "rsn", "txt"].map(g => "<th>" + g + "</th>").join("") + "</tr>" +
-    D.runs.map(r => "<tr><td>" + esc(r.label) + "</td>" + ["photo", "biz", "rsn", "txt"].map(g => { const x = sp.by_group.find(b => b.run === r.key && b.group === g); return "<td>" + (x && x.median != null ? fmt(Math.round(x.median)) : "—") + "</td>"; }).join("") + "</tr>").join("") + "</table></div></div>";
-  h += '<div class="note">ローカル実行の時間は「較正値と有効性」の表で静かな機械と確認できたブロックのみ比較に使ってください。GPU 実行（CUDA）には較正の記録がなく、GPU 側の時間は参考値です。</div>';
+  h += '<div class="card" style="margin-top:14px"><h3>群別の中央値（ms）</h3><div class="scroll"><table><tr><th>run</th>' + GROUPS.map(g => "<th>" + g + "</th>").join("") + "</tr>" +
+    ORDER.map(k => "<tr><td>" + dot(k) + esc(rlabel(k)) + "</td>" + GROUPS.map(g => { const x = sp.by_group.find(b => b.run === k && b.group === g); return "<td>" + (x && x.median != null ? fmt(Math.round(x.median)) : "—") + "</td>"; }).join("") + "</tr>").join("") + "</table></div></div>";
+  h += '<div class="note">ローカル実行の時間は、較正値が静かな機械と確認できた run のみ載せます（「較正値と有効性」）。較正記録がない run の時間（※）と GPU 時間は参考値です。</div>';
   e.innerHTML = h;
-})();
+}
 
 /* ---- cost ---- */
-(function(){
-  const c = D.cost[0], e = $("#costBody");
-  if (!c) { e.innerHTML = "<p class='sub'>API モデルなし</p>"; return; }
-  const inTok = Object.values(c.input_tokens).reduce((a, b) => a + (b || 0), 0), req = Object.values(c.requests).reduce((a, b) => a + (b || 0), 0);
-  const rt = Object.values(c.round_trip_s).reduce((a, b) => a + (b || 0), 0);
-  e.innerHTML = '<div class="note"><b>仮定の価格です。</b> ' + esc(D.pricing.basis) + " 下の欄で単価を変えると再計算します。</div>" +
-    '<div class="grid g2"><div class="card"><table><tr><th>項目</th><th>en</th><th>ja</th><th>合計</th></tr>' +
-    '<tr><td>リクエスト数</td><td>' + fmt(c.requests.en) + "</td><td>" + fmt(c.requests.ja) + "</td><td>" + fmt(req) + "</td></tr>" +
-    "<tr><td>入力トークン</td><td>" + fmt(c.input_tokens.en) + "</td><td>" + fmt(c.input_tokens.ja) + "</td><td>" + fmt(inTok) + "</td></tr>" +
-    "<tr><td>出力トークン</td><td>" + fmt(c.output_tokens.en) + "</td><td>" + fmt(c.output_tokens.ja) + "</td><td>" + fmt((c.output_tokens.en || 0) + (c.output_tokens.ja || 0)) + "</td></tr>" +
-    "<tr><td>リトライ</td><td>" + fmt(c.retries.en) + "</td><td>" + fmt(c.retries.ja) + "</td><td>" + fmt((c.retries.en || 0) + (c.retries.ja || 0)) + "</td></tr>" +
-    "<tr><td>往復時間の合計 (s)</td><td>" + fmt(Math.round(c.round_trip_s.en)) + "</td><td>" + fmt(Math.round(c.round_trip_s.ja)) + "</td><td>" + fmt(Math.round(rt)) + "</td></tr>" +
-    "<tr><td>1 リクエストの平均入力トークン</td><td>" + fmt(Math.round(c.input_tokens.en / c.requests.en)) + "</td><td>" + fmt(Math.round(c.input_tokens.ja / c.requests.ja)) + "</td><td>" + fmt(Math.round(inTok / req)) + "</td></tr></table></div>" +
-    '<div class="card"><label>入力単価（USD / 100 万トークン）<br><input type="number" id="price" step="0.01" min="0" value="' + D.pricing.usd_per_m_input + '"></label><div class="kpis" style="margin-top:10px">' +
-    '<div class="kpi"><div class="l">この測定の費用</div><div class="v" id="c1"></div></div><div class="kpi"><div class="l">1 問あたり</div><div class="v" id="c2"></div></div><div class="kpi"><div class="l">1,000 問あたり</div><div class="v" id="c3"></div></div></div>' +
-    '<p class="sub" style="margin:8px 0 0">出力トークンは 0 として入力分のみで計算。<b>正答 1 件あたりの費用</b>: <span id="c4"></span></p></div></div>';
+(function () {
+  const cs = D.cost, e = $("#costBody");
+  if (!cs.length) { $("#cost").style.display = "none"; return; }
+  const sum = o => Object.values(o).reduce((a, b) => a + (b || 0), 0);
+  e.innerHTML = '<div class="note"><b>仮定の価格です。</b> ' + esc(D.pricing.basis) + " 下の欄で単価を変えると再計算します（出力トークンは 0 として入力分のみ）。</div>" +
+    '<div class="card"><label>入力単価（USD / 100 万トークン）<br><input type="number" id="price" step="0.01" min="0" value="' + D.pricing.usd_per_m_input + '"></label>' +
+    '<div class="scroll" style="margin-top:10px"><table><tr><th>run</th><th>リクエスト</th><th>入力トークン</th><th>出力トークン</th><th>リトライ</th><th>往復合計 (s)</th><th>平均入力/req</th><th>費用 (USD)</th><th>1 問あたり</th><th>1,000 問あたり</th><th>正答 1 件あたり</th></tr>' +
+    cs.map((c, i) => { const req = sum(c.requests), tok = sum(c.input_tokens);
+      return "<tr><td>" + dot(c.run) + esc(c.label) + (c.model_name ? " <span class='chip'>" + esc(c.model_name) + "</span>" : "") + "</td><td>" + fmt(req) + "</td><td>" + fmt(tok) + "</td><td>" + fmt(sum(c.output_tokens)) + "</td><td>" + fmt(sum(c.retries)) + "</td><td>" + fmt(Math.round(sum(c.round_trip_s))) + "</td><td>" + fmt(req ? Math.round(tok / req) : 0) + '</td><td id="cu' + i + '"></td><td id="cq' + i + '"></td><td id="ck' + i + '"></td><td id="cc' + i + '"></td></tr>'; }).join("") + "</table></div></div>";
   const calc = () => {
-    const p = parseFloat($("#price").value) || 0, usd = inTok / 1e6 * p, ok = OV.c.openai != null ? OV.c.openai : 0;
-    $("#c1").textContent = "$" + usd.toFixed(3); $("#c2").textContent = "$" + (usd / req).toFixed(6); $("#c3").textContent = "$" + (usd / req * 1000).toFixed(3);
-    $("#c4").textContent = "$" + (ok ? usd / ok : 0).toFixed(6);
+    const p = parseFloat($("#price").value) || 0;
+    cs.forEach((c, i) => { const req = sum(c.requests), usd = sum(c.input_tokens) / 1e6 * p, ok = OV.c[c.run] || 0;
+      $("#cu" + i).textContent = "$" + usd.toFixed(3); $("#cq" + i).textContent = "$" + (req ? usd / req : 0).toFixed(6); $("#ck" + i).textContent = "$" + (req ? usd / req * 1000 : 0).toFixed(3); $("#cc" + i).textContent = "$" + (ok ? usd / ok : 0).toFixed(6); });
   };
   $("#price").oninput = calc; calc();
 })();
 
 /* ---- calibration ---- */
-(function(){
-  let h = '<p class="sub">ローカル実行（CPU）の時間は、実行の前後に測る機械の較正値（GLiNER の ms）で「静かな機械」かを確認します。較正値が ' + D.cal_limit + ' ms 以下のブロックだけ時間比較に使えます（静かな機械の目安は約 170〜250）。</p>';
-  h += '<div class="scroll"><table><tr><th>ブロック</th><th>前 (ms)</th><th>後 (ms)</th><th>時刻</th><th>有効</th></tr>' +
+(function () {
+  let h = '<p class="sub">ローカル実行（CPU）の時間は、実行の前後に測る機械の較正値（GLiNER の ms）で「静かな機械」かを確認します。較正値が ' + D.cal_limit + " ms 以下のブロックだけ時間の比較に使えます（静かな機械の目安は約 170〜250）。結果ファイルに較正の記録がない run は「較正記録なし」として※を付けます。</p>";
+  if (D.blocks.length) h += '<div class="scroll"><table><tr><th>ブロック</th><th>前 (ms)</th><th>後 (ms)</th><th>時刻</th><th>有効</th></tr>' +
     D.blocks.map(b => "<tr><td>" + esc(b.block) + "</td><td>" + fmt(b.before) + "</td><td>" + fmt(b.after) + "</td><td>" + esc(b.time) + '</td><td><span class="chip ' + (b.valid ? "good" : "bad") + '">' + (b.valid ? "有効" : "無効（参考値）") + "</span></td></tr>").join("") + "</table></div>";
-  h += '<div class="scroll" style="margin-top:12px"><table><tr><th>実行</th><th>言語</th><th>バックエンド</th><th>スレッド/並列</th><th>開始</th><th>終了</th></tr>' +
-    D.run_meta.map(r => "<tr><td>" + esc(runLabel(r.run)) + "</td><td>" + r.lang + "</td><td class='l'>" + esc((r.providers || []).join(", ")) + "</td><td>" + esc(r.threads) + " / " + esc(r.workers) + "</td><td>" + esc((r.started || "").slice(5, 19)) + "</td><td>" + esc((r.finished || "").slice(5, 19)) + "</td></tr>").join("") + "</table></div>";
-  h += '<div class="note info">GPU（CUDA）実行と OpenAI API には機械の較正記録がありません。API の時間は往復時間なので機械に依存せず、GPU の時間は参考値です。' + (D.blocks.every(b => b.valid) ? "CPU の全ブロックが有効でした。" : "") + "</div>";
+  h += '<div class="scroll" style="margin-top:12px"><table><tr><th>run</th><th>言語</th><th>バックエンド</th><th>スレッド/並列</th><th>variant</th><th>開始</th><th>終了</th></tr>' +
+    D.run_meta.map(r => "<tr><td>" + dot(r.run) + esc(rlabel(r.run)) + "</td><td>" + r.lang + "</td><td class='l'>" + esc((r.providers || []).join(", ")) + "</td><td>" + esc(r.threads) + " / " + esc(r.workers) + "</td><td>" + esc(r.variant || "") + "</td><td>" + esc((r.started || "").slice(5, 19)) + "</td><td>" + esc((r.finished || "").slice(5, 19)) + "</td></tr>").join("") + "</table></div>";
+  h += '<div class="note info">GPU（CUDA）実行と API には機械の較正記録がありません。API の時間は往復時間なので機械に依存せず、GPU の時間は参考値です。' + (D.blocks.length && D.blocks.every(b => b.valid) ? "記録のある CPU の全ブロックが有効でした。" : "") + "</div>";
   $("#calibBody").innerHTML = h;
 })();
 
 /* ---- label check ---- */
-(function(){
+(function () {
   const lc = D.label_check, e = $("#labelBody");
+  if (!lc.rows.length && !D.lc_ids.length) { $("#label").style.display = "none"; return; }
   let h = '<p class="sub">' + esc(lc.title) + "</p><p>" + esc(lc.intro) + "</p>";
   h += '<div class="scroll"><table><tr><th>id</th><th class="l">問題</th><th class="l">正解</th><th class="l">所見</th></tr>' +
     lc.rows.map(r => '<tr><td><a href="#explorer" data-lc="' + esc(r.id) + '">' + esc(r.id) + '</a></td><td class="l">' + esc(r.q) + '</td><td class="l">' + esc(r.exp) + '</td><td class="l">' + esc(r.finding) + "</td></tr>").join("") + "</table></div>";
   h += lc.notes.map(n => '<div class="note info">' + esc(n) + "</div>").join("");
-  h += '<p class="sub">候補 ' + D.lc_ids.length + " 問（両モデルが全言語で同じ誤答を返した問）のうち、画像と突き合わせた " + lc.rows.length + " 問を上に掲載。候補一覧は探索 UI の「ラベル検査候補」で見られます。</p>";
+  h += '<p class="sub">候補 ' + D.lc_ids.length + " 問（summary_v1.json の label_check_candidates: 解析時にモデルが全言語で同じ誤答を返した問）のうち、画像と突き合わせた " + lc.rows.length + " 問を上に掲載。候補一覧は質問探索の「ラベル検査候補」で見られます。</p>";
   e.innerHTML = h;
   e.onclick = ev => { const a = ev.target.closest("a[data-lc]"); if (a) { setTimeout(() => { F.q = a.dataset.lc; F.out = ""; syncFilters(); render(); }, 0); } };
 })();
 
 /* ---- dataset ---- */
-(function(){
+(function () {
   const d = D.ds, e = $("#dsBody");
   const c = (t, rows, color) => '<div class="card"><h3>' + t + "</h3>" + countRows(rows, color) + "</div>";
   let h = '<div class="kpis"><div class="kpi"><div class="l">質問</div><div class="v">' + fmt(d.total) + '</div></div><div class="kpi"><div class="l">出題（質問×言語）</div><div class="v">' + fmt(d.asked) + '</div></div><div class="kpi"><div class="l">画像</div><div class="v">' + fmt(d.images) + "</div>" +
     (d.manifest_counts ? '<div class="s">Commons ' + d.manifest_counts.commons + " / 描画 " + d.manifest_counts.rendered + " / 生成 " + d.manifest_counts.generated + "</div>" : "") + "</div>" +
     '<div class="kpi"><div class="l">文章のみ（txt）</div><div class="v">' + fmt((d.group.find(x => x.label === "txt") || {n: 0}).n) + "</div></div></div>";
   h += '<div class="grid g3" style="margin-top:14px">' + c("群", d.group) + c("形式", d.kind) + c("選択肢数", d.nopt) + c("難度", d.difficulty) + c("言語", d.lang) + c("origin", d.origin) + c("image_type", d.image_type) + c("skill", d.skill) + c("画像の出所", d.source) + c("relation（variant / control）", d.relation) + c("レビュー状態", d.review) + "</div>";
-  const go = d.group_origin, gs = ["photo", "biz", "rsn", "txt"];
-  h += '<div class="card" style="margin-top:14px"><h3>群 × origin</h3>' + gs.map(g => { const p = go[g + "|polished"], n = go[g + "|new"], t = p + n; return '<div style="font-size:12px;color:var(--mute);margin-top:6px">' + g + " (n=" + t + ")</div><div class='stack'><div style='width:" + (100 * p / t) + "%;background:var(--m0)'>polished " + p + "</div><div style='width:" + (100 * n / t) + "%;background:var(--m1)'>new " + n + "</div></div>"; }).join("") + "</div>";
+  const go = d.group_origin;
+  h += '<div class="card" style="margin-top:14px"><h3>群 × origin</h3>' + GROUPS.map(g => { const p = go[g + "|polished"], n = go[g + "|new"], t = p + n; return t ? '<div style="font-size:12px;color:var(--mute);margin-top:6px">' + g + " (n=" + t + ")</div><div class='stack'><div style='width:" + (100 * p / t) + "%;background:var(--m0)'>polished " + p + "</div><div style='width:" + (100 * n / t) + "%;background:var(--m1)'>new " + n + "</div></div>" : ""; }).join("") + "</div>";
   e.innerHTML = h;
 })();
 
-/* ---- notes ---- */
-(function(){
+/* ---- notes + self check ---- */
+(function () {
   $("#notesBody").innerHTML = '<ul class="n">' +
+    "<li><b>モデルと run は自動検出</b>: results/runs/v1 の <code>&lt;model&gt;_v1all_{en,ja}_224[_cpu|_cuda].json</code> から検出します。表示名・色・種別（local / api）は既定の表で、未知のモデルは名前＝キーと自動の色になります。1 つの run は 1 モデル × 1 デバイスです。</li>" +
     "<li><b>Windows のフォント</b>: ページは Yu Gothic UI / Meiryo を優先します。Windows 以外ではフォールバックの書体で表示されます。画像内の文字（合成図）は元画像のとおりで、フォントによる差は画像生成時のもの。</li>" +
     "<li><b>文章のみ（txt）は易しい対照</b>: 画像を読まないため正答率が高め。画像付きとの差は目安であり、問題内容が異なる比較です。</li>" +
     "<li><b>v1 は新規、legacy は旧版</b>: origin が <code>polished</code> の問は旧データセット（legacy）から磨き直したもの、<code>new</code> は v1 で新規作成した問です。v1 と旧版の数値は問題が異なるため直接比べられません。new は難しめで正答率が低くなります。</li>" +
     "<li><b>費用は概算</b>: Decisions API の料金は未公表。GPT-6 Luna の入力単価を仮に当てはめた値で、実際の請求とは異なる可能性があります。</li>" +
-    "<li><b>時間比較</b>: 静かな機械で測った CPU ブロックのみ（「較正値と有効性」参照）。GPU 時間は参考値。API の時間は往復時間。</li>" +
+    "<li><b>時間比較</b>: 較正が外れた CPU 時間は載せません。較正記録がない run（※）と GPU 時間は参考値。API の時間は往復時間。run どうしで機械が違うと時間は比べられません。</li>" +
+    "<li><b>重みのサイズ</b>: リポジトリの記述にある配布サイズの概算で、実行に必要なメモリではありません。</li>" +
     "<li><b>入力画像</b>: 224 px（長辺）で入力。ページ内のサムネイルは表示用の縮小（長辺 120 px）で、モデルが見た画像そのものではありません。</li>" +
-    "<li><b>誤答の扱い</b>: 未回答（NA）は不正解として数えています。件数が少ないカテゴリ（n が小さい）は正答率のばらつきが大きいので注意。</li>" +
+    "<li><b>誤答の扱い</b>: 未回答（NA）は不正解として数えています。全 run が答えた（質問 × 言語）だけを比べます。件数が少ないカテゴリ（n が小さい）は正答率のばらつきが大きいので注意。</li>" +
     "<li><b>出典と公開</b>: 画像は Wikimedia Commons 由来を含みます。このページは生成物で、コミット・公開しません。</li></ul>";
   const c = D.checks;
-  $("#checks").innerHTML = '<p class="sub">ページの集計値を summary_v1.json / per_question_v1.csv と生成時に突き合わせた結果です。</p><table><tr><th>項目</th><th>このページ</th><th>参照ファイル</th><th>結果</th></tr>' +
-    c.map(x => "<tr><td>" + esc(x.name) + "</td><td>" + esc(x.got) + "</td><td>" + esc(x.want) + '</td><td><span class="chip ' + (x.ok ? "good" : "bad") + '">' + (x.ok ? "一致" : "不一致") + "</span></td></tr>").join("") + "</table>";
+  if (!c.length) { $("#selfcheck").style.display = "none"; return; }
+  $("#checks").innerHTML = '<p class="sub">ページの集計値を summary_v1.json / per_question_v1.csv と生成時に突き合わせた結果です。</p><div class="scroll"><table><tr><th>項目</th><th>このページ</th><th>参照ファイル</th><th>結果</th></tr>' +
+    c.map(x => "<tr><td>" + esc(x.name) + "</td><td>" + esc(x.got) + "</td><td>" + esc(x.want) + '</td><td><span class="chip ' + (x.ok ? "good" : "bad") + '">' + (x.ok ? "一致" : "不一致") + "</span></td></tr>").join("") + "</table></div>";
 })();
 
 /* ---- explorer ---- */
-const RECS = [];
-D.items.forEach(it => Object.keys(it.l).forEach(lg => {
-  const L = it.l[lg], a = L.a;
-  const okA = a[A][1], okB = a[B][1], cpuGpu = D.runs.length > 2 && D.runs.filter(r => r.device === "cpu" || r.device === "cuda").length > 1 ? D.runs.filter(r => r.device === "cpu" || r.device === "cuda").some(r => a[r.key][0] !== a[D.runs.find(x => x.device === "cpu").key][0]) : false;
-  RECS.push({it, lg, L, okA, okB, diff: cpuGpu, search: (it.id + " " + L.q + " " + L.s + " " + L.o.join(" ") + " " + L.e).toLowerCase()});
-}));
 const F = {lang: "", g: "", k: "", d: "", it: "", sk: "", o: "", out: "", q: "", page: 0};
 const PAGE = 30;
-const OUTS = [["", "すべて"], ["bothwrong", "両方外した"], ["Aonly", nameA + "だけ外した"], ["Bonly", nameB + "だけ外した"], ["bothright", "両方正解"], ["anywrong", "どちらか外した"], ["diff", "CPU と GPU の答えが違う"], ["lc", "ラベル検査候補"]];
+function outs() {
+  const o = [["", "すべて"], ["allwrong", "全 run が外した"]];
+  if (NR > 1) o.push(["split", "run 間で分かれた"]);
+  o.push(["allright", "全 run が正解"]);
+  const a = rlabel(S.A), b = rlabel(S.B);
+  o.push(["Awrong", a + " が外した"]);
+  if (hasB()) o.push(["bothwrong", "A・B とも外した"], ["Aonly", "A だけ外した（B は正解）"], ["Bonly", "B だけ外した（A は正解）"], ["bothright", "A・B とも正解"], ["anywrong", "A か B が外した"]);
+  const m = mdl(S.A); if (m) o.push(["diff", "A の CPU と GPU で答えが違う"]);
+  if (D.lc_ids.length) o.push(["lc", "ラベル検査候補"]);
+  return o;
+}
 function uniq(f) { return [...new Set(D.items.map(f))].sort(); }
-function selectEl(id, lab, opts) { return '<label>' + lab + '<select id="' + id + '">' + opts.map(([v, t]) => '<option value="' + esc(v) + '">' + esc(t) + "</option>").join("") + "</select></label>"; }
+function selectEl(id, lab, opts) { return "<label>" + lab + '<select id="' + id + '">' + opts.map(([v, t]) => '<option value="' + esc(v) + '">' + esc(t) + "</option>").join("") + "</select></label>"; }
 function buildFilters() {
-  const O = (arr) => [["", "すべて"]].concat(arr.map(x => [x, x]));
-  $("#filters").innerHTML = selectEl("f_lang", "言語", [["", "すべて"], ["en", "en"], ["ja", "ja"]]) + selectEl("f_g", "群", O(["photo", "biz", "rsn", "txt"])) + selectEl("f_k", "形式", O(["choice", "yes/no", "score"])) +
+  const O = arr => [["", "すべて"]].concat(arr.map(x => [x, x]));
+  $("#filters").innerHTML = selectEl("f_lang", "言語", [["", "すべて"], ["en", "en"], ["ja", "ja"]]) + selectEl("f_g", "群", O(GROUPS)) + selectEl("f_k", "形式", O(["choice", "yes/no", "score"])) +
     selectEl("f_d", "難度", O(["easy", "medium", "hard"])) + selectEl("f_it", "image_type", O(uniq(i => i.it))) + selectEl("f_sk", "skill", O(uniq(i => i.sk))) + selectEl("f_o", "origin", O(["polished", "new"])) +
-    selectEl("f_out", "結果", OUTS) + '<label>検索（id・問題文・選択肢）<input type="text" id="f_q" placeholder="例: bar, biz-0033, 病院"></label><button type="button" id="f_reset">リセット</button>';
+    selectEl("f_out", "結果（A / B は上で選択）", outs()) + '<label>検索（id・問題文・選択肢）<input type="text" id="f_q" placeholder="例: bar, biz-0033, 病院"></label><button type="button" id="f_reset">リセット</button>';
   ["lang:f_lang", "g:f_g", "k:f_k", "d:f_d", "it:f_it", "sk:f_sk", "o:f_o", "out:f_out"].forEach(p => { const [k, id] = p.split(":"); $("#" + id).onchange = e => { F[k] = e.target.value; F.page = 0; render(); }; });
   let tm; $("#f_q").oninput = e => { clearTimeout(tm); tm = setTimeout(() => { F.q = e.target.value; F.page = 0; render(); }, 200); };
   $("#f_reset").onclick = () => { Object.assign(F, {lang: "", g: "", k: "", d: "", it: "", sk: "", o: "", out: "", q: "", page: 0}); syncFilters(); render(); };
 }
 function syncFilters() { [["lang", "f_lang"], ["g", "f_g"], ["k", "f_k"], ["d", "f_d"], ["it", "f_it"], ["sk", "f_sk"], ["o", "f_o"], ["out", "f_out"]].forEach(([k, id]) => { $("#" + id).value = F[k]; }); $("#f_q").value = F.q; }
 function pass(r) {
-  const it = r.it;
+  const it = r.it, a = r.L.a, okA = a[S.A][1], okB = hasB() ? a[S.B][1] : null;
   if (F.lang && r.lg !== F.lang) return false; if (F.g && it.g !== F.g) return false; if (F.k && it.k !== F.k) return false; if (F.d && it.d !== F.d) return false;
   if (F.it && it.it !== F.it) return false; if (F.sk && it.sk !== F.sk) return false; if (F.o && it.o !== F.o) return false;
   switch (F.out) {
-    case "bothwrong": if (r.okA || r.okB) return false; break;
-    case "Aonly": if (r.okA || !r.okB) return false; break;
-    case "Bonly": if (!r.okA || r.okB) return false; break;
-    case "bothright": if (!r.okA || !r.okB) return false; break;
-    case "anywrong": if (r.okA && r.okB) return false; break;
-    case "diff": if (!r.diff) return false; break;
+    case "allwrong": if (r.nok !== 0) return false; break;
+    case "allright": if (r.nok !== NR) return false; break;
+    case "split": if (r.nok === 0 || r.nok === NR) return false; break;
+    case "Awrong": if (okA) return false; break;
+    case "bothwrong": if (okA || okB) return false; break;
+    case "Aonly": if (okA || !okB) return false; break;
+    case "Bonly": if (!okA || okB) return false; break;
+    case "bothright": if (!okA || !okB) return false; break;
+    case "anywrong": if (okA && okB) return false; break;
+    case "diff": { const m = mdl(S.A); if (!m || a[m.cpu][0] === a[m.gpu][0]) return false; break; }
     case "lc": if (!it.lc) return false; break;
   }
   if (F.q && r.search.indexOf(F.q.toLowerCase()) < 0) return false;
@@ -519,13 +679,13 @@ function pass(r) {
 }
 let CUR = [];
 function chips(r) {
-  return D.runs.map(x => { const a = r.L.a[x.key]; return '<span class="chip ' + (a[1] ? "good" : "bad") + '">' + esc(x.label) + ": " + esc(a[0]) + "</span>"; }).join("");
+  return picked().map(k => { const a = r.L.a[k]; return '<span class="chip ' + (a[1] ? "good" : "bad") + '">' + esc(rlabel(k)) + ": " + esc(a[0]) + "</span>"; }).join("") + '<span class="chip">' + r.nok + " / " + NR + " run 正解</span>";
 }
 function thumbHtml(it) { return it.im >= 0 && D.has_images ? '<img loading="lazy" alt="" src="' + D.thumbs[it.im] + '">' : '<div class="ph">' + (it.im >= 0 ? "画像なし" : "文章のみ") + "</div>"; }
 function render() {
   CUR = RECS.filter(pass);
   const pages = Math.max(1, Math.ceil(CUR.length / PAGE)); if (F.page >= pages) F.page = pages - 1;
-  const pg = '<span>' + fmt(CUR.length) + ' 件 / ' + fmt(RECS.length) + '</span><button type="button" data-p="-1">‹ 前</button><span>' + (F.page + 1) + " / " + pages + '</span><button type="button" data-p="1">次 ›</button>';
+  const pg = '<span>' + fmt(CUR.length) + " 件 / " + fmt(RECS.length) + '</span><button type="button" data-p="-1">‹ 前</button><span>' + (F.page + 1) + " / " + pages + '</span><button type="button" data-p="1">次 ›</button>';
   $("#pagerTop").innerHTML = pg; $("#pagerBot").innerHTML = pg;
   $("#list").innerHTML = CUR.slice(F.page * PAGE, F.page * PAGE + PAGE).map((r, i) => {
     const idx = F.page * PAGE + i;
@@ -536,27 +696,33 @@ function render() {
 function openModal(i) {
   const r = CUR[i]; if (!r) return; const it = r.it, L = r.L, other = it.l[r.lg === "en" ? "ja" : "en"];
   const lcRow = D.label_check.rows.find(x => x.id === it.id);
-  const opts = L.o.length ? L.o.map(o => {
-    const who = D.runs.filter(x => L.a[x.key][0] === o).map(x => '<span class="chip ' + (L.a[x.key][1] ? "good" : "bad") + '">' + esc(x.label) + "</span>").join("");
-    return '<div class="opt ' + (o === L.e ? "exp" : "") + '"><span>' + esc(o) + "</span>" + (o === L.e ? '<span class="chip good">正解</span>' : "") + '<span class="who">' + who + "</span></div>";
-  }).join("") : ["yes", "no", "はい", "いいえ"].filter(o => r.lg === "en" ? (o === "yes" || o === "no") : (o === "はい" || o === "いいえ")).map(o => {
-    const who = D.runs.filter(x => L.a[x.key][0] === o).map(x => '<span class="chip ' + (L.a[x.key][1] ? "good" : "bad") + '">' + esc(x.label) + "</span>").join("");
+  const choices = L.o.length ? L.o : (r.lg === "en" ? ["yes", "no"] : ["はい", "いいえ"]);
+  const opts = choices.map(o => {
+    const who = ORDER.filter(k => L.a[k][0] === o).map(k => '<span class="chip ' + (L.a[k][1] ? "good" : "bad") + '">' + esc(rlabel(k)) + "</span>").join("");
     return '<div class="opt ' + (o === L.e ? "exp" : "") + '"><span>' + esc(o) + "</span>" + (o === L.e ? '<span class="chip good">正解</span>' : "") + '<span class="who">' + who + "</span></div>";
   }).join("");
-  const times = D.runs.map(x => esc(x.label) + " " + fmt(L.a[x.key][2]) + " ms").join(" · ");
+  const times = ORDER.filter(k => L.a[k][2]).map(k => esc(rlabel(k)) + " " + fmt(L.a[k][2]) + " ms").join(" · ");
   $("#modalBox").innerHTML = '<div style="display:flex;justify-content:space-between;gap:8px"><div class="mono">' + esc(it.id) + " · " + r.lg + '</div><div><button type="button" id="mPrev">‹</button> <button type="button" id="mNext">›</button> <button type="button" id="mClose">閉じる</button></div></div>' +
     (it.im >= 0 && D.has_images ? '<div class="pic"><img alt="" src="' + D.thumbs[it.im] + '"></div>' : "") +
     '<h3 style="margin-top:10px">' + esc(L.q) + "</h3>" + (L.s ? '<p class="sub" style="margin:0 0 6px">' + esc(L.s) + "</p>" : "") + opts +
     '<p style="clear:both;margin:10px 0 4px"><span class="chip">' + esc(it.g) + '</span><span class="chip">' + esc(it.k) + '</span><span class="chip">' + esc(it.d) + '</span><span class="chip">' + esc(it.it) + '</span><span class="chip">' + esc(it.sk) + '</span><span class="chip">' + esc(it.o) + "</span>" + (it.lc ? '<span class="chip warn">ラベル検査候補</span>' : "") + "</p>" +
     '<div class="m" style="font-size:12px;color:var(--mute)">' + times + "</div>" +
-    (other ? '<details><summary>もう一方の言語 (' + (r.lg === "en" ? "ja" : "en") + ")</summary><p>" + esc(other.q) + "</p><p>" + other.o.map(esc).join(" / ") + "</p><p>正解: " + esc(other.e) + "</p></details>" : "") +
+    (other ? "<details><summary>もう一方の言語 (" + (r.lg === "en" ? "ja" : "en") + ")</summary><p>" + esc(other.q) + "</p><p>" + other.o.map(esc).join(" / ") + "</p><p>正解: " + esc(other.e) + "</p></details>" : "") +
     (lcRow ? '<div class="note" style="margin-top:10px"><b>ラベル検査</b>: ' + esc(lcRow.finding) + "</div>" : "");
   $("#modal").classList.add("open"); $("#modal").dataset.i = i;
   $("#mClose").onclick = closeModal; $("#mPrev").onclick = () => openModal(Math.max(0, i - 1)); $("#mNext").onclick = () => openModal(Math.min(CUR.length - 1, i + 1));
 }
 function closeModal() { $("#modal").classList.remove("open"); }
-(function(){
-  buildFilters(); render();
+
+/* ---- everything that depends on A / B ---- */
+function renderPicked() {
+  drawBreakdown(); drawHeat(); drawCompare(); drawSpeed();
+  const cur = F.out; $("#f_out").innerHTML = outs().map(([v, t]) => '<option value="' + esc(v) + '">' + esc(t) + "</option>").join("");
+  if (!outs().some(([v]) => v === cur)) F.out = ""; $("#f_out").value = F.out;
+  render();
+}
+(function () {
+  buildFilters(); renderPicked(); syncPick();
   const pager = e => { const b = e.target.closest("button[data-p]"); if (!b) return; F.page = Math.max(0, F.page + parseInt(b.dataset.p)); render(); $("#explorer").scrollIntoView(); };
   $("#pagerTop").onclick = pager; $("#pagerBot").onclick = pager;
   $("#list").onclick = e => { const q = e.target.closest(".q"); if (q) openModal(parseInt(q.dataset.i)); };

@@ -112,7 +112,7 @@ def make_thumbs(cases, enabled, dist):
                 seen[p] = len(paths)
                 paths.append(p)
     if not enabled:
-        return seen, [""] * len(paths)
+        return seen, []
     from PIL import Image
     uris = []
     z = zipfile.ZipFile(dist / "images-224px.zip")

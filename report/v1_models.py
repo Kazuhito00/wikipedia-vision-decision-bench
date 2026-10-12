@@ -19,7 +19,7 @@ import pathlib
 import re
 
 LANGS = ("en", "ja")
-STEM = re.compile(r"^(?P<model>[a-z0-9]+)_(?P<code>v1all)_(?P<lang>en|ja)_(?P<px>\d+)(?P<suffix>.*)$")
+STEM = re.compile(r"^(?P<model>[a-z0-9]+)_(?P<code>v1[a-z]+)_(?P<lang>en|ja)_(?P<px>\d+)(?P<suffix>.*)$")
 DEVICE_LABEL = {"cpu": "CPU", "cuda": "GPU", "remote": "API"}
 DEVICE_ORDER = {"cpu": 0, "cuda": 1, "remote": 2}
 
@@ -60,7 +60,7 @@ def device_of(suffix: str) -> str:
 
 
 def parse_stem(stem: str):
-    """-> dict(model, code, lang, px, suffix, device) or None."""
+    """-> dict(model, code, lang, px, suffix, device) or None. ``code`` is the block (v1all, v1photo, v1biz, v1rsn, v1txt, v1new)."""
     m = STEM.match(stem)
     if not m or "_smoke" in m["suffix"]:
         return None

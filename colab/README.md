@@ -90,12 +90,12 @@ Wikimedia Commons の写真を含むため、画像はリポジトリにも入�
 
 `report` ステップは次を作ります（`work/colab/out/`）。
 - `colab_summary.{md,csv,html}`: ブロック別、グループ別・形式別の正答率、モデル × デバイスの状態（ok / skipped: 理由 / failed: 理由）。「run here」列は、この Colab（または Drive から戻したこの環境のセッション）で測ったブロックかどうか。
-- `v1_report.html`: `report/v1_report.py` のダッシュボード。v1_report.py は 1 回の試行（jevision の CPU・GPU と openai の `all` ブロック）専用で、git 管理外の `dist/v1/*`、`summary_v1.json`、`per_question_v1.csv` が前提です。`colab/make_v1_report.py` が、`report/` を変更せずに、それらを**一時フォルダ**に作って呼びます。
+- `v1_report.html`: `report/v1_report.py` のダッシュボード（全 run の比較表・A/B 選択式の詳細・全モデルのヒートマップ・質問探索）。モデルと run は結果ファイル名（`<model>_v1all_<lang>_224[_cpu|_cuda]`）から**自動検出**します（`report/v1_models.py`。表示名・色は既定の表、未知のモデルは自動）。`colab/make_v1_report.py` が、`report/` を変更せずに、問題ファイルなどの入力を**一時フォルダ**に作って呼びます。
   - `photo` / `biz` / `rsn` / `txt` / `all` のブロックを、(モデル, デバイス, 言語) ごとに 1 つの run に結合
   - **全 run が答えた (問, 言語) だけ**を比べる（答えていない問を誤答として数えないため。サンプルやスキップしたモデルがあると、共通の問だけになる）
   - `cases_v1.jsonl` / `questions_v1.jsonl` は `datasets/build_v1.py` の関数で `datasets/questions` から作り直す（画像は不要。画像は埋め込まない）
-  - `MODELS` / `RUNS` / `DIST` を実行時に差し替え、`per_question_v1.csv`（jev_cpu / jev_cuda / openai の名前を直書きしている）と比べる 1 行だけをメモリ上で無効化する。その行が変わっていたら、推測せずに「更新が必要」と表示して止まる
-  - ダッシュボードの「CPU と GPU の比較」は、v1_report.py の作りで最初の CPU の run と最初の cuda の run を対にします。両方を持つモデルを先頭に並べますが、どのモデルも片方だけのときは別のモデル同士の比較になります（実行時に注意を表示）。
+  - 本文（Wikipedia の passages.json）がない機械では、文章のみの問の本文は代わりの表示になり、ページにその旨を出す（正誤の集計には影響しない）。`--strict-passages` を付けると、本文がないとき代わりの表示にせずエラーで止める
+  - 「CPU と GPU の比較」は、同じモデルが cpu と cuda の run を両方持つときだけ出ます（詳細の A で選んだモデル）。
   - 結果にはこの Colab のブロックだけを使います（`work/colab/blocks/` のサイドカーがあるもの。`--include-all-blocks` で全部）。
   - ローカルで、このリポジトリの試行結果（jevision CPU/GPU と openai の `all`）に対して実行し、HTML が作られ検査 3 件が OK になることを確認しました。ブロックを分けた結果の結合も、試行結果を分割した擬似データで確認しました（実際の Colab の結果では未実行）。
 - 結果の zip（`colab_results_<日時>.zip`: 結果 json/csv、ログ、デバイス確認、集計、v1_report.html）
