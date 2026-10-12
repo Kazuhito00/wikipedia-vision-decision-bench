@@ -1129,7 +1129,7 @@ def setup_gliner(args, sync):
         if not populated(mdir):
             if free_gb(co) < 5:
                 raise RuntimeError("not enough disk")
-            rc_, tail = stream([sys.executable, "download_model.py"], cwd=co, env=child_env())
+            rc_, tail = stream([sys.executable, "download_model.py"], cwd=co, env=child_env(), quiet_pred=quiet_download)
             if rc_ != 0 or not populated(mdir):
                 raise RuntimeError(" | ".join(tail[-2:]))
         return dict(checkout=co, model_dir=str(mdir))
