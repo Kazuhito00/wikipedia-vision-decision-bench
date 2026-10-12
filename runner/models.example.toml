@@ -1,0 +1,33 @@
+# Copy to runner/models.local.toml (git-ignored) and fill in YOUR paths. runner/batch.py reads it.
+# One table per model key. `python` is the interpreter of the environment that has the model's package installed;
+# `model_dir` is where its model files are (instead of --model-dir / the *_MODEL_DIR variable); `env` is added to the process environment
+# (for example the CUDA / cuDNN folders at the front of PATH for GPU runs).
+
+[calibration]
+python = "C:/path/to/env-with-gliner_decide/Scripts/python.exe"
+env = { GLINER_MODEL_DIR = "C:/path/to/GLiNER2.5-Decide-ONNX-CPU/models/onnx" }
+
+[onejev]
+python = "C:/path/to/onejev-env/Scripts/python.exe"
+model_dir = "C:/path/to/OneJev-ONNX-CPU/models/onnx"
+# env = { PYTHONPATH = "C:/path/to/OneJev-ONNX-CPU" }          # until the package is installable: a checkout on PYTHONPATH
+
+[onejev4]
+python = "C:/path/to/onejev-env/Scripts/python.exe"
+model_dir = "C:/path/to/OneJev-ONNX-CPU/models/onnx-4b"
+
+[d3edge]
+python = "C:/path/to/d3-env/Scripts/python.exe"          # an environment with the d3_decide package (D3-ONNX-CPU) installed, or PYTHONPATH below
+model_dir = "C:/path/to/D3-ONNX-CPU/models/edge"
+# env = { PYTHONPATH = "C:/path/to/D3-ONNX-CPU" }
+
+[d3lite]
+python = "C:/path/to/d3-env/Scripts/python.exe"
+model_dir = "C:/path/to/D3-ONNX-CPU/models/lite"
+
+[d3nano]
+python = "C:/path/to/d3-env/Scripts/python.exe"
+model_dir = "C:/path/to/D3-ONNX-CPU/models/nano"
+# d3-mini (5B) is not supported: no d3mini key
+
+# [openjev] [openjev4] [intern] [strands] [clef] [jevision] [qev]: the same three keys

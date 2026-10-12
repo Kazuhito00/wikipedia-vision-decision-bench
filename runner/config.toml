@@ -1,0 +1,31 @@
+# Measurement conditions. Every timed result in this bench is measured under these; a run records the values it actually used.
+# Environment variables of the same name (THREADS, PX, REV, GPU=1) override them, command-line options override both.
+
+[measure]
+threads = 8          # intra-op threads of onnxruntime for timed runs (accuracy-only runs may use more)
+px = 224             # longest side of the pictures given to the models (LANCZOS thumbnail)
+rev = 0              # 0: no reversed-options pass (the default). 1: also ask every choice question with the options reversed (position bias)
+gpu = false          # true: providers CUDA, CPU last (what GPU=1 did)
+
+[gate]
+# Calibration gate: a timed block counts only if the machine calibration (median ms of a fixed CPU job, runner/calibrate.py)
+# measured before and after it was at most cal_limit_ms. Quiet machine: ~170-200 ms; the limit is about 3x.
+cal_limit_ms = 600
+cal_tries = 12       # how often to re-calibrate before running the block anyway (its blocks.log line then marks it invalid)
+cal_wait_s = 300     # seconds between two calibrations
+
+[dataset]
+version = "v1"       # the question set the run is keyed to: results are keyed by (dataset_version, id)
+
+# set name -> block code used in log names (<model>_<code>_<lang>_<px>.log); `report` reads the same names
+[blocks]
+commons = "wiki"
+synthetic = "syn"
+reasoning = "rsn"
+# v1 sets (run with --dataset-version v1; the block codes differ from the legacy ones so the logs never collide)
+photo = "v1photo"
+biz = "v1biz"
+rsn = "v1rsn"
+txt = "v1txt"
+all = "v1all"
+new = "v1new"

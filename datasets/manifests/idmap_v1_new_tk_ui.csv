@@ -1,0 +1,250 @@
+legacy_id,v1_id,group_legacy,group_v1,status,review_state,change_note
+,biz-3001,new,biz,new,reviewed,
+,biz-3002,new,biz,new,reviewed,6 項目中チェックは Show previews の 1 つだけで一目で数えられる。正解 1 は画像と一致。
+,biz-3003,new,biz,new,reviewed,5 項目中チェックは Notifications の 1 つだけで一目で分かる。正解 1 は画像と一致。
+,biz-3004,new,biz,new,reviewed,
+,biz-3005,new,biz,new,reviewed,
+,biz-3006,new,biz,new,reviewed,
+,biz-3007,new,biz,new,reviewed,
+,biz-3008,new,biz,new,reviewed,
+,biz-3009,new,biz,new,reviewed,選択肢 4 項目はすべて未チェックで「該当なし」が正しい。否定を問う問ではないので skill を同型の biz-3010 と同じ recognition に。
+,biz-3010,new,biz,new,reviewed,
+,biz-3011,new,biz,new,reviewed,"group labels semantically odd (Dark mode under Privacy), does not affect answer"
+,biz-3012,new,biz,new,reviewed,"wrong option 4 exceeds group size (3 items), easily eliminated"
+,biz-3013,new,biz,new,reviewed,
+,biz-3014,new,biz,new,reviewed,
+,biz-3015,new,biz,new,reviewed,
+,biz-3016,new,biz,new,reviewed,
+,biz-3017,new,biz,new,reviewed,
+,biz-3018,new,biz,new,reviewed,
+,biz-3019,new,biz,new,reviewed,
+,biz-3020,new,biz,new,reviewed,
+,biz-3021,new,biz,new,reviewed,
+,biz-3022,new,biz,new,reviewed,
+,biz-3023,new,biz,new,reviewed,radio group with no selection is an unusual UI state but answer is unambiguous
+,biz-3024,new,biz,new,reviewed,radio group with no selection is an unusual UI state but answer is unambiguous
+,biz-3025,new,biz,new,reviewed,
+,biz-3026,new,biz,new,reviewed,
+,biz-3027,new,biz,new,reviewed,
+,biz-3028,new,biz,new,reviewed,
+,biz-3029,new,biz,new,reviewed,
+,biz-3030,new,biz,new,reviewed,
+,biz-3031,new,biz,new,reviewed,
+,biz-3032,new,biz,new,reviewed,numeric value shown: reduces to reading the number
+,biz-3033,new,biz,new,reviewed,"numeric value shown: reduces to reading the number; thin strip image (single slider), text small but readable"
+,biz-3034,new,biz,new,reviewed,numeric value shown: reduces to reading the number
+,biz-3035,new,biz,new,reviewed,"numeric value shown: reduces to reading the number; thin strip image (single slider), text small but readable"
+,biz-3036,new,biz,new,reviewed,
+,biz-3037,new,biz,new,reviewed,numeric value shown: reduces to reading the number
+,biz-3038,new,biz,new,reviewed,numeric value shown: reduces to reading the number
+,biz-3039,new,biz,new,reviewed,numeric value shown: reduces to reading the number
+,biz-3040,new,biz,new,reviewed,
+,biz-3041,new,biz,new,reviewed,numeric value shown: reduces to reading the number
+,biz-3042,new,biz,new,reviewed,numeric value shown: reduces to reading the number
+,biz-3043,new,biz,new,reviewed,numeric value shown: reduces to reading the number
+,biz-3044,new,biz,new,reviewed,no numeric label; bar nearly full
+,biz-3045,new,biz,new,reviewed,画像の表示は 37% で正解 29〜42% と一致。ただし Disk usage は進捗ではなく使用量なので「How far along / どれくらい進んで」を中立な言い方に直した。
+,biz-3046,new,biz,new,reviewed,numeric value shown: reduces to reading the number
+,biz-3047,new,biz,new,reviewed,Installing が最長で正解と一致（Downloading update との差は小さいが 224px で区別できる）。選択肢に Battery があり「task/進捗」は不適切なので中立な言い方に。
+,biz-3048,new,biz,new,reviewed,Scanning files が最短で正解と一致。Battery・Disk usage は進捗ではないので設問を中立な言い方に。
+,biz-3049,new,biz,new,reviewed,Scanning files が最長で正解と一致。Battery・Disk usage は進捗ではないので設問を中立な言い方に。
+,biz-3050,new,biz,new,reviewed,Battery が最短（Downloading update より短い）で正解と一致。Battery・Disk usage は進捗ではないので設問を中立な言い方に。
+,biz-3051,new,biz,new,reviewed,
+,biz-3052,new,biz,new,reviewed,
+,biz-3053,new,biz,new,reviewed,スイッチの横に ON/OFF の文字があり、OFF が 1 つだけなので一目で分かる。難度を easy に下げた。
+,biz-3054,new,biz,new,reviewed,灰色の（オフの）スイッチは Hotspot の 1 つだけで、緑との違いが 224px でも明瞭。難度を easy に下げた。
+,biz-3055,new,biz,new,reviewed,スイッチの横に ON/OFF の文字があり、OFF が 1 つだけなので一目で分かる。難度を easy に下げた。
+,biz-3056,new,biz,new,reviewed,
+,biz-3057,new,biz,new,reviewed,
+,biz-3058,new,biz,new,reviewed,option '5' exceeds the 4 visible switches
+,biz-3059,new,biz,new,reviewed,
+,biz-3060,new,biz,new,reviewed,
+,biz-3061,new,biz,new,reviewed,
+,biz-3062,new,biz,new,reviewed,
+,biz-3063,new,biz,new,reviewed,
+,biz-3064,new,biz,new,reviewed,
+,biz-3065,new,biz,new,reviewed,
+,biz-3066,new,biz,new,reviewed,
+,biz-3067,new,biz,new,reviewed,
+,biz-3068,new,biz,new,reviewed,
+,biz-3069,new,biz,new,reviewed,
+,biz-3070,new,biz,new,reviewed,
+,biz-3071,new,biz,new,reviewed,
+,biz-3072,new,biz,new,reviewed,
+,biz-3073,new,biz,new,reviewed,
+,biz-3074,new,biz,new,reviewed,
+,biz-3075,new,biz,new,reviewed,"variant of biz-3083 (byte-identical image, choice vs yes/no; not a duplicate)"
+,biz-3076,new,biz,new,reviewed,
+,biz-3077,new,biz,new,reviewed,
+,biz-3078,new,biz,new,reviewed,
+,biz-3079,new,biz,new,reviewed,
+,biz-3080,new,biz,new,reviewed,"options '4','5' exceed the 2 visible buttons"
+,biz-3081,new,biz,new,reviewed,
+,biz-3082,new,biz,new,reviewed,
+,biz-3083,new,biz,new,reviewed,"variant of biz-3075 (byte-identical image, yes/no vs choice; not a duplicate)"
+,biz-3084,new,biz,new,reviewed,E-9908 is a good near-miss distractor
+,biz-3085,new,biz,new,reviewed,
+,biz-3086,new,biz,new,reviewed,
+,biz-3087,new,biz,new,reviewed,
+,biz-3088,new,biz,new,reviewed,
+,biz-3089,new,biz,new,reviewed,"distractors not on screen (Grapes, Mangoes) are free eliminations"
+,biz-3090,new,biz,new,reviewed,
+,biz-3091,new,biz,new,reviewed,Pears 52 vs Kiwis 51 close but legible
+,biz-3092,new,biz,new,reviewed,表にない Plums は「数量 0」と解釈すると最少になり別解の余地があるため、誤答を表に載っている Apples・Bananas だけにした（3 択）。
+,biz-3093,new,biz,new,reviewed,distractor not on screen (Bananas) is a free elimination
+,biz-3094,new,biz,new,reviewed,表にない Grapes・Bananas は「数量 0」と解釈すると最少になり別解の余地があるため、誤答を表に載っている 7 品目に替えた（8 択）。
+,biz-3095,new,biz,new,reviewed,
+,biz-3096,new,biz,new,reviewed,
+,biz-3097,new,biz,new,reviewed,5 行の加算（58+25+23+9+27=142）が要り、誤答に 140・143・144 の近い値があるため hard とした。
+,biz-3098,new,biz,new,reviewed,
+,biz-3099,new,biz,new,reviewed,6 行の加算（52+46+54+27+43+49=271）が要り、誤答に 269・273・274 の近い値があるため hard とした。
+,biz-3100,new,biz,new,reviewed,boundary row Melons=19 legible
+,biz-3101,new,biz,new,reviewed,
+,biz-3102,new,biz,new,reviewed,
+,biz-3103,new,biz,new,reviewed,
+,biz-3104,new,biz,new,reviewed,
+,biz-3105,new,biz,new,reviewed,
+,biz-3106,new,biz,new,reviewed,
+,biz-3107,new,biz,new,reviewed,"画像の数量列から正解は確認できた（3107: 3,11,23,41 昇順 / 3109: 22,55,37,27,32,14 並んでいない / 3111: 57,56,23,14 降順）。「数量による行の並びはどれですか？」は直訳調なので自然な言い方に直した。"
+,biz-3108,new,biz,new,reviewed,
+,biz-3109,new,biz,new,reviewed,"画像の数量列から正解は確認できた（3107: 3,11,23,41 昇順 / 3109: 22,55,37,27,32,14 並んでいない / 3111: 57,56,23,14 降順）。「数量による行の並びはどれですか？」は直訳調なので自然な言い方に直した。"
+,biz-3110,new,biz,new,reviewed,
+,biz-3111,new,biz,new,reviewed,"画像の数量列から正解は確認できた（3107: 3,11,23,41 昇順 / 3109: 22,55,37,27,32,14 並んでいない / 3111: 57,56,23,14 降順）。「数量による行の並びはどれですか？」は直訳調なので自然な言い方に直した。"
+,biz-3112,new,biz,new,reviewed,
+,biz-3113,new,biz,new,reviewed,
+,biz-3114,new,biz,new,reviewed,
+,biz-3115,new,biz,new,reviewed,Accounts is not among visible tabs (fine as distractor)
+,biz-3116,new,biz,new,reviewed,
+,biz-3117,new,biz,new,reviewed,
+,biz-3118,new,biz,new,reviewed,
+,biz-3119,new,biz,new,reviewed,
+,biz-3120,new,biz,new,reviewed,3 of 8 options are not visible tabs (General/Sound/Updates); still uniquely solvable
+,biz-3121,new,biz,new,reviewed,
+,biz-3122,new,biz,new,reviewed,
+,biz-3123,new,biz,new,reviewed,
+,biz-3124,new,biz,new,reviewed,count-variant ok; light gray vs black distinguishable at 224px
+,biz-3125,new,biz,new,reviewed,light gray vs black distinguishable at 224px
+,biz-3126,new,biz,new,reviewed,
+,biz-3127,new,biz,new,reviewed,
+,biz-3128,new,biz,new,reviewed,
+,biz-3129,new,biz,new,reviewed,
+,biz-3130,new,biz,new,reviewed,
+,biz-3131,new,biz,new,reviewed,
+,biz-3132,new,biz,new,reviewed,image shows 38 (36 vs 38 confusable but legible)
+,biz-3133,new,biz,new,reviewed,
+,biz-3134,new,biz,new,reviewed,
+,biz-3135,new,biz,new,reviewed,
+,biz-3136,new,biz,new,reviewed,none-of-the-above distractor present; pair with a variant where 該当なし is correct
+,biz-3137,new,biz,new,reviewed,
+,biz-3138,new,biz,new,reviewed,
+,biz-3139,new,biz,new,reviewed,
+,biz-3140,new,biz,new,reviewed,スライダー右に数値 51 が表示されており、つまみもほぼ中央で 43〜57% と一致する。数値を読めば即答できるので medium ではなく easy。目盛り（0/100）は表示されていないが数値とつまみ位置が整合するので正解は一意。
+,biz-3141,new,biz,new,reviewed,バーの右に 92% と表示され、バーもほぼ満杯で 86〜100% と一致する。数値を読めば即答できるので easy に下げた。
+,biz-3142,new,biz,new,reviewed,
+,biz-3143,new,biz,new,reviewed,
+,biz-3144,new,biz,new,reviewed,
+,biz-3145,new,biz,new,reviewed,fictional name 田中 美咲 in form (not a privacy issue)
+,biz-3146,new,biz,new,reviewed,
+,biz-3147,new,biz,new,reviewed,option 4 exceeds button count (3) — weak distractor
+,biz-3148,new,biz,new,reviewed,
+,biz-3149,new,biz,new,reviewed,"2 of 6 options (ぶどう, キウイ) are not in the table; still uniquely solvable"
+,biz-3150,new,biz,new,reviewed,
+,biz-3151,new,biz,new,reviewed,
+,biz-3152,new,biz,new,reviewed,
+,biz-3153,new,biz,new,reviewed,
+,biz-3154,new,biz,new,reviewed,
+,biz-3155,new,biz,new,reviewed,
+,biz-3156,new,biz,new,reviewed,distractors-not-in-image: Travel/Receipts/Spam/Archive は画像に無く消去が容易; close-compare: Inbox 14 vs Sent 13
+,biz-3157,new,biz,new,reviewed,
+,biz-3158,new,biz,new,reviewed,
+,biz-3159,new,biz,new,reviewed,
+,biz-3160,new,biz,new,reviewed,difficulty-inconsistent-with-biz-3156: 同型(14 vs 13 の比較)で medium
+,biz-3161,new,biz,new,reviewed,bold-subtle-at-224: 日本語の太字の差はやや弱いが判読可能
+,biz-3162,new,biz,new,reviewed,
+,biz-3163,new,biz,new,reviewed,
+,biz-3164,new,biz,new,reviewed,boundary-value: Error 行の金額が 50 ちょうどで「超える」の境界を問う。正解 0 は一意
+,biz-3165,new,biz,new,reviewed,
+,biz-3166,new,biz,new,reviewed,
+,biz-3167,new,biz,new,reviewed,distractors-not-in-image: Cancelled/Error は表に無い
+,biz-3168,new,biz,new,reviewed,
+,biz-3169,new,biz,new,reviewed,only-one-error-row: 条件の金額は実質不要
+,biz-3170,new,biz,new,reviewed,
+,biz-3171,new,biz,new,reviewed,
+,biz-3172,new,biz,new,reviewed,
+,biz-3173,new,biz,new,reviewed,
+,biz-3174,new,biz,new,reviewed,
+,biz-3175,new,biz,new,reviewed,
+,biz-3176,new,biz,new,reviewed,
+,biz-3177,new,biz,new,reviewed,
+,biz-3178,new,biz,new,reviewed,
+,biz-3179,new,biz,new,reviewed,
+,biz-3180,new,biz,new,reviewed,
+,biz-3181,new,biz,new,reviewed,
+,biz-3182,new,biz,new,reviewed,
+,biz-3183,new,biz,new,reviewed,image_defect: ダイアログ文言 'Delete 1 items?' の文法誤り（答えには影響なし）
+,biz-3184,new,biz,new,reviewed,
+,biz-3185,new,biz,new,reviewed,
+,biz-3186,new,biz,new,reviewed,124/200=62% で 3 段階の中央。バーの長さだけでも判断でき、段階幅が広いので hard ではなく medium。
+,biz-3187,new,biz,new,reviewed,
+,biz-3188,new,biz,new,reviewed,
+,biz-3189,new,biz,new,reviewed,
+,biz-3190,new,biz,new,reviewed,赤いタイルは Mail の 1 枚だけで一目で分かるため easy。
+,biz-3191,new,biz,new,reviewed,
+,biz-3192,new,biz,new,reviewed,
+,biz-3193,new,biz,new,reviewed,赤いタイルはデータベースの 1 枚だけで一目で分かるため easy。
+,biz-3194,new,biz,new,reviewed,
+,biz-3195,new,biz,new,reviewed,
+,biz-3196,new,biz,new,reviewed,
+,biz-3197,new,biz,new,reviewed,
+,biz-3198,new,biz,new,reviewed,
+,biz-3199,new,biz,new,reviewed,最初の ERROR は表の先頭行（09:03 Disk check）で探索が不要なため hard ではなく medium。
+,biz-3200,new,biz,new,reviewed,
+,biz-3201,new,biz,new,reviewed,エラー行は色（ピンク）とレベル列で一目で分かり、最初のエラーは 09:43 の「同期完了」で正解と一致。表の 1 回の走査で済むので hard は過大。
+,biz-3202,new,biz,new,reviewed,緑のインジケーターは Eva だけ（バッジ 2）で正解と一致。緑の連絡先が 1 人しかおらず「未読あり」の条件が効いていないため hard は過大。
+,biz-3203,new,biz,new,reviewed,badge-3-vs-5-small-at-224; indicator-is-bar-not-dot
+,biz-3204,new,biz,new,reviewed,
+,biz-3205,new,biz,new,reviewed,helper-text-states-rule
+,biz-3206,new,biz,new,reviewed,indicator-is-bar-not-dot
+,biz-3207,new,biz,new,reviewed,indicator-is-bar-not-dot
+,biz-3208,new,biz,new,reviewed,indicator-is-bar-not-dot
+,biz-3209,new,biz,new,reviewed,helper-text-states-rule
+,biz-3210,new,biz,new,reviewed,
+,biz-3211,new,biz,new,reviewed,
+,biz-3212,new,biz,new,reviewed,unconditional-max-same-answer
+,biz-3213,new,biz,new,reviewed,
+,biz-3214,new,biz,new,reviewed,選択中 840+220+12=1072 で正解と一致するが、ステータスバーに「1072 KB」がそのまま出ており計算せず読むだけで解ける。hard は過大。
+,biz-3215,new,biz,new,reviewed,
+,biz-3216,new,biz,new,reviewed,
+,biz-3217,new,biz,new,reviewed,unconditional-max-same-answer
+,biz-3218,new,biz,new,reviewed,
+,biz-3219,new,biz,new,reviewed,9:00 の行で空いているのは Mon だけで正解と一致。1 行を見るだけなので hard は過大。
+,biz-3220,new,biz,new,reviewed,Lab は Mon 10:00 の 1 回だけで正解と一致。数える対象が少なく hard は過大。
+,biz-3221,new,biz,new,reviewed,
+,biz-3222,new,biz,new,reviewed,
+,biz-3223,new,biz,new,reviewed,14:00 の行で空いているのは Mon だけで正解と一致。1 行を見るだけなので hard は過大。
+,biz-3224,new,biz,new,reviewed,ja-kanji-blurry-at-224-but-not-needed
+,biz-3225,new,biz,new,reviewed,
+,biz-3226,new,biz,new,reviewed,青のステップは「3 Plan」で正解と一致。凡例付きで色を 1 つ見るだけなので easy。
+,biz-3227,new,biz,new,reviewed,
+,biz-3228,new,biz,new,reviewed,
+,biz-3229,new,biz,new,reviewed,
+,biz-3230,new,biz,new,reviewed,en-option-'No button'-slightly-awkward
+,biz-3231,new,biz,new,reviewed,
+,biz-3232,new,biz,new,reviewed,
+,biz-3233,new,biz,new,reviewed,
+,biz-3234,new,biz,new,reviewed,same-answer-10-as-3237-3240
+,biz-3235,new,biz,new,reviewed,
+,biz-3236,new,biz,new,reviewed,
+,biz-3237,new,biz,new,reviewed,same-answer-10-as-3234-3240
+,biz-3238,new,biz,new,reviewed,表示は Cheese 7・Butter 6 で 10 未満なので truth=true は正しい。在庫少フィルターが有効で 2 行を読むだけなので hard は過大。
+,biz-3239,new,biz,new,reviewed,
+,biz-3240,new,biz,new,reviewed,same-answer-10-as-3234-3237
+,biz-3241,new,biz,new,reviewed,
+,biz-3242,new,biz,new,reviewed,
+,biz-3243,new,biz,new,reviewed,
+,biz-3244,new,biz,new,reviewed,
+,biz-3245,new,biz,new,reviewed,
+,biz-3246,new,biz,new,reviewed,Memory 1 of 32 GB で約 3% → 0〜9% で正解と一致。バーもほぼ空で一目で分かるので hard は過大。
+,biz-3247,new,biz,new,reviewed,
+,biz-3248,new,biz,new,reviewed,
+,biz-3249,new,biz,new,reviewed,メモリ 23 / 32 GB で約 72% → 67〜100% で正解と一致。3 段階でバーからも判断できるので hard は過大。

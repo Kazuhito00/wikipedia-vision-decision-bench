@@ -1,0 +1,44 @@
+[project]
+name = "wikipedia-vision-decision-bench"
+version = "0.1.0"
+description = "Benchmark of typed-decision models (choice / yes-no / score) on Wikimedia Commons pictures (CC0 / public domain), synthetic charts and reasoning pictures, in English and Japanese"
+readme = "README.md"
+requires-python = ">=3.11"
+# What the bench itself needs (datasets/fetch, runner, report). Model runtimes are NOT here: see the groups below.
+dependencies = [
+    "pillow>=10.0",
+    "numpy>=1.26",
+]
+
+[dependency-groups]
+# One group per model: the packages that model's runtime needs (all are onnxruntime + numpy + pillow; install the group in the
+# environment that also has the model's own package). The model packages themselves are installed from their repositories, e.g.
+#
+#   uv pip install "git+https://github.com/<OWNER>/OneJev-ONNX-CPU@v1"           # OneJev 0.8B / 4B
+#   uv pip install "git+https://github.com/<OWNER>/OpenJev-ONNX-CPU@v1"          # OpenJev 0.8B / 4B
+#   uv pip install "git+https://github.com/<OWNER>/Intern-Decision-0.8B-ONNX-CPU@v1"
+#   uv pip install "git+https://github.com/<OWNER>/Strands-Decider-2B-ONNX-CPU@v1"
+#   uv pip install "git+https://github.com/<OWNER>/clef-flash-ONNX-CPU@v1"
+#   uv pip install "git+https://github.com/<OWNER>/JEVision-0.8B-ONNX-CPU@v1"
+#   uv pip install "git+https://github.com/<OWNER>/QEV-2B-ONNX-CPU@v1"
+#   uv pip install "git+https://github.com/Kazuhito00/D3-ONNX-CPU@v1"          # d3edge / d3lite / d3nano (d3-mini 5B is not supported)
+#
+# (placeholders on purpose: they are written as comments because a placeholder URL would break `uv lock`. Until the model repositories
+# have a pyproject, point PYTHONPATH at a checkout instead; see README "Environments".)
+# GPU: install onnxruntime-gpu (or onnxruntime-directml on Windows) instead of onnxruntime, e.g. `uv pip install onnxruntime-gpu`,
+# and run with `uv run --no-sync` so that uv does not put the CPU build back.
+onejev = ["onnxruntime>=1.20"]
+openjev = ["onnxruntime>=1.20"]
+intern = ["onnxruntime>=1.20"]
+strands = ["onnxruntime>=1.20"]
+clef = ["onnxruntime>=1.20"]
+jevision = ["onnxruntime>=1.20"]
+qev = ["onnxruntime>=1.20"]
+# d3 (Decision 3.0): d3edge / d3lite / d3nano; the runtime also needs tokenizers
+d3 = ["onnxruntime>=1.20", "tokenizers>=0.20"]
+# Machine calibration of the timing gate (runner/calibrate.py): needs the GLiNER2.5-Decide-ONNX-CPU package (gliner_decide) installed.
+calibrate = ["onnxruntime>=1.20"]
+
+# Not a package to build: run from the checkout (`uv run python -m runner.run ...`).
+[tool.uv]
+package = false

@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wikipedia 画像セット — 型付き判定モデルの比較</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#fff; --ink:#1b1f27; --muted:#5b6472; --line:#e1e5ec; --accent:#2457d6;
+  --good:#12794a; --bad:#b3261e; --warn:#a15c00;
+  --m-onejev:#B97A00; --m-jevision:#7A4E9E; --m-qev:#2A7F8F; --m-onejev4:#6B4700; --m-openjev:#CC79A7; --m-intern:#009E73; --m-openjev4:#8E3E74; --m-openai:#10a37f; --m-strands:#3b82f6; --m-clef:#e0603a;
+  --shadow:0 1px 2px rgba(20,30,50,.05),0 3px 12px rgba(20,30,50,.04); --radius:12px;
+}
+:root[data-theme="dark"]{
+  --bg:#12151b; --panel:#1a1f28; --ink:#e8ebf1; --muted:#9aa4b4; --line:#2a313d; --accent:#7aa2ff;
+  --good:#4cc38a; --bad:#ff7a70; --warn:#e0a24a;
+  --m-onejev:#e8b04a; --m-jevision:#b794d9; --m-qev:#5fc0cf; --m-onejev4:#f5d58f; --m-openjev:#e29ac3; --m-intern:#2fcf9f; --m-openjev4:#c06fa4; --m-openai:#10a37f; --m-strands:#5b9bff; --m-clef:#ff8a65;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 3px 12px rgba(0,0,0,.3);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12151b; --panel:#1a1f28; --ink:#e8ebf1; --muted:#9aa4b4; --line:#2a313d; --accent:#7aa2ff;
+  --good:#4cc38a; --bad:#ff7a70; --warn:#e0a24a;
+  --m-onejev:#e8b04a; --m-jevision:#b794d9; --m-qev:#5fc0cf; --m-onejev4:#f5d58f; --m-openjev:#e29ac3; --m-intern:#2fcf9f; --m-openjev4:#c06fa4; --m-openai:#10a37f; --m-strands:#5b9bff; --m-clef:#ff8a65;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 3px 12px rgba(0,0,0,.3);}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:104px}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 "Hiragino Sans","Yu Gothic UI","Meiryo","Noto Sans JP",system-ui,sans-serif}
+a{color:var(--accent)} code{background:color-mix(in srgb,var(--line) 55%,transparent);padding:.1em .4em;border-radius:5px;font-size:.9em}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+h1,h2,h3{line-height:1.3;margin:0}
+/* header */
+header.hero{padding:34px 0 16px}
+.hero h1{font-size:clamp(24px,3.6vw,33px);letter-spacing:.01em}
+.hero .lede{color:var(--muted);max-width:840px;margin:10px 0 14px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{font-size:13px;padding:3px 12px;border-radius:999px;background:var(--panel);border:1px solid var(--line);color:var(--muted)}
+.pill b{color:var(--ink)}
+details.progress{margin-top:12px;font-size:13.5px}
+details.progress summary{cursor:pointer;color:var(--warn);font-weight:600}
+details.progress div{margin-top:6px;color:var(--muted);max-width:900px}
+/* sticky bar */
+#bar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+#bar .wrap{display:flex;flex-direction:column;gap:2px;padding-block:6px}
+#bar .links,#bar .ctl{display:flex;gap:4px;align-items:center;overflow-x:auto;white-space:nowrap}
+#bar .links a{text-decoration:none;color:var(--muted);padding:4px 11px;border-radius:999px;font-size:13.5px}
+#bar .links a:hover{background:var(--panel);color:var(--ink)}
+#bar .ctl{gap:8px;padding:2px 0 4px}
+#bar .ctl .lbl{font-size:12px;color:var(--muted);margin-left:4px}
+#bar .sp{flex:1}
+button.tgl,.chip{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer;font:inherit;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+/* sections */
+section{padding:34px 0 4px}
+section>.wrap>h2{font-size:22px;margin-bottom:4px}
+section>.wrap>h2 small{font-weight:500;color:var(--muted);font-size:14px;margin-left:8px}
+section>.wrap>p.sub{color:var(--muted);margin:2px 0 14px;max-width:880px;font-size:14.5px}
+h3.h{font-size:15.5px;margin:20px 0 4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px}
+.row{display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:12px;align-items:center;margin:9px 0}
+.row .lab{font-size:14px;display:flex;align-items:center}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;flex:none}
+.track{position:relative;height:26px;background:color-mix(in srgb,var(--line) 45%,transparent);border-radius:7px;overflow:visible}
+.fill{height:100%;border-radius:7px;transition:width .4s}
+.ci{position:absolute;top:50%;height:2px;background:var(--ink);opacity:.7}
+.ci::before,.ci::after{content:"";position:absolute;top:-4px;width:2px;height:10px;background:var(--ink)}
+.ci::before{left:0}.ci::after{right:0}
+.val{position:absolute;left:10px;top:0;bottom:0;display:flex;align-items:center;font-size:13px;font-weight:700;text-shadow:0 0 3px var(--panel),0 0 3px var(--panel)}
+.note{font-size:12.5px;color:var(--muted);margin-top:3px}
+ul.points{margin:0;padding-left:1.2em}ul.points li{margin:4px 0}
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{background:color-mix(in srgb,var(--line) 35%,var(--panel));font-weight:600;font-size:12.5px;white-space:nowrap}
+td.n{text-align:center;font-variant-numeric:tabular-nums}
+td.heat{text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+td.heat small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+tbody tr:last-child td{border-bottom:0}
+tr.grp td{background:color-mix(in srgb,var(--line) 28%,var(--panel));font-weight:700;font-size:12.5px;padding-block:5px}
+#breaktable td:first-child,#overviewtable td:first-child{position:sticky;left:0;background:var(--panel)}
+.ok{color:var(--good);font-weight:700}.ng{color:var(--bad);font-weight:700}
+.tag{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin:1px 2px 1px 0}
+.tag.hard{color:var(--bad)}.tag.medium{color:var(--warn)}.tag.easy{color:var(--good)}
+.callout{padding:10px 14px;border-radius:10px;background:color-mix(in srgb,var(--warn) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--warn) 40%,var(--line));font-size:13.5px;margin-top:12px}
+svg text{fill:var(--ink);font-size:12px}
+/* explorer */
+.qlist{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.qcard{display:grid;grid-template-columns:92px minmax(0,1fr);gap:8px 14px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.qcard:last-child{border-bottom:0}
+body.public .qcard{grid-template-columns:1fr}body.public .qcard>div:first-child{display:none}
+.qcard img{width:84px;height:84px;object-fit:cover;border-radius:6px;border:1px solid var(--line);background:#fff;display:block;cursor:zoom-in}
+.qmain{min-width:0;overflow-wrap:anywhere;font-size:14px}
+.qmain .opt{color:var(--muted);font-size:12.5px}
+.qmain .exp{margin-top:2px;font-size:13px}
+.qans{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px}
+.qm{border-radius:8px;padding:5px 9px;font-size:12.5px;min-width:0;overflow-wrap:anywhere;background:color-mix(in srgb,var(--line) 30%,transparent)}
+.qm .mn{display:block;color:var(--muted);font-size:11px;margin-bottom:1px}
+.qm.ok{background:color-mix(in srgb,var(--good) 14%,transparent)}
+.qm.ng{background:color-mix(in srgb,var(--bad) 14%,transparent)}
+.qm div{margin:1px 0}
+.qm .ms{color:var(--muted);font-size:11px;margin-left:4px}
+.qm .ms.slow{font-style:italic;opacity:.75}
+@media (max-width:640px){.qcard{grid-template-columns:1fr}}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;align-items:center}
+select,input[type=search]{font:inherit;font-size:13.5px;padding:5px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+.pager{display:flex;gap:8px;align-items:center;margin:12px 0;font-size:13px}
+details.notes{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:6px 18px 12px;box-shadow:var(--shadow);margin-bottom:12px}
+details.notes summary{cursor:pointer;font-weight:700;padding:8px 0}
+details.notes ul{margin:0;padding-left:1.2em}details.notes li{margin:5px 0;font-size:14px}
+footer{padding:34px 0 60px;color:var(--muted);font-size:13px}
+@media (max-width:640px){.row{grid-template-columns:1fr}.hero{padding-top:22px}}
+/* tables fit the page width: tighter cells, wrapping headers, no scrolling box on ordinary screens */
+@media (max-width:1180px){th,td{padding:6px 5px;font-size:12.5px}th{white-space:normal;line-height:1.3}td.heat small{font-size:10.5px}.sw{margin-right:5px}}
+@media (max-width:900px){th,td{padding:5px 3px;font-size:11.5px}td.heat small{font-size:9.5px}#breaktable td:first-child,#overviewtable td:first-child{position:static}}
+/* modal */
+#modal{position:fixed;inset:0;z-index:50;background:rgba(10,12,18,.82);display:none;align-items:center;justify-content:center;padding:18px}
+#modal.on{display:flex}
+#modal .box{max-width:min(1100px,96vw);max-height:94vh;display:flex;flex-direction:column;gap:10px;background:var(--panel);border-radius:14px;padding:14px;box-shadow:0 10px 40px rgba(0,0,0,.5);overflow:auto}
+#modal .pics{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap}
+#modal .pics img{max-width:100%;max-height:62vh;border-radius:8px;background:#fff;object-fit:contain}
+#modal .pics img.inp{max-width:none;max-height:none;width:auto;height:auto;border:1px solid var(--line)}
+#modal .note-inp{font-size:12.5px;color:var(--muted);text-align:center}
+#modal .cap{font-size:13.5px;line-height:1.6}
+#modal .cap .tag{margin-right:4px}
+#modal .bar{display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted);flex-wrap:wrap}
+#modal button{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:5px 12px;cursor:pointer;font:inherit}
+#modal .ans{display:grid;grid-template-columns:auto 1fr 1fr;gap:2px 14px;font-size:12.5px;margin-top:4px}
+#modal .ans b.ok{color:var(--good)}#modal .ans b.ng{color:var(--bad)}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <h1>Wikipedia 画像セット — 型付き判定モデルの比較</h1>
+  <p class="lede">Wikipedia / Wikimedia Commons の CC0・パブリックドメインの写真・図と、スクリプトで描いた合成の実務画像に、<b>同じ質問を英語と日本語で</b>聞いたときの正解率です。画像のみ・224px に縮小・選択肢は元の順で 1 回だけ聞いています。</p>
+  <div class="pills" id="pills"></div>
+  <details class="progress" id="progress" style="display:none"><summary id="progsum"></summary><div id="progbody"></div></details>
+</div></header>
+
+<div id="bar"><div class="wrap">
+  <div class="links"><a href="#export">ONNX の作り方</a><a href="#summary">概要</a><a href="#accuracy">正解率</a><a href="#break">内訳</a><a href="#lang">言語の比較</a><a href="#speed">速さ・コスト</a><a href="#pair">モデル間の差</a><a href="#hard">難問</a><a href="#explorer">設問一覧</a><a href="#notes">測定条件</a><span class="sp"></span><button class="tgl" id="theme" type="button">配色</button></div>
+  <div class="ctl"><span class="lbl">データセット</span><span id="setchips" class="ctl"></span><span class="lbl">言語</span><span id="langchips" class="ctl"></span></div>
+</div></div>
+
+<main>
+<section id="export"><div class="wrap">
+  <h2>ONNX の作り方（自前の export が要るか）</h2>
+  <p class="sub">どのモデルも実行時は onnxruntime と numpy などで動き、torch は要りません。torch が要るのは export と検証用の参照実装だけです。</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>モデル</th><th>自前の export</th><th>ONNX の入手元</th></tr></thead>
+    <tbody>
+    <tr><td>OneJev 0.8B</td><td>不要</td><td>公開 ONNX を <code>prepare_model.py</code> で取得（HTTPS のみ）</td></tr>
+    <tr><td>OneJev 4B</td><td>重みの差し替えのみ</td><td>公開されていないため、Qwen3.5-4B の公開 ONNX のグラフに OneJev-4B の重みを差し替えて作成（<code>build_onnx_4b.py</code>）。torch での export はしていません。差し替えルールは元の Qwen3.5-4B で公開 ONNX を再現できることを先に確認し、PyTorch fp32 との比較は 17/17 で判定一致（最大ロジット差 0.006）</td></tr>
+    <tr><td>OpenJev 0.8B / 4B</td><td>不要</td><td>公開 ONNX を取得（<code>prepare_model.py</code>）</td></tr>
+    <tr><td>JEVision 0.8B</td><td>重みの差し替えのみ</td><td>公開されていないため、Qwen3.5-0.8B の公開 ONNX のグラフに、Base と LoRA を統合した重みを差し替えて作成（pointer head 用に隠れ状態を出力）。torch での export はしていません</td></tr>
+    <tr><td>QEV 2B</td><td>必要</td><td>Strands と同じ方式（torch で固定長の torso を export、head は numpy の npz）。固定長 L=256 / 384 / 512 / 1024 / 1280 / 2048 の 6 本が 1 組の重みを共有</td></tr>
+    <tr><td>Intern-Decision 0.8B</td><td>必要</td><td>checkpoint を取得して <code>export_onnx.py</code> で書き出し（torch / transformers / onnx が要る）</td></tr>
+    <tr><td>Strands Decider 2B</td><td>必要</td><td><code>merge_lora.py</code> で LoRA を統合し、<code>export_onnx.py</code> と <code>export_vision.py</code> で書き出し</td></tr>
+    <tr><td>clef-flash 9B</td><td>不要（グラフ流用）</td><td>ollaya のグラフ（重みなし）と Cloudflare 公式の safetensors をバイトオフセットで参照</td></tr>
+    </tbody>
+  </table></div>
+  <h3 style="margin:18px 0 6px;font-size:15px">ONNX のサイズと構成（評価で使った構成）</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>モデル</th><th>精度</th><th>構成（ファイルと大きさ）</th><th>合計</th></tr></thead>
+    <tbody>
+    <tr><td>OneJev 0.8B</td><td>fp16</td><td>decoder 1.4 GB / embed 0.5 GB / vision 0.2 GB（3 グラフ）</td><td>約 2.1 GB</td></tr>
+    <tr><td>OpenJev 0.8B</td><td>fp16</td><td>同上（同じ Qwen3.5-0.8B の 3 グラフ）</td><td>約 2.1 GB</td></tr>
+    <tr><td>JEVision 0.8B</td><td>fp16</td><td>decoder（text 用・visual 用）各 1.0 GB / embed 0.5 GB / vision 0.2 GB</td><td>約 2.7 GB</td></tr>
+    <tr><td>QEV 2B</td><td>fp32</td><td>torso（L=256〜2048 の 6 本が重みを共有）/ vision_encoder / head（npz）</td><td>全バケットで約 9.3 GB</td></tr>
+    <tr><td>Intern-Decision 0.8B</td><td>fp32</td><td>単一グラフ <code>model_L512</code>（読み出し gather 内蔵、系列長 512 固定）3.1 GB / vision 0.4 GB</td><td>約 3.5 GB</td></tr>
+    <tr><td>Strands Decider 2B</td><td>fp32</td><td>torso 7.3 GB の重みを、長さ別の L=128 / 384 / 512 / 1024 / 1280 の各グラフが共有 / vision 1.3 GB / head（npz）5 MB</td><td>1 本使うと約 8.6 GB</td></tr>
+    <tr><td>OneJev 4B</td><td>fp16</td><td>decoder 8.0 GB（外部データ 5 分割）/ embed 1.2 GB / vision 0.6 GB（3 グラフ）</td><td>約 9.9 GB</td></tr>
+    <tr><td>OpenJev 4B</td><td>q4f16</td><td>decoder 2.3 GB / embed 0.35 GB / vision 0.19 GB（3 グラフ）</td><td>約 2.9 GB</td></tr>
+    <tr><td>clef-flash 9B</td><td>bf16 の重みを fp32 グラフが参照</td><td>グラフ 12 MB（重みなし）/ 公式 safetensors 4 分割 約 18 GB / joint_head 0.23 GB / vision 1.7 GB</td><td>約 20 GB</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note" style="margin-top:8px">0.8B の 2 本は q4f16 版（合計 約 0.6 GB）も置いてあるが、評価は fp16。OneJev 4B（fp16）と OpenJev 4B（q4f16）はサイズが約 3.4 倍違うので、比較には精度の違いも含まれる。clef-flash は重みを bf16 のまま置き実行時に fp32 へ展開するため、9B で RAM を約 14〜16 GB 使う。</div>
+  <h3 style="margin:18px 0 6px;font-size:15px">GitHub Release に置くときの分割（予定）</h3>
+  <p class="sub">GitHub Release のアセットは<b>1 ファイル 2 GiB（2,147,483,648 バイト）未満</b>、1 リリース最大 1000 ファイル（合計サイズの上限なし）です。取得は、これまでと同じく素の HTTPS で行い、git-lfs は使いません。</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>対象</th><th>いまのサイズ（MiB）</th><th>対応</th></tr></thead>
+    <tbody>
+    <tr><td>OneJev 4B の decoder</td><td>5 分割（最大 1999）</td><td>上限（2048）に近く余裕が小さい。1.9 GiB 程度の分割に作り直すと安心</td></tr>
+    <tr><td>OpenJev 4B の decoder</td><td>1972 + 351</td><td>上限内（余裕は小さい）</td></tr>
+    <tr><td>Intern-Decision の <code>model_L512</code></td><td>1900 + 971</td><td>上限内</td></tr>
+    <tr><td>0.8B 系、embed、vision</td><td>最大 1436</td><td>そのまま置ける</td></tr>
+    <tr><td>Strands の torso</td><td>7179（重みは長さ別グラフで共有）</td><td>分割が必要</td></tr>
+    <tr><td>clef-flash の safetensors</td><td>3753〜4757（4 本）</td><td>分割が必要</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note" style="margin-top:8px"><b>分け方は 2 通り。</b>(1) ONNX の外部データを再分割する（<code>shard_external_data.py</code> を流用。ダウンロード後そのまま使える。ただし 1 つで 2 GB を超えるテンソルは割れない）。(2) バイト列で機械的に分割し（<code>split -b 1900m</code> など）、取得側で連結する（結合後の sha256 を照合できる）。<br><b>方針：</b>公開する 4B 系と Intern は (1)、Strands は (1) が通るか確認してから決め、clef-flash は公式 safetensors を sha256 照合付きで取る作りなので (2)（sha256 の一覧を Release に添える）。取得側の <code>prepare_model.py</code> は Release のアセットを HTTPS で取り、sha256 を照合する形にする。</div>
+</div></section>
+
+<section id="summary"><div class="wrap">
+  <h2>概要 <small id="sumlang"></small></h2>
+  <p class="sub">3 つのデータセットを横に並べた全体像です（言語は上のバーで切り替え）。下の各節は、上のバーで選んだデータセットと言語の結果です。</p>
+  <div class="tablewrap"><table id="overviewtable"></table></div>
+  <div class="card" style="margin-top:12px"><b>見どころ</b><ul class="points" id="points"></ul></div>
+</div></section>
+
+<section id="accuracy"><div class="wrap">
+  <h2>正解率 <small id="acctitle"></small></h2>
+  <p class="sub" id="accsub"></p>
+  <div class="card"><div id="accbars"></div></div>
+</div></section>
+
+<section id="break"><div class="wrap">
+  <h2>種類・難度・内容別の正解率</h2>
+  <p class="sub">緑が濃いほど高く、赤みがかるほど低い正解率です。問数が少ない行（8 問未満）は省いています。</p>
+  <div class="tablewrap"><table id="breaktable"></table></div>
+</div></section>
+
+<section id="lang"><div class="wrap">
+  <h2>言語の比較（同じ設問だけ）</h2>
+  <p class="sub">同じ画像に同じ内容の質問を英語と日本語で聞いた設問だけを取り出して比べます。符号検定は、片方の言語でだけ正解になった問の数で行います。</p>
+  <div class="tablewrap"><table id="langtable"></table></div>
+  <div class="note" id="langnote" style="margin-top:8px"></div>
+</div></section>
+
+<section id="speed"><div class="wrap">
+  <h2>速さ・コスト</h2>
+  <p class="sub">速さは、<b>1 モデルずつ測った 1 問あたりの中央値</b>（機械の基準測定が静かな時の約 3 倍以内のものを「静かな状態」とします）（CPU 8 スレッド・画像の前処理を含む）で比べます。散布図は、静かな状態の時間があるモデルだけを載せます。基準測定が静かな時の約 3 倍を超えて機械が混んでいた・遅かった測定の時間は、下の表に「※ 参考値」として示します。</p>
+  <div class="grid2"><div class="card"><svg id="scatter" viewBox="0 0 520 320" width="100%" role="img" aria-label="速さと正解率の散布図"></svg></div>
+  <div class="card" id="speedlist"></div></div>
+  <h3 class="h">データセットごとの 1 問あたりの推論時間（中央値）</h3>
+  <div class="tablewrap"><table id="speedtable"></table></div>
+  <div class="note" id="speednote" style="margin-top:8px"></div>
+</div></section>
+
+<section id="pair"><div class="wrap">
+  <h2>モデル間の差は誤差ではないか</h2>
+  <p class="sub">同じ設問で「A だけ正解」「B だけ正解」になった数を数え、符号検定（両側）の p 値を出します。小さいほど「偶然ではない差」です。</p>
+  <div class="tablewrap"><table id="pairtable"></table></div>
+  <h3 class="h">同じモデルの大きさ違い・微調整の有無（参考）</h3>
+  <p class="sub">別のモデル同士の比較（上の表）とは問いが違うので分けます。<b>OpenJev 0.8B と 4B</b> は同じ方式の大きさ違い、<b>OpenJev 0.8B</b> は素の Qwen3.5-0.8B にプロンプトで判定させたもの、<b>OneJev・Intern-Decision</b> はそれを微調整したものです。分かるのは「大きくすると」「微調整すると正解が増えるか」であって、モデルの優劣ではありません。</p>
+  <div class="tablewrap"><table id="pairsame"></table></div>
+</div></section>
+
+<section id="hard"><div class="wrap">
+  <h2>難問と、全員が解けた問</h2>
+  <p class="sub">何モデルが正解したかの分布です。「全員不正解」には設問・正解の誤りが混ざっている可能性があるので、一覧で確認できます。</p>
+  <div class="grid2"><div class="card"><div id="consensus"></div></div><div class="card"><div id="hardtags"></div></div></div>
+  <div style="margin-top:12px"><button class="chip" id="showhard" type="button">全員不正解の設問を一覧で見る</button></div>
+</div></section>
+
+<section id="explorer"><div class="wrap">
+  <h2>設問一覧</h2>
+  <p class="sub">問ごとに、質問・選択肢・正解・各モデルの答えを見られます（緑＝正解、赤＝不正解）。画像をクリックすると、モデルに入力した大きさで拡大表示します。<br>時間は、静かな状態で測ったものを通常の表示、<b>機械が混んでいた・遅かった測定は「※」付きの薄い斜体の参考値</b>で示します（補完・拡充・合成・Strands・clef-flash の最初の測定など）。OpenAI の時間はネットワーク往復で、機械の状態に左右されません。</p>
+  <div class="filters">
+    <label>言語 <select id="fexl"><option value="both">両方（並べて表示）</option><option value="en">英語のみ</option><option value="ja">日本語のみ</option></select></label>
+    <label>難度 <select id="fdiff"><option value="">すべて</option><option>easy</option><option>medium</option><option>hard</option></select></label>
+    <label>形式 <select id="fkind"><option value="">すべて</option><option value="choice">選択</option><option value="noul">はい/いいえ</option></select></label>
+    <label>内容 <select id="ftag"></select></label>
+    <label>結果 <select id="fres"><option value="">すべて</option><option value="any">誰かが不正解</option><option value="none">全員不正解</option><option value="all">全員正解</option></select></label>
+    <input type="search" id="fq" placeholder="質問を検索">
+  </div>
+  <div class="pager" id="pager"></div>
+  <div class="qlist" id="explorerlist"></div>
+</div></section>
+
+<section id="notes"><div class="wrap">
+  <h2>測定条件と注意点</h2>
+  <div id="notelist"></div>
+</div></section>
+</main>
+
+<div id="modal" role="dialog" aria-modal="true" aria-label="画像の拡大表示"><div class="box">
+  <div class="bar"><span id="mtitle"></span><span><button id="mmode" type="button">元画像（640px）で見る</button> <button id="mprev" type="button">◀ 前</button> <button id="mnext" type="button">次 ▶</button> <button id="mclose" type="button">閉じる（Esc）</button></span></div>
+  <div class="pics" id="mpics"></div>
+  <div class="cap" id="mcap"></div>
+</div></div>
+<footer><div class="wrap">このページは外部通信をしない単体 HTML です。画像は Wikimedia Commons の CC0 / パブリックドメインの縮小で、リポジトリには含めません。</div></footer>
+
+<script>
+const DATA = /*DATA*/null;
+const PUBLIC = /*PUBLIC*/false;   // true: the publishable version, no pictures
+if(PUBLIC)document.body.classList.add('public');
+const $ = (s,r=document)=>r.querySelector(s);
+const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(x==='class')e.className=v;else if(x==='text')e.textContent=v;else if(x==='html')e.innerHTML=v;else if(x.startsWith('on'))e.addEventListener(x.slice(2),v);else e.setAttribute(x,v)}for(const c of k){if(c!=null)e.append(c.nodeType?c:document.createTextNode(c))}return e};
+const COLORS={onejev:'var(--m-onejev)',jevision:'var(--m-jevision)',qev:'var(--m-qev)',onejev4:'var(--m-onejev4)',openjev:'var(--m-openjev)',intern:'var(--m-intern)',openjev4:'var(--m-openjev4)',openai:'var(--m-openai)',strands:'var(--m-strands)',clef:'var(--m-clef)'};
+const MODELS=DATA.models, ITEMS_ALL=DATA.items;
+const SETDEFS=[['wikipedia','① Wikipedia 記事の写真','Wikipedia の記事で実際に使われている写真・図'],
+               ['expansion','② Commons 拡充','科学・技術／暮らし・社会／記録・文書（Commons のカテゴリから選択）'],
+               ['synthetic','③ 合成の実務画像','グラフ・UI・書類・標識などをスクリプトで描画（正解は描画時に確定）'],
+               ['reasoning','④ 推論・知性（合成）','計算・規則の適用・空間・否定と例外・時間と因果・矛盾の検出・比較・情報不足など、見たあとに考える設問（スクリプトで描画、正解は構成から確定）']].filter(d=>ITEMS_ALL.some(i=>i.set===d[0]));
+let LANG='en', SET=SETDEFS[0][0], ITEMS=[];
+const setItems=k=>ITEMS_ALL.filter(i=>i.set===k);
+const setName=k=>(SETDEFS.find(d=>d[0]===k)||[k,k])[1];
+const fmtMs=ms=>ms==null?'–':ms<1000?Math.round(ms)+' ms':(ms/1000).toFixed(1)+' s';
+const pct=(a,b)=>b?(100*a/b):null;
+const median=a=>{if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
+(function(){const r=document.documentElement;try{const s=localStorage.getItem('matome-theme');if(s)r.dataset.theme=s}catch(e){}
+$('#theme').addEventListener('click',()=>{const d=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=d?'light':'dark';try{localStorage.setItem('matome-theme',r.dataset.theme)}catch(e){}})})();
+
+/* ---------- statistics ---------- */
+function wilson(k,n,z=1.96){if(!n)return[0,0];const p=k/n,d=1+z*z/n,c=p+z*z/(2*n),h=z*Math.sqrt(p*(1-p)/n+z*z/(4*n*n));return[(c-h)/d,(c+h)/d]}
+function lgam(x){const c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,0.1208650973866179e-2,-0.5395239384953e-5];let y=x,t=x+5.5;t-=(x+.5)*Math.log(t);let s=1.000000000190015;for(const v of c)s+=v/++y;return -t+Math.log(2.5066282746310005*s/x)}
+function signTest(b,c){const n=b+c;if(!n)return 1;const k=Math.min(b,c);let p=0;for(let i=0;i<=k;i++)p+=Math.exp(lgam(n+1)-lgam(i+1)-lgam(n-i+1)-n*Math.log(2));return Math.min(1,2*p)}
+
+/* ---------- helpers over the data ---------- */
+const has=(it,l)=>it.langs.includes(l);
+const ans=(it,m,l)=>has(it,l)?it[l].answers[m]:null;
+function accOf(items,m,l,f=()=>true){let n=0,k=0;for(const it of items){if(!f(it))continue;const a=ans(it,m,l);if(!a)continue;n++;if(a.ok)k++}return{n,k}}
+const acc=(m,l,f)=>accOf(ITEMS,m,l,f);
+const totalOf=(items,l)=>items.filter(i=>has(i,l)).length;
+// questions a model cannot take (QEV: two pictures) are out of scope for it: they are not in its total
+const totalM=(items,l,m)=>items.filter(i=>has(i,l)&&!(m.oos&&(i.tags||[]).includes(m.oos))).length;
+const TAGGROUP=[['r-quantity','数量・計算'],['r-rules','規則の適用'],['r-space','空間・経路'],['r-negation','否定・例外・反事実'],['r-time','時間・手順・因果'],['r-consistency','照合・矛盾の検出'],['r-compare','比較・正規化'],['r-physics','物理・常識'],['r-uncertainty','情報不足・不確かさ'],['r-count','条件つき数え上げ'],['r-instrument','計器・段階評価'],['r-two-images','2 枚の比較'],['sci','科学・技術（拡充）'],['life','暮らし・社会（拡充）'],['record','記録・文書（拡充）'],['ocr','文字の読み取り'],['art','美術・作者'],['geo','地理・地図・衛星'],['count','個数'],['colour','色'],['language','言語の判別'],['presence','有無の判定'],['attribute','属性'],['classify','物体・生物の分類'],['scene','場面・景色'],['detail','細部'],['action','動作'],['image-type','画像の種類'],['chart','図表'],['reasoning','推論'],['ui','UI 画面'],['document','書類'],['dashboard','ダッシュボード'],['field','現場・安全']];
+function group(it){for(const[t,n]of TAGGROUP)if(it.tags.includes(t))return n;return 'その他'}
+function heat(p){if(p==null)return'';const h=Math.round(Math.max(0,Math.min(1,(p-60)/40))*120);return `background:hsla(${h},55%,45%,.22)`}
+const modelCellShort=m=>el('span',{html:`<span class="sw" style="background:${COLORS[m.key]}"></span>${m.short||m.name}`});
+const modelCell=m=>el('span',{html:`<span class="sw" style="background:${COLORS[m.key]}"></span>${m.name}`});
+
+/* ---------- header pills and progress ---------- */
+function renderHeader(){
+  const pills=$('#pills');pills.textContent='';
+  const add=h=>pills.append(el('span',{class:'pill',html:h}));
+  add(`<b>${MODELS.length}</b> モデル`);
+  for(const[k,n]of SETDEFS)add(`${n} <b>${setItems(k).length}</b> 問`);
+  add('各設問は日英ペア');
+  let done=0,total=0;const rows=[];
+  for(const[k]of SETDEFS){const its=setItems(k);for(const m of MODELS)for(const l of['en','ja']){const a=accOf(its,m.key,l),t=totalM(its,l,m);done+=a.n;total+=t;if(a.n<t)rows.push(`${setName(k)}・${m.name}・${l==='en'?'英語':'日本語'} ${a.n}/${t}`)}}
+  const pr=$('#progress');
+  if(!rows.length){pr.style.display='none';return}
+  pr.style.display='';$('#progsum').textContent=`途中経過です：測定は ${(100*done/total).toFixed(0)}%（${done}/${total}）まで完了`;
+  $('#progbody').textContent='未完了：'+rows.join('　／　')+'。数字は測定が進むと変わります。答えた問の数がモデルごとに違う間は、モデル間の比較は参考値です。';
+}
+
+/* ---------- controls ---------- */
+function chipGroup(box,defs,get,set){box.textContent='';for(const[k,t,tip]of defs){const c=el('button',{class:'chip',type:'button','aria-pressed':String(get()===k),text:t,title:tip||''});c.addEventListener('click',()=>{set(k);box.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed','false'));c.setAttribute('aria-pressed','true');renderAll()});box.append(c)}}
+function setupControls(){
+  chipGroup($('#setchips'),SETDEFS.map(([k,n,tip])=>[k,n.replace(/^(.)\s*/,'$1 ')+'（'+setItems(k).length+'）',tip]),()=>SET,k=>{SET=k});
+  chipGroup($('#langchips'),[['en','英語'],['ja','日本語']],()=>LANG,k=>{LANG=k});
+}
+
+/* ---------- 概要: all data sets side by side ---------- */
+function renderSummary(){
+  $('#sumlang').textContent=LANG==='en'?'（英語の質問）':'（日本語の質問）';
+  const t=$('#overviewtable');t.textContent='';
+  t.append(el('thead',{},el('tr',{},el('th',{text:'モデル'}),...SETDEFS.map(([k,n])=>el('th',{text:n+'（'+totalOf(setItems(k),LANG)+' 問）'})),el('th',{text:'全体'}))));
+  const tb=el('tbody');
+  for(const m of MODELS){
+    const tr=el('tr',{},el('td',{},modelCell(m),el('div',{class:'note',text:m.prec})));
+    let K=0,N=0,T=0;
+    for(const[k]of SETDEFS){const its=setItems(k),a=accOf(its,m.key,LANG),tot=totalM(its,LANG,m);K+=a.k;N+=a.n;T+=tot;
+      tr.append(el('td',{class:'heat',style:heat(pct(a.k,a.n)),html:a.n?pct(a.k,a.n).toFixed(1)+'%<small>'+a.k+'/'+a.n+(a.n<tot?'（測定中）':'')+'</small>':'未測定'}))}
+    tr.append(el('td',{class:'heat',style:N===T?heat(pct(K,N)):'',html:N?pct(K,N).toFixed(1)+'%<small>'+K+'/'+N+(N<T?'（測定中）':'')+'</small>':'未測定'}));
+    tb.append(tr);
+  }
+  t.append(tb);
+  // key points, all computed from the data
+  const ul=$('#points');ul.textContent='';
+  for(const[k,n]of SETDEFS){
+    const its=setItems(k),tot=totalOf(its,LANG);
+    const r=MODELS.map(m=>({m,...accOf(its,m.key,LANG)})).filter(x=>x.n===tot&&tot>0).sort((a,b)=>b.k/b.n-a.k/a.n);
+    if(r.length>=2)ul.append(el('li',{html:`<b>${n}</b>：首位は ${r[0].m.name}（${pct(r[0].k,r[0].n).toFixed(1)}%）、最下位は ${r[r.length-1].m.name}（${pct(r[r.length-1].k,r[r.length-1].n).toFixed(1)}%）。測定済みの ${r.length} モデルの差は ${(pct(r[0].k,r[0].n)-pct(r[r.length-1].k,r[r.length-1].n)).toFixed(1)} pt。`}));
+  }
+  const gaps=[];
+  for(const m of MODELS){let n=0,e=0,j=0;for(const it of ITEMS_ALL){const a=ans(it,m.key,'en'),b=ans(it,m.key,'ja');if(!a||!b)continue;n++;if(a.ok)e++;if(b.ok)j++}if(n>=200)gaps.push({m,d:100*(j-e)/n})}
+  if(gaps.length){const loc=gaps.filter(g=>g.m.prec!=='API');const avg=loc.length?loc.reduce((s,g)=>s+g.d,0)/loc.length:null;const api=gaps.find(g=>g.m.prec==='API');
+    ul.append(el('li',{html:`<b>言語</b>：同じ設問で日本語は英語より${avg!=null?'、ローカルモデルの平均で '+avg.toFixed(1)+' pt':''}${api?'、'+api.m.name+' は '+(api.d>=0?'+':'')+api.d.toFixed(1)+' pt':''}（詳しくは「言語の比較」）。`}))}
+  const hard=[...new Set(ITEMS_ALL.map(group))].map(g=>{const its=ITEMS_ALL.filter(i=>group(i)===g&&has(i,LANG));let n=0,none=0;for(const it of its){const a=MODELS.map(m=>ans(it,m.key,LANG));if(a.some(x=>!x))continue;n++;if(a.every(x=>!x.ok))none++}return{g,n,none}}).filter(x=>x.n>=15).sort((a,b)=>b.none/b.n-a.none/a.n)[0];
+  if(hard)ul.append(el('li',{html:`<b>難所</b>：全モデルが外した割合が最も高い内容は「${hard.g}」（${hard.none}/${hard.n} 問）。`}));
+}
+
+/* ---------- 正解率 (selected data set) ---------- */
+function renderAccuracy(){
+  const d=SETDEFS.find(x=>x[0]===SET);
+  $('#acctitle').textContent=`${d[1]}・${LANG==='en'?'英語':'日本語'}（${totalOf(ITEMS,LANG)} 問）`;
+  $('#accsub').textContent=d[2]+'。棒の上の線は 95% 信頼区間（Wilson）で、区間が重なるモデル同士の差は、この設問数では偶然の範囲かもしれません。';
+  const box=$('#accbars');box.textContent='';
+  const done=MODELS.map(m=>({m,...acc(m.key,LANG)})).sort((a,b)=>(b.n?b.k/b.n:-1)-(a.n?a.k/a.n:-1));
+  for(const x of done){
+    const p=x.n?100*x.k/x.n:0,[lo,hi]=wilson(x.k,x.n);
+    const track=el('div',{class:'track'},el('div',{class:'fill',style:`width:${p}%;background:${COLORS[x.m.key]}`}),el('div',{class:'val',text:x.n?`${p.toFixed(1)}%（${x.k}/${x.n}）`:'未測定'}));
+    if(x.n)track.append(el('div',{class:'ci',style:`left:${100*lo}%;width:${100*(hi-lo)}%`}));
+    box.append(el('div',{class:'row'},el('div',{class:'lab'},el('span',{class:'sw',style:`background:${COLORS[x.m.key]}`}),x.m.name+'（'+x.m.prec+'）'),
+      el('div',{},track,el('div',{class:'note',text:x.n?`95% 信頼区間 ${(100*lo).toFixed(1)}〜${(100*hi).toFixed(1)}%`+(x.n<totalM(ITEMS,LANG,x.m)?`　※測定中（${x.n}/${totalM(ITEMS,LANG,x.m)}）`:''):''}))));
+  }
+}
+
+/* ---------- 内訳 ---------- */
+function renderBreak(){
+  const t=$('#breaktable');t.textContent='';
+  t.append(el('thead',{},el('tr',{},el('th',{text:'区分'}),el('th',{text:'問数'}),...MODELS.map(m=>el('th',{title:m.name},modelCellShort(m))))));
+  const tb=el('tbody');
+  const contents=[...new Set(ITEMS.filter(i=>has(i,LANG)).map(group))].map(g=>[g,i=>group(i)===g]);
+  contents.sort((a,b)=>ITEMS.filter(i=>has(i,LANG)&&b[1](i)).length-ITEMS.filter(i=>has(i,LANG)&&a[1](i)).length);
+  const rows=[['形式',[['選択問題',i=>i.kind==='choice'],['はい/いいえ',i=>i.kind==='noul'],['段階評価',i=>i.kind==='score']]],
+              ['難度',[['easy',i=>i.difficulty==='easy'],['medium',i=>i.difficulty==='medium'],['hard',i=>i.difficulty==='hard']]],
+              ['内容（問数の多い順）',contents]];
+  for(const[title,list]of rows){
+    let any=false;const body=[];
+    for(const[name,f]of list){
+      const n0=ITEMS.filter(i=>has(i,LANG)&&f(i)).length;if(n0<8)continue;any=true;
+      const tr=el('tr',{},el('td',{text:name}),el('td',{class:'n',text:n0}));
+      for(const m of MODELS){const a=acc(m.key,LANG,f);const p=pct(a.k,a.n);tr.append(el('td',{class:'heat',style:heat(p),html:p==null?'–':p.toFixed(0)+'%<small>'+a.k+'/'+a.n+'</small>'}))}
+      body.push(tr);
+    }
+    if(any){tb.append(el('tr',{class:'grp'},el('td',{colspan:2+MODELS.length,text:title})));body.forEach(r=>tb.append(r))}
+  }
+  t.append(tb);
+}
+
+/* ---------- 言語の比較 ---------- */
+function renderLang(){
+  const shared=ITEMS.filter(i=>has(i,'en')&&has(i,'ja'));
+  const t=$('#langtable');t.textContent='';
+  t.append(el('thead',{},el('tr',{},el('th',{text:'モデル'}),el('th',{text:'問数'}),el('th',{text:'英語'}),el('th',{text:'日本語'}),el('th',{text:'差（日−英）'}),el('th',{text:'英語だけ正解'}),el('th',{text:'日本語だけ正解'}),el('th',{text:'p 値'}),el('th',{text:'判定'}))));
+  const tb=el('tbody');
+  for(const m of MODELS){
+    let n=0,e=0,j=0,eo=0,jo=0;
+    for(const it of shared){const a=ans(it,m.key,'en'),b=ans(it,m.key,'ja');if(!a||!b)continue;n++;if(a.ok)e++;if(b.ok)j++;if(a.ok&&!b.ok)eo++;if(!a.ok&&b.ok)jo++}
+    if(!n){tb.append(el('tr',{},el('td',{},modelCell(m)),el('td',{colspan:8,class:'n',text:'どちらかが未測定'})));continue}
+    const p=signTest(eo,jo),d=100*(j-e)/n;
+    tb.append(el('tr',{},el('td',{},modelCell(m)),el('td',{class:'n',text:n}),
+      el('td',{class:'n',text:(100*e/n).toFixed(1)+'%'}),el('td',{class:'n',text:(100*j/n).toFixed(1)+'%'}),el('td',{class:'n',text:(d>=0?'+':'')+d.toFixed(1)+' pt'}),
+      el('td',{class:'n',text:eo}),el('td',{class:'n',text:jo}),el('td',{class:'n',text:p<0.001?'< 0.001':p.toFixed(3)}),
+      el('td',{html:p>=0.05?'<span style="color:var(--muted)">誤差の範囲</span>':(j<e?'<b>日本語が'+(p<0.01?'明確に':'やや')+'低い</b>':'<b>日本語が'+(p<0.01?'明確に':'やや')+'高い</b>')})));
+  }
+  t.append(tb);
+  $('#langnote').textContent=`対象は ${SETDEFS.find(d=>d[0]===SET)[1]} の ${shared.length} 問（日英とも同じ画像・同じ内容の質問）。対訳の質問と選択肢は私が作ったので、日本語側の訳し方の難しさも差に混ざる可能性があります。`;
+}
+
+/* ---------- 速さ・コスト ---------- */
+function renderSpeed(){
+  const svg=$('#scatter');svg.textContent='';
+  const wp=setItems('wikipedia');
+  const W=520,H=320,L=52,R=22,T=14,B=42;
+  const pts=MODELS.filter(m=>m.prec!=='API').map(m=>{const a=accOf(wp,m.key,LANG);const ms=median(wp.filter(i=>has(i,LANG)).map(i=>{const x=ans(i,m.key,LANG);return x&&x.q?x.ms:null}).filter(v=>v!=null));return{m,p:pct(a.k,a.n),ms}}).filter(x=>x.p!=null&&x.ms);
+  const box=$('#speedlist');box.textContent='';
+  if(pts.length){
+    const xs=pts.map(p=>p.ms/1000),ys=pts.map(p=>p.p);
+    const xmax=Math.max(...xs)*1.2,ymin=Math.floor(Math.min(...ys)-4),ymax=Math.min(100,Math.ceil(Math.max(...ys)+2));
+    const X=v=>L+(W-L-R)*v/xmax,Y=v=>T+(H-T-B)*(1-(v-ymin)/(ymax-ymin));
+    const ns='http://www.w3.org/2000/svg',mk=(t,a,txt)=>{const e=document.createElementNS(ns,t);for(const k in a)e.setAttribute(k,a[k]);if(txt)e.textContent=txt;svg.append(e);return e};
+    for(let v=Math.ceil(ymin/5)*5;v<=ymax;v+=5){mk('line',{x1:L,x2:W-R,y1:Y(v),y2:Y(v),stroke:'var(--line)'});mk('text',{x:L-8,y:Y(v)+4,'text-anchor':'end'},v+'%')}
+    const step=xmax>8?2:1;for(let v=0;v<=xmax;v+=step){mk('line',{x1:X(v),x2:X(v),y1:T,y2:H-B,stroke:'var(--line)'});mk('text',{x:X(v),y:H-B+16,'text-anchor':'middle'},v+' s')}
+    mk('text',{x:(L+W-R)/2,y:H-6,'text-anchor':'middle'},'1 問あたりの推論時間（中央値・遅いほど右）／縦軸は正解率');
+    for(const p of pts){const cx=X(p.ms/1000),cy=Y(p.p),edge=cx>W-110?'end':cx<L+80?'start':'middle';
+      mk('circle',{cx,cy,r:8,fill:getComputedStyle(document.documentElement).getPropertyValue(COLORS[p.m.key].slice(4,-1)),stroke:'var(--ink)','stroke-width':1});
+      mk('text',{x:edge==='end'?cx+8:edge==='start'?cx-8:cx,y:cy+24,'text-anchor':edge},p.m.name+' '+p.p.toFixed(1)+'%')}
+    box.append(el('h3',{class:'h',style:'margin-top:0',text:'1 問の推論時間（中央値・データセット①）'}));
+    for(const p of [...pts].sort((a,b)=>a.ms-b.ms))box.append(el('div',{class:'row'},el('div',{class:'lab'},modelCell(p.m)),el('div',{html:'<b>'+fmtMs(p.ms)+'</b> ／ 正解率 '+p.p.toFixed(1)+'%'})));
+    box.append(el('div',{class:'note',text:'散布図は、静かな状態の時間があるモデルだけです（機械の状態は GLiNER の基準測定、静かな時で約 170〜200 ms、で確認しています）。時間がない・参考値だけのモデルは、下の表を見てください。'}));
+  }else svg.append(el('text',{x:20,y:40},'時間の測定結果がありません'));
+  // per data set: median time of the questions that carry a time (a block measured while the machine was busy carries none)
+  const t=$('#speedtable');t.textContent='';
+  t.append(el('thead',{},el('tr',{},el('th',{text:'モデル'}),...SETDEFS.map(([k,n])=>el('th',{text:n})))));
+  const tbd=el('tbody');
+  for(const m of MODELS){
+    const tr=el('tr',{},el('td',{},modelCell(m)));
+    for(const[k]of SETDEFS){
+      const its=setItems(k).filter(i=>has(i,LANG)),all=its.map(i=>ans(i,m.key,LANG)).filter(x=>x&&x.ms!=null),qs=all.filter(x=>x.q);
+      const useQ=qs.length>0,v=median((useQ?qs:all).map(x=>x.ms)),n=(useQ?qs:all).length;
+      const gq=its.map(i=>ans(i,m.key,LANG)).filter(x=>x&&x.g!=null&&x.gq),gv=median(gq.map(x=>x.g));
+      const gpuHtml=gv==null?'':'<small style="display:block;margin-top:2px;color:var(--ink)">GPU <b>'+fmtMs(gv)+'</b>'+(v?'（'+(v/gv).toFixed(1)+' 倍速）':'')+'</small>';
+      tr.append(el('td',{class:'n',html:gpuHtml+(v==null?'<span style="color:var(--muted)">–</span>':(useQ?'<b>'+fmtMs(v)+'</b>':'<i style="color:var(--muted)">※ '+fmtMs(v)+'</i>')+'<small style="display:block;color:var(--muted);font-size:11px">'+n+' 問'+(useQ?'':'・参考値')+'</small>')}));
+    }
+    tbd.append(tr);
+  }
+  t.append(tbd);
+  $('#speednote').textContent='各欄の上の「GPU」は、同じ問題を GPU（RTX 3050 Ti Laptop・VRAM 4 GB・CUDA）で測った中央値と、CPU 比の倍率です（GPU で速くなる 0.8B・4B 系だけ。重みが VRAM に載らない Strands・QEV・OneJev 4B・clef と、効果のなかった Intern は測っていません）。太字は静かな状態で測った中央値、「※」付きの斜体は参考値（機械が混んでいた・遅かった、または測定条件が違う。基準測定が静かな時の約 3 倍を超えたブロックを含む）、「–」は未測定です。OpenAI は API の往復時間（ネットワーク込み）で、CPU の時間とは比べられません。';
+  // the API: round trip and an estimate of the cost for the selected data set
+  const api=MODELS.find(m=>m.prec==='API');
+  if(api){
+    const its=ITEMS.filter(i=>has(i,LANG)),lat=median(its.map(i=>{const x=ans(i,api.key,LANG);return x&&x.ms}).filter(v=>v!=null));
+    const a=accOf(ITEMS,api.key,LANG),tok=(DATA.cost&&DATA.cost.openai&&DATA.cost.openai[SET]&&DATA.cost.openai[SET][LANG])||0,pr=DATA.pricing.openai;
+    const usd=tok*pr.usd_per_m_input/1e6;
+    box.append(el('h3',{class:'h',text:api.name}));
+    box.append(el('div',{html:`往復時間 <b>${fmtMs(lat)}</b>（ネットワークを含むので CPU の時間とは比べられません）<br>`+
+      (tok?`入力 <b>${tok.toLocaleString()}</b> トークン（${a.n} 問）→ 概算 <b>約 $${usd.toFixed(3)}</b>（1 問あたり約 $${(usd/Math.max(1,a.n)).toFixed(5)}、1,000 問あたり約 $${(1000*usd/Math.max(1,a.n)).toFixed(2)}）`:'入力トークンの記録がありません')}));
+    box.append(el('div',{class:'note',text:pr.basis+'。出力トークンは 0 で、画像は 224px に縮小して送っています（原寸で送ると入力トークンは増えます）。'}));
+  }
+}
+
+/* ---------- モデル間の差 ---------- */
+/* the same model at two sizes, or a stock model against its own fine-tune (same base): a different question from model vs model */
+function isSame(A,B){return A.fam===B.fam||(A.base===B.base&&A.tuned!==B.tuned)}
+function pairRows(tb,same){
+  for(let i=0;i<MODELS.length;i++)for(let j=i+1;j<MODELS.length;j++){
+    const A=MODELS[i],B=MODELS[j];if(isSame(A,B)!==same)continue;let b=0,c=0,n=0;
+    for(const it of ITEMS){const x=ans(it,A.key,LANG),y=ans(it,B.key,LANG);if(!x||!y)continue;n++;if(x.ok&&!y.ok)b++;else if(!x.ok&&y.ok)c++}
+    if(!n)continue;const p=signTest(b,c),d=(b-c)/n*100;
+    tb.append(el('tr',{},el('td',{text:A.name}),el('td',{text:B.name}),el('td',{class:'n',text:n}),el('td',{class:'n',text:b}),el('td',{class:'n',text:c}),
+      el('td',{class:'n',text:(d>=0?'+':'')+d.toFixed(1)+' pt'}),el('td',{class:'n',text:p<0.001?'< 0.001':p.toFixed(3)}),
+      el('td',{html:p<0.01?'<b>明確な差</b>':p<0.05?'<b>差あり（弱い）</b>':'<span style="color:var(--muted)">誤差の範囲</span>'})));
+  }
+}
+function renderPair(){
+  const head=()=>el('thead',{},el('tr',{},el('th',{text:'A'}),el('th',{text:'B'}),el('th',{text:'共通の問数'}),el('th',{text:'A だけ正解'}),el('th',{text:'B だけ正解'}),el('th',{text:'差（A−B）'}),el('th',{text:'p 値（符号検定）'}),el('th',{text:'判定'})));
+  const t=$('#pairtable');t.textContent='';t.append(head());const tb=el('tbody');pairRows(tb,false);t.append(tb);
+  const t2=$('#pairsame');t2.textContent='';t2.append(head());const tb2=el('tbody');pairRows(tb2,true);t2.append(tb2);
+}
+
+/* ---------- 難問 ---------- */
+function renderHard(){
+  const box=$('#consensus');box.textContent='';
+  const tot=totalOf(ITEMS,LANG),act=MODELS.filter(m=>accOf(ITEMS,m.key,LANG).n===tot&&tot>0);
+  if(act.length<2){box.append(el('div',{class:'note',text:'この言語で全問の測定が済んだモデルが 2 つ未満のため、まだ集計できません。'}));$('#hardtags').textContent='';return}
+  const counts=Array(act.length+1).fill(0);let n=0;
+  for(const it of ITEMS){if(!has(it,LANG))continue;const a=act.map(m=>ans(it,m.key,LANG));n++;counts[a.filter(x=>x.ok).length]++}
+  box.append(el('h3',{class:'h',style:'margin-top:0',text:'正解したモデルの数（全問の測定が済んだ '+act.length+' モデル・'+n+' 問）'}));
+  for(let k=act.length;k>=0;k--){const p=n?100*counts[k]/n:0;
+    box.append(el('div',{class:'row'},el('div',{class:'lab',text:k===act.length?'全員正解':k===0?'全員不正解':k+' モデル正解'}),
+      el('div',{class:'track'},el('div',{class:'fill',style:`width:${p}%;background:${k===0?'var(--bad)':k===act.length?'var(--good)':'var(--accent)'}`}),el('div',{class:'val',style:p<30?`left:calc(${p}% + 8px)`:'',text:counts[k]+'（'+p.toFixed(1)+'%）'}))))}
+  const tb=$('#hardtags');tb.textContent='';tb.append(el('h3',{class:'h',style:'margin-top:0',text:'全員不正解が多い内容'}));
+  const g={};for(const it of ITEMS){if(!has(it,LANG))continue;const a=act.map(m=>ans(it,m.key,LANG));const k=group(it);g[k]=g[k]||{n:0,none:0};g[k].n++;if(a.every(x=>!x.ok))g[k].none++}
+  const arr=Object.entries(g).filter(([k,v])=>v.n>=5).map(([k,v])=>[k,v.none,v.n]).sort((a,b)=>b[1]/b[2]-a[1]/a[2]).slice(0,8);
+  for(const[k,x,y]of arr)tb.append(el('div',{class:'row'},el('div',{class:'lab',text:k}),el('div',{class:'track'},el('div',{class:'fill',style:`width:${100*x/y}%;background:var(--bad)`}),el('div',{class:'val',style:100*x/y<30?`left:calc(${100*x/y}% + 8px)`:'',text:x+' / '+y+'（'+(100*x/y).toFixed(0)+'%）'}))));
+}
+$('#showhard').addEventListener('click',()=>{$('#fres').value='none';state.page=0;renderExplorer();location.hash='#explorer'});
+
+/* ---------- 設問一覧 ---------- */
+const state={page:0};
+const PAGE=30;
+function fillTagFilter(){const s=$('#ftag'),cur=s.value;s.textContent='';s.append(el('option',{value:'',text:'すべて'}));[...new Set(ITEMS.map(group))].sort().forEach(t=>s.append(el('option',{value:t,text:t})));s.value=[...s.options].some(o=>o.value===cur)?cur:''}
+for(const id of['fexl','fdiff','fkind','ftag','fres','fq'])$('#'+id).addEventListener('input',()=>{state.page=0;renderExplorer()});
+function renderExplorer(){
+  const mode=$('#fexl').value, langs=mode==='both'?['en','ja']:[mode];
+  const fd=$('#fdiff').value,fk=$('#fkind').value,ft=$('#ftag').value,fr=$('#fres').value,fq=$('#fq').value.trim().toLowerCase();
+  const rows=ITEMS.filter(it=>{
+    if(!langs.every(l=>has(it,l)))return false;
+    if(fd&&it.difficulty!==fd)return false;if(fk&&it.kind!==fk)return false;if(ft&&group(it)!==ft)return false;
+    const a=[];for(const l of langs)for(const m of MODELS){const x=ans(it,m.key,l);if(x)a.push(x)}
+    if(fr==='any'&&a.every(x=>x.ok))return false;if(fr==='none'&&!(a.length&&a.every(x=>!x.ok)))return false;if(fr==='all'&&!(a.length&&a.every(x=>x.ok)))return false;
+    if(fq&&!langs.some(l=>(it[l].q.toLowerCase().includes(fq)||(it[l].options||[]).join(' ').toLowerCase().includes(fq))))return false;
+    return true});
+  const pages=Math.max(1,Math.ceil(rows.length/PAGE));state.page=Math.min(state.page,pages-1);
+  state.visible=rows;
+  const pg=$('#pager');pg.textContent='';
+  const prev=el('button',{class:'chip',type:'button',text:'◀'}),next=el('button',{class:'chip',type:'button',text:'▶'});
+  prev.addEventListener('click',()=>{if(state.page>0){state.page--;renderExplorer()}});next.addEventListener('click',()=>{if(state.page<pages-1){state.page++;renderExplorer()}});
+  pg.append(prev,el('span',{text:` ${state.page+1} / ${pages} ページ（${rows.length} 問・${setName(SET)}）`}),next);
+  const box=$('#explorerlist');box.textContent='';
+  const LN={en:'英',ja:'日'};
+  for(const it of rows.slice(state.page*PAGE,(state.page+1)*PAGE)){
+    const im=PUBLIC?el('span'):el('img',{src:it.thumb,alt:it.id,loading:'lazy',title:'クリックで拡大'});
+    if(!PUBLIC) im.addEventListener('click',()=>openModal(it));
+    const main=el('div',{class:'qmain'});
+    for(const l of langs){const L=it[l];
+      main.append(el('div',{html:(langs.length>1?'<span class="tag">'+LN[l]+'</span> ':'')+esc(L.q)}),
+        el('div',{class:'opt',text:L.options?L.options.join(' / '):(l==='en'?'yes / no':'はい / いいえ')}),
+        el('div',{class:'exp',html:'正解：<b>'+esc(L.expected)+'</b>'}))}
+    main.append(el('div',{html:'<span class="tag '+it.difficulty+'">'+it.difficulty+'</span><span class="tag">'+group(it)+'</span><span class="tag">'+it.id+'</span>'}));
+    const ansBox=el('div',{class:'qans'});
+    for(const m of MODELS){
+      const cells=langs.map(l=>({l,a:ans(it,m.key,l)}));
+      const cls=cells.every(c=>c.a&&c.a.ok)?'ok':cells.some(c=>c.a&&!c.a.ok)?'ng':'';
+      const cell=el('div',{class:'qm '+cls},el('span',{class:'mn',text:m.short||m.name}));
+      for(const c of cells){
+        cell.append(c.a?el('div',{html:(langs.length>1?'<span class="tag">'+LN[c.l]+'</span>':'')+'<span class="'+(c.a.ok?'ok':'ng')+'">'+(c.a.ok?'✓':'✗')+'</span> '+esc(c.a.t)+(c.a.ms!=null?'<span class="ms'+(c.a.q?'':' slow')+'" title="'+(c.a.q?'静かな状態で測定':'参考値：機械が混んでいた・遅かった、または測定条件が違う')+'">'+(c.a.q?'':'※ ')+fmtMs(c.a.ms)+'</span>':'')+(c.a.g!=null?'<span class="ms" title="GPU（CUDA）で測定'+(c.a.gq?'':'：参考値')+'">GPU '+fmtMs(c.a.g)+'</span>':'')}):el('div',{class:'opt',text:(langs.length>1?LN[c.l]+' ':'')+'未測定'}));
+      }
+      ansBox.append(cell);
+    }
+    box.append(el('div',{class:'qcard'},el('div',{},im),main,ansBox));
+  }
+}
+
+/* ---------- modal: enlarge a picture ---------- */
+const modal = {items: [], i: 0, input: true};
+function openModal(it){
+  const list = state.visible || [it];
+  modal.items = list; modal.i = Math.max(0, list.indexOf(it));
+  showModal(); $('#modal').classList.add('on');
+}
+function esc(x){ return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function showModal(){
+  const it = modal.items[modal.i]; if(!it) return;
+  const sel = $('#fexl').value, langs = sel==='both' ? ['en','ja'] : [sel];
+  $('#mtitle').textContent = `${it.id}　（${modal.i+1} / ${modal.items.length}）`;
+  const pics = $('#mpics'); pics.textContent = '';
+  const useInp = modal.input && it.inp && it.inp.length;
+  (useInp ? it.inp : (it.full && it.full.length ? it.full : [null])).forEach(src => {
+    const im = el('img', {alt: it.id, class: useInp ? 'inp' : ''});
+    im.addEventListener('error', () => { if(im.dataset.fell !== '1'){ im.dataset.fell = '1'; im.classList.remove('inp'); im.src = (it.full && it.full[0]) || it.thumb; } });
+    im.src = src || it.thumb;
+    pics.append(im);
+  });
+  $('#mmode').textContent = modal.input ? '元画像（640px）で見る' : 'モデルへの入力（224px）で見る';
+  pics.after($('#mnote') || el('div', {id: 'mnote', class: 'note-inp'}));
+  $('#mnote').textContent = modal.input
+    ? 'モデルに入力した大きさ（長辺 224px に縮小・等倍表示）です。文字や細部が潰れて読めないことがあります。'
+    : '元の画像（長辺 640px）です。モデルにはこれを 224px に縮小して入力しています。';
+  const cap = $('#mcap'); cap.textContent = '';
+  cap.append(el('div', {html: `<span class="tag ${it.difficulty}">${it.difficulty}</span><span class="tag">${group(it)}</span>`}));
+  for(const l of langs){
+    const L = it[l];
+    cap.append(el('div', {html: `<span class="tag">${l==='en'?'英':'日'}</span>${esc(L.q)}　<span style="color:var(--muted)">${esc((L.options||[]).join(' / '))}</span>　正解：<b>${esc(L.expected)}</b>`}));
+  }
+  const g = el('div', {class: 'ans'});
+  for(const m of MODELS){
+    g.append(el('span', {text: m.name}));
+    for(const l of ['en','ja']){
+      const a = has(it, l) ? ans(it, m.key, l) : null;
+      g.append(langs.includes(l) ? el('span', {html: a ? `<b class="${a.ok?'ok':'ng'}">${a.ok?'✓':'✗'}</b> ${esc(a.t)}` : '未測定'}) : el('span'));
+    }
+  }
+  cap.append(g);
+}
+function stepModal(d){ modal.i = (modal.i + d + modal.items.length) % modal.items.length; showModal(); }
+$('#mmode').addEventListener('click', () => { modal.input = !modal.input; showModal(); });
+$('#mclose').addEventListener('click', () => $('#modal').classList.remove('on'));
+$('#mprev').addEventListener('click', () => stepModal(-1));
+$('#mnext').addEventListener('click', () => stepModal(1));
+$('#modal').addEventListener('click', e => { if(e.target.id === 'modal') $('#modal').classList.remove('on'); });
+addEventListener('keydown', e => {
+  if(!$('#modal').classList.contains('on')) return;
+  if(e.key === 'Escape') $('#modal').classList.remove('on');
+  else if(e.key === 'ArrowLeft') stepModal(-1);
+  else if(e.key === 'ArrowRight') stepModal(1);
+});
+
+/* ---------- 測定条件 ---------- */
+(function(){
+  const groups=[
+   ['設問と正解',[
+     '画像は Wikipedia の記事で使われている、または Wikimedia Commons のカテゴリから選んだ <b>CC0 / パブリックドメイン</b>のみ。設問と正解は<b>私（Claude Code）が画像を見て作成</b>しており、誤りがゼロとは保証できません。文字を読む設問は原画像で見直しましたが、抜き取り確認です。',
+     '<b>英語と日本語は同じ設問</b>（同じ画像・同じ質問を翻訳）。対訳は私が作ったため、日本語側の訳し方の難しさも差に混ざる可能性があります。',
+     '③の合成画像は、スクリプトが描いたものなので<b>正解が描画時に確定</b>しています。Wikipedia 由来ではなく、写真でもありません。']],
+   ['入力と聞き方',[
+     '画像は<b>長辺 224px に縮小</b>して全モデルに同じものを入力しています（Intern は固定長 512 に収まらず、448px では測れないため）。OpenAI にも同じ 224px を PNG にして送りました。',
+     '選択肢を<b>元の順で 1 回</b>だけ聞いています。位置の偏り（選択肢を逆順にして聞き直す）の検査は行っていません。',
+     'モデルの構成：OneJev・OpenJev 0.8B は fp16、Intern-Decision は fp32（L=512）、OpenJev 4B は q4f16、Strands は fp32（L=512）。CPU 8 スレッド。',
+     '<b>固定長グラフのモデル（Intern-Decision・Strands）の時間は、L=512 のグラフでの値</b>です。これらは、入力を長さ L まで詰めて計算するため、コストは実際のトークン数ではなく L に比例します。その後、各リポジトリの既定の長さを 384 に変更しました（224px の 1 問は 260〜375 トークンで、384 に全問が収まります）。既定で動かすと、時間は約 0.75 倍になる見込みですが、この HTML の時間は、L=512 で測ったものです。']],
+   ['時間',[
+     '推論時間は 1 問 1 回の実測の中央値で、画像の前処理を含みます。<b>時間はデータセット①の、1 モデルずつ静かな状態で測った主測定だけ</b>から計算しています。',
+     'QEV の時間は、Commons の 2 ブロック（英語・日本語）だけが静かな状態（較正 約 185 ms）です。synthetic と reasoning の 4 ブロックは、較正が約 520 ms に上がっていた（原因は未特定、600 ms 以下ですが静かな時の約 2.8 倍）ため、参考値（※）としてだけ載せています。正解率は影響を受けません。',
+     'QEV は 1 リクエストに画像 1 枚だけを受け付けるため、reasoning の画像 2 枚の問題（13 問）は対象外とし、集計に入れていません（QEV の reasoning は 212 問）。QEV は既定 L=384 で、収まらない問題は大きいバケットに自動で切り替えます。JEVision・QEV の実行時依存は onnxruntime・numpy・pillow です。Laya-V は、公開された実装がないため対応していません。',
+     '最初の測定のうち、補完の測定、②③、Strands は、別の作業を並行していた、または機械が遅い状態（GLiNER の基準測定が静かな時の約 3 倍）だったため、参考値（※）としてだけ載せています。後の再測定では、ブロックごとに前後の基準測定を記録し、静かな時の約 3 倍以内なら静かな状態の時間として扱います。正解率は影響を受けません。']],
+   ['OpenAI Decisions API',[
+     '<code>POST /v1/decisions</code>（model <code>gpt-6-luna</code>）に、同じ設問・同じ画像を送った結果です。公式のリクエスト仕様が見つからなかったため、API 自身の検証エラーを手掛かりに形式を確認しました（<code>input</code>＝メッセージ＋ <code>input_image</code>、設問は <code>choice</code>／<code>predicate</code>／<code>score</code>）。',
+     '応答の確率から、choice は最大の選択肢、predicate は 0.5 超を「はい」、score は確率最大のレベルを答えとしています。画像は外部のクラウドへ送信されています（CC0 / パブリックドメイン）。',
+     'コストは、API が返した入力トークン数に GPT-6 Luna の入力料金を仮に当てはめた概算です（Decisions API 自体の料金は未公表）。']],
+   ['注意',[
+     'Wikipedia と Commons は多くのモデルの学習データに含まれます。重複は除いていません。',
+     '数値は、このセットのこの条件でのものです。別の画像・別の解像度・別の聞き方では結果が変わりえます。']]];
+  const box=$('#notelist');
+  groups.forEach(([t,list],i)=>{const d=el('details',{class:'notes'});if(i===0)d.open=true;d.append(el('summary',{text:t}));const ul=el('ul');for(const x of list)ul.append(el('li',{html:x}));d.append(ul);box.append(d)});
+})();
+
+function renderAll(){
+  ITEMS=setItems(SET);
+  fillTagFilter();
+  renderHeader();renderSummary();renderAccuracy();renderBreak();renderLang();renderSpeed();renderPair();renderHard();renderExplorer();
+}
+setupControls();
+renderAll();
+</script>
+</body>
+</html>

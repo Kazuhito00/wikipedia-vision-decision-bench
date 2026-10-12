@@ -1,0 +1,41 @@
+# ---- secrets -------------------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# ---- environments / caches -----------------------------------------------------------------------
+.venv/
+.venv*/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+*.egg-info/
+runner/models.local.toml
+
+# ---- data: never committed (Commons pictures, Wikipedia text) -----------------------------------
+work/
+data/
+dist/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.zip
+
+# ---- logs and generated reports ------------------------------------------------------------------
+*.log
+*.out
+*.err
+_done*
+# the full report embeds Commons pictures: local only. A public version (--public) is a table-and-figure page without pictures.
+*.html
+!report/wiki_report_template.html
+!report/*_template.html
+results/**/logs/
+results/**/*.log
+
+# local dataset overview (holds pictures and question cards); the --public page is dataset_summary_public.html
+dataset_summary.html
+dataset_summary_files/

@@ -1,0 +1,95 @@
+{
+ "dataset_version": "v1",
+ "block": "openai_v1all_en_224",
+ "model": "openai",
+ "model_repo": "https://api.openai.com/v1/decisions (remote API)",
+ "model_tag": "api",
+ "variant": "gpt-6-luna",
+ "providers_requested": [
+  "remote"
+ ],
+ "providers_used": [
+  "remote:https://api.openai.com/v1/decisions"
+ ],
+ "threads": 8,
+ "px": 224,
+ "rev": 0,
+ "lang": "en",
+ "set": "all",
+ "modality": "all",
+ "questions_in_block": 2596,
+ "limits": {
+  "max_images": null,
+  "max_choice_options": null,
+  "max_score_levels": null,
+  "gpu": false,
+  "note": "remote API; limits not published"
+ },
+ "pillow": "12.3.0",
+ "device": "remote",
+ "workers": 3,
+ "endpoint": "https://api.openai.com/v1/decisions",
+ "model_name": "gpt-6-luna",
+ "usage": {
+  "requests": 2596,
+  "input_tokens": 470793,
+  "output_tokens": 0,
+  "retries": 2,
+  "round_trip_s": 1080.6841901989537
+ },
+ "started": "2026-10-11T12:38:26+09:00",
+ "finished": "2026-10-11T12:38:27+09:00",
+ "resumed": true,
+ "python": "3.12.14",
+ "manifest": {
+  "file": "datasets/manifests/images_legacy.json",
+  "sha256": "2af6fd0c98c1aab32228391cf8a7b7c670d1f5a309fdcd5cf267368ed15478ce"
+ },
+ "question_list": {
+  "file": "datasets/manifests/questions_v1.csv",
+  "sha256": "b14ec1a246e4d2527f5cffad488a64a186e67000afd1af0e376558e0bbd40394"
+ },
+ "counts": {
+  "overall": {
+   "n": 2596,
+   "correct": 2425,
+   "accuracy": 0.9341
+  },
+  "by_kind": {
+   "choice": {
+    "n": 1965,
+    "correct": 1844,
+    "accuracy": 0.9384
+   },
+   "noul": {
+    "n": 508,
+    "correct": 476,
+    "accuracy": 0.937
+   },
+   "score": {
+    "n": 123,
+    "correct": 105,
+    "accuracy": 0.8537
+   }
+  },
+  "by_difficulty": {
+   "easy": {
+    "n": 890,
+    "correct": 880,
+    "accuracy": 0.9888
+   },
+   "hard": {
+    "n": 445,
+    "correct": 347,
+    "accuracy": 0.7798
+   },
+   "medium": {
+    "n": 1261,
+    "correct": 1198,
+    "accuracy": 0.95
+   }
+  },
+  "ms_median": 406
+ },
+ "usage_note": "sum of 2 sessions: the first run (2593 answered, 3 NA from a Windows picture-cache race now fixed) and the fill-in of those 3 questions"
+}

@@ -1,0 +1,94 @@
+{
+ "dataset_version": "v1",
+ "block": "openai_v1all_ja_224",
+ "model": "openai",
+ "model_repo": "https://api.openai.com/v1/decisions (remote API)",
+ "model_tag": "api",
+ "variant": "gpt-6-luna",
+ "providers_requested": [
+  "remote"
+ ],
+ "providers_used": [
+  "remote:https://api.openai.com/v1/decisions"
+ ],
+ "threads": 8,
+ "px": 224,
+ "rev": 0,
+ "lang": "ja",
+ "set": "all",
+ "modality": "all",
+ "questions_in_block": 2768,
+ "limits": {
+  "max_images": null,
+  "max_choice_options": null,
+  "max_score_levels": null,
+  "gpu": false,
+  "note": "remote API; limits not published"
+ },
+ "pillow": "12.3.0",
+ "device": "remote",
+ "workers": 3,
+ "endpoint": "https://api.openai.com/v1/decisions",
+ "model_name": "gpt-6-luna",
+ "usage": {
+  "requests": 2768,
+  "input_tokens": 548909,
+  "output_tokens": 0,
+  "retries": 0,
+  "round_trip_s": 1202.1260447012028
+ },
+ "started": "2026-10-11T12:29:36+09:00",
+ "finished": "2026-10-11T12:36:20+09:00",
+ "resumed": false,
+ "python": "3.12.14",
+ "manifest": {
+  "file": "datasets/manifests/images_legacy.json",
+  "sha256": "2af6fd0c98c1aab32228391cf8a7b7c670d1f5a309fdcd5cf267368ed15478ce"
+ },
+ "question_list": {
+  "file": "datasets/manifests/questions_v1.csv",
+  "sha256": "b14ec1a246e4d2527f5cffad488a64a186e67000afd1af0e376558e0bbd40394"
+ },
+ "counts": {
+  "overall": {
+   "n": 2768,
+   "correct": 2553,
+   "accuracy": 0.9223
+  },
+  "by_kind": {
+   "choice": {
+    "n": 2091,
+    "correct": 1932,
+    "accuracy": 0.924
+   },
+   "noul": {
+    "n": 537,
+    "correct": 499,
+    "accuracy": 0.9292
+   },
+   "score": {
+    "n": 140,
+    "correct": 122,
+    "accuracy": 0.8714
+   }
+  },
+  "by_difficulty": {
+   "easy": {
+    "n": 961,
+    "correct": 944,
+    "accuracy": 0.9823
+   },
+   "hard": {
+    "n": 479,
+    "correct": 365,
+    "accuracy": 0.762
+   },
+   "medium": {
+    "n": 1328,
+    "correct": 1244,
+    "accuracy": 0.9367
+   }
+  },
+  "ms_median": 407
+ }
+}

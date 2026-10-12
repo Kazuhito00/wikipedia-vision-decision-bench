@@ -1,0 +1,233 @@
+# English Wikipedia titles whose lead sections the text questions are written from.
+# One title per line; '#' starts a comment. A ja article is found through the language link.
+# --- countries and cities
+Japan
+Brazil
+Egypt
+Canada
+Kenya
+Iceland
+Thailand
+Peru
+Norway
+New Zealand
+Kyoto
+Venice
+Istanbul
+Sydney
+Cairo
+Reykjavík
+Singapore
+Nairobi
+Osaka
+Florence
+# --- scientists, inventors, writers
+Albert Einstein
+Marie Curie
+Isaac Newton
+Charles Darwin
+Nikola Tesla
+Alan Turing
+Ada Lovelace
+Galileo Galilei
+Louis Pasteur
+Thomas Edison
+Wright brothers
+Leonardo da Vinci
+William Shakespeare
+Natsume Sōseki
+Ludwig van Beethoven
+Wolfgang Amadeus Mozart
+Hokusai
+Florence Nightingale
+Rosalind Franklin
+Dmitri Mendeleev
+# --- animals and plants
+Giant panda
+Blue whale
+Emperor penguin
+African elephant
+Cheetah
+Monarch butterfly
+Honey bee
+Octopus
+Koala
+Platypus
+Sakura
+Bamboo
+Sunflower
+Oak
+Cactus
+Venus flytrap
+Coral reef
+Axolotl
+Komodo dragon
+Red fox
+# --- landmarks and structures
+Eiffel Tower
+Great Wall of China
+Taj Mahal
+Colosseum
+Machu Picchu
+Statue of Liberty
+Golden Gate Bridge
+Sydney Opera House
+Tokyo Skytree
+Burj Khalifa
+Pyramid of Khufu
+Big Ben
+Mount Fuji
+Himeji Castle
+Panama Canal
+Suez Canal
+Stonehenge
+Angkor Wat
+Hagia Sophia
+Brooklyn Bridge
+# --- geography
+Mount Everest
+Amazon River
+Sahara
+Lake Baikal
+Nile
+Great Barrier Reef
+Antarctica
+Pacific Ocean
+Grand Canyon
+Mount Kilimanjaro
+Danube
+Victoria Falls
+Yellowstone National Park
+Galápagos Islands
+Dead Sea
+Mariana Trench
+Andes
+Iguazu Falls
+Lake Biwa
+Hokkaido
+# --- technology and science
+Internet
+World Wide Web
+Transistor
+Laser
+Python (programming language)
+Linux
+Bluetooth
+Global Positioning System
+Photosynthesis
+DNA
+Black hole
+Periodic table
+Electric motor
+Printing press
+Telescope
+Vaccine
+Penicillin
+Artificial intelligence
+Solar panel
+Lithium-ion battery
+# --- history and events
+French Revolution
+Apollo 11
+Meiji Restoration
+Industrial Revolution
+Renaissance
+Berlin Wall
+Silk Road
+Magna Carta
+Titanic
+Chernobyl disaster
+Treaty of Versailles
+Moon landing
+Great Fire of London
+Hiroshima
+Roman Empire
+Edo period
+Mongol Empire
+Black Death
+Wright Flyer
+Space Race
+# --- sport, arts, culture
+Olympic Games
+FIFA World Cup
+Tour de France
+Sumo
+Judo
+Marathon
+Tennis
+Baseball
+Basketball
+Chess
+Mona Lisa
+The Starry Night
+Hamlet
+Beethoven's Symphony No. 9
+Kabuki
+Origami
+Haiku
+Sushi
+Pizza
+Tea
+Coffee
+Chocolate
+Rice
+Bread
+# --- organizations, institutions
+United Nations
+European Union
+NASA
+UNESCO
+Red Cross
+Harvard University
+University of Tokyo
+Oxford University
+Louvre
+British Museum
+Nobel Prize
+Wikipedia
+Toyota
+Nintendo
+Sony
+# --- more places and things
+Tokyo
+Paris
+London
+New York City
+Rome
+Beijing
+Moscow
+Berlin
+Buenos Aires
+Mumbai
+Bicycle
+Airplane
+Submarine
+Lighthouse
+Windmill
+Piano
+Violin
+Guitar
+Clock
+Compass
+Glass
+Paper
+Silk
+Diamond
+Gold
+Iron
+Aluminium
+Helium
+Volcano
+Earthquake
+Tsunami
+Tornado
+Aurora
+Rainbow
+Eclipse
+Comet
+Jupiter
+Saturn
+Mars
+Venus
+Moon
+Sun

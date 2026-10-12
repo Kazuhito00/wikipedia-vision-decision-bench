@@ -1,0 +1,94 @@
+{
+ "dataset_version": "v1",
+ "block": "jevision_v1all_ja_224_cpu",
+ "model": "jevision",
+ "model_repo": "<OWNER>/JEVision-0.8B-ONNX-CPU",
+ "model_tag": "local-untagged",
+ "variant": "fp16",
+ "providers_requested": [
+  "CPUExecutionProvider"
+ ],
+ "providers_used": [
+  "CPUExecutionProvider"
+ ],
+ "threads": 8,
+ "px": 224,
+ "rev": 0,
+ "lang": "ja",
+ "set": "all",
+ "modality": "all",
+ "questions_in_block": 2768,
+ "limits": {
+  "max_images": 4,
+  "max_choice_options": 255,
+  "max_score_levels": 255,
+  "gpu": true,
+  "note": "image token region <= 8192, request <= 80000 tokens"
+ },
+ "pillow": "12.3.0",
+ "device": "cpu",
+ "workers": 1,
+ "endpoint": null,
+ "model_name": null,
+ "usage": null,
+ "started": "2026-10-11T13:21:46+09:00",
+ "finished": "2026-10-11T13:58:29+09:00",
+ "resumed": false,
+ "python": "3.12.14",
+ "manifest": {
+  "file": "datasets/manifests/images_legacy.json",
+  "sha256": "2af6fd0c98c1aab32228391cf8a7b7c670d1f5a309fdcd5cf267368ed15478ce"
+ },
+ "question_list": {
+  "file": "datasets/manifests/questions_v1.csv",
+  "sha256": "b14ec1a246e4d2527f5cffad488a64a186e67000afd1af0e376558e0bbd40394"
+ },
+ "counts": {
+  "overall": {
+   "n": 2768,
+   "correct": 2025,
+   "accuracy": 0.7316
+  },
+  "by_kind": {
+   "choice": {
+    "n": 2091,
+    "correct": 1527,
+    "accuracy": 0.7303
+   },
+   "noul": {
+    "n": 537,
+    "correct": 426,
+    "accuracy": 0.7933
+   },
+   "score": {
+    "n": 140,
+    "correct": 72,
+    "accuracy": 0.5143
+   }
+  },
+  "by_difficulty": {
+   "easy": {
+    "n": 961,
+    "correct": 832,
+    "accuracy": 0.8658
+   },
+   "hard": {
+    "n": 479,
+    "correct": 250,
+    "accuracy": 0.5219
+   },
+   "medium": {
+    "n": 1328,
+    "correct": 943,
+    "accuracy": 0.7101
+   }
+  },
+  "ms_median": 792
+ },
+ "calibration": {
+  "before_ms": 203,
+  "after_ms": 202,
+  "limit_ms": 600,
+  "timing_valid": true
+ }
+}

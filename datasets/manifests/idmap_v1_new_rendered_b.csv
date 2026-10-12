@@ -1,0 +1,50 @@
+legacy_id,v1_id,group_legacy,group_v1,status,review_state,change_note
+,biz-3300,new,biz,new,reviewed,液柱は約 2 °C付近で段階境界から離れており、正解の段階と一致。224px で目盛 0/10/20/30 は判読可。
+,biz-3301,new,biz,new,reviewed,液柱は約 12 °C付近で段階境界から離れており、正解の段階と一致。224px で目盛 0/10/20/30 は判読可。
+,biz-3302,new,biz,new,reviewed,液柱は約 6 °C付近で段階境界から離れており、正解の段階と一致。224px で目盛 0/10/20/30 は判読可。
+,biz-3303,new,biz,new,reviewed,液柱は約 15 °C付近で段階境界から離れており、正解の段階と一致。224px で目盛 0/10/20/30 は判読可。
+,biz-3304,new,biz,new,reviewed,液柱は約 7 °C付近で段階境界から離れており、正解の段階と一致。224px で目盛 0/10/20/30 は判読可。
+,biz-3305,new,biz,new,reviewed,液柱は約 17 °C付近で段階境界から離れており、正解の段階と一致。224px で目盛 0/10/20/30 は判読可。
+,biz-3306,new,biz,new,reviewed,液柱は約 23 °C付近で段階境界から離れており、正解の段階と一致。224px で目盛 0/10/20/30 は判読可。
+,rsn-2001,new,rsn,new,reviewed,target-pops-out: 対象は常に唯一の赤い図形で、形名を読まなくても赤を探せば解ける
+,rsn-2002,new,rsn,new,reviewed,target-pops-out: 対象は常に唯一の赤い図形で、形名を読まなくても赤を探せば解ける
+,rsn-2003,new,rsn,new,reviewed,target-pops-out: 対象は常に唯一の赤い図形で、形名を読まなくても赤を探せば解ける
+,rsn-2004,new,rsn,new,reviewed,target-pops-out: 対象は常に唯一の赤い図形で、形名を読まなくても赤を探せば解ける
+,rsn-2005,new,rsn,new,reviewed,target-pops-out: 対象は常に唯一の赤い図形で、形名を読まなくても赤を探せば解ける
+,rsn-2006,new,rsn,new,reviewed,target-pops-out: 対象は常に唯一の赤い図形で、形名を読まなくても赤を探せば解ける
+,rsn-2007,new,rsn,new,reviewed,画像で正解を確認済み（一意）。対象は一目で特定でき、medium の根拠は選択肢数だけなので easy に揃える。
+,rsn-2008,new,rsn,new,reviewed,画像で正解を確認済み（一意）。対象は一目で特定でき、medium の根拠は選択肢数だけなので easy に揃える。
+,rsn-2009,new,rsn,new,reviewed,
+,rsn-2010,new,rsn,new,reviewed,
+,rsn-2011,new,rsn,new,reviewed,
+,rsn-2012,new,rsn,new,reviewed,
+,rsn-2013,new,rsn,new,reviewed,
+,rsn-2014,new,rsn,new,reviewed,
+,rsn-2015,new,rsn,new,reviewed,
+,rsn-2016,new,rsn,new,reviewed,
+,rsn-2017,new,rsn,new,reviewed,伏せカード(?)は別の番号で、問うカードは見えているため「判断できない」は誤答として機能
+,rsn-2018,new,rsn,new,reviewed,伏せカード(?)は別の番号で、問うカードは見えているため「判断できない」は誤答として機能
+,rsn-2019,new,rsn,new,reviewed,伏せカード(?)は別の番号で、問うカードは見えているため「判断できない」は誤答として機能
+,rsn-2020,new,rsn,new,reviewed,伏せカード(?)は別の番号で、問うカードは見えているため「判断できない」は誤答として機能
+,rsn-2021,new,rsn,new,reviewed,伏せカード(?)は別の番号で、問うカードは見えているため「判断できない」は誤答として機能
+,rsn-2022,new,rsn,new,reviewed,伏せカード(?)は別の番号で、問うカードは見えているため「判断できない」は誤答として機能
+,rsn-2023,new,rsn,new,reviewed,伏せカード(?)は別の番号で、問うカードは見えているため「判断できない」は誤答として機能
+,rsn-2024,new,rsn,new,reviewed,伏せカード(?)は別の番号で、問うカードは見えているため「判断できない」は誤答として機能
+,rsn-2025,new,rsn,new,reviewed,
+,rsn-2026,new,rsn,new,reviewed,画像で正解を確認済み（一意）。対象は一目で特定でき、medium の根拠は選択肢数だけなので easy に揃える。
+,rsn-2027,new,rsn,new,reviewed,画像で正解を確認済み（一意）。対象は一目で特定でき、medium の根拠は選択肢数だけなので easy に揃える。
+,rsn-2028,new,rsn,new,reviewed,2028 と 2030 はどちらも正解が最上部の駅 1（位置の偏り）
+,rsn-2029,new,rsn,new,reviewed,
+,rsn-2030,new,rsn,new,reviewed,画像で正解を確認済み（一意）。対象は一目で特定でき、medium の根拠は選択肢数だけなので easy に揃える。
+,rsn-2031,new,rsn,new,reviewed,このバッチ内は左 4・右 2 だが new_rendered と合わせると左 5・右 5 で均衡
+,rsn-2032,new,rsn,new,reviewed,このバッチ内は左 4・右 2 だが new_rendered と合わせると左 5・右 5 で均衡
+,rsn-2033,new,rsn,new,reviewed,このバッチ内は左 4・右 2 だが new_rendered と合わせると左 5・右 5 で均衡
+,rsn-2034,new,rsn,new,reviewed,このバッチ内は左 4・右 2 だが new_rendered と合わせると左 5・右 5 で均衡
+,rsn-2035,new,rsn,new,reviewed,このバッチ内は左 4・右 2 だが new_rendered と合わせると左 5・右 5 で均衡
+,rsn-2036,new,rsn,new,reviewed,このバッチ内は左 4・右 2 だが new_rendered と合わせると左 5・右 5 で均衡
+,rsn-2037,new,rsn,new,reviewed,layout-template: 重なりの配置は正方形 2 種・円 1 種の型のみ（円は常に右上が手前）
+,rsn-2038,new,rsn,new,reviewed,layout-template: 重なりの配置は正方形 2 種・円 1 種の型のみ（円は常に右上が手前）
+,rsn-2039,new,rsn,new,reviewed,layout-template: 重なりの配置は正方形 2 種・円 1 種の型のみ（円は常に右上が手前）
+,rsn-2040,new,rsn,new,reviewed,layout-template: 重なりの配置は正方形 2 種・円 1 種の型のみ（円は常に右上が手前）
+,rsn-2041,new,rsn,new,reviewed,layout-template: 重なりの配置は正方形 2 種・円 1 種の型のみ（円は常に右上が手前）
+,rsn-2042,new,rsn,new,reviewed,layout-template: 重なりの配置は正方形 2 種・円 1 種の型のみ（円は常に右上が手前）

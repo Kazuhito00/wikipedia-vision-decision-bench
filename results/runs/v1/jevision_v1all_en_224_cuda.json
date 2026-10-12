@@ -1,0 +1,89 @@
+{
+ "dataset_version": "v1",
+ "block": "jevision_v1all_en_224_cuda",
+ "model": "jevision",
+ "model_repo": "<OWNER>/JEVision-0.8B-ONNX-CPU",
+ "model_tag": "local-untagged",
+ "variant": "fp16",
+ "providers_requested": [
+  "CUDAExecutionProvider",
+  "CPUExecutionProvider"
+ ],
+ "providers_used": [
+  "CUDAExecutionProvider"
+ ],
+ "threads": 8,
+ "px": 224,
+ "rev": 0,
+ "lang": "en",
+ "set": "all",
+ "modality": "all",
+ "questions_in_block": 2596,
+ "limits": {
+  "max_images": 4,
+  "max_choice_options": 255,
+  "max_score_levels": 255,
+  "gpu": true,
+  "note": "image token region <= 8192, request <= 80000 tokens"
+ },
+ "pillow": "12.3.0",
+ "device": "cuda",
+ "workers": 1,
+ "endpoint": null,
+ "model_name": null,
+ "usage": null,
+ "started": "2026-10-11T12:38:41+09:00",
+ "finished": "2026-10-11T12:41:46+09:00",
+ "resumed": false,
+ "python": "3.12.14",
+ "manifest": {
+  "file": "datasets/manifests/images_legacy.json",
+  "sha256": "2af6fd0c98c1aab32228391cf8a7b7c670d1f5a309fdcd5cf267368ed15478ce"
+ },
+ "question_list": {
+  "file": "datasets/manifests/questions_v1.csv",
+  "sha256": "b14ec1a246e4d2527f5cffad488a64a186e67000afd1af0e376558e0bbd40394"
+ },
+ "counts": {
+  "overall": {
+   "n": 2596,
+   "correct": 2095,
+   "accuracy": 0.807
+  },
+  "by_kind": {
+   "choice": {
+    "n": 1965,
+    "correct": 1608,
+    "accuracy": 0.8183
+   },
+   "noul": {
+    "n": 508,
+    "correct": 420,
+    "accuracy": 0.8268
+   },
+   "score": {
+    "n": 123,
+    "correct": 67,
+    "accuracy": 0.5447
+   }
+  },
+  "by_difficulty": {
+   "easy": {
+    "n": 890,
+    "correct": 814,
+    "accuracy": 0.9146
+   },
+   "hard": {
+    "n": 445,
+    "correct": 269,
+    "accuracy": 0.6045
+   },
+   "medium": {
+    "n": 1261,
+    "correct": 1012,
+    "accuracy": 0.8025
+   }
+  },
+  "ms_median": 69
+ }
+}

@@ -1,0 +1,7300 @@
+{
+ "results": {
+  "1 business documents|Invoices": {
+   "category": "Invoices",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 665,
+   "unique_files_listed": 654,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 43,
+   "pd_n": 332,
+   "other_n": 125,
+   "low_res_n": 6,
+   "usable_n": 375,
+   "est_unique": 654,
+   "est_cc0": 56,
+   "est_pd": 434,
+   "est_other": 164,
+   "est_low": 8,
+   "est_usable": 490,
+   "licenses": [
+    [
+     "Public domain",
+     332
+    ],
+    [
+     "CC BY-SA 4.0",
+     75
+    ],
+    [
+     "CC0",
+     43
+    ],
+    [
+     "CC BY-SA 3.0",
+     30
+    ],
+    [
+     "CC BY 4.0",
+     7
+    ],
+    [
+     "CC BY 2.0",
+     4
+    ],
+    [
+     "No restrictions",
+     2
+    ],
+    [
+     "CC BY-SA 2.0",
+     2
+    ],
+    [
+     "GFDL 1.2",
+     1
+    ],
+    [
+     "CC BY-SA 2.0 de",
+     1
+    ],
+    [
+     "MIT",
+     1
+    ],
+    [
+     "Copyrighted free use",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 426,
+    "png": 34,
+    "pdf": 24,
+    "tiff": 7,
+    "svg+xml": 8,
+    "gif": 1
+   },
+   "sub_categories": [
+    "Invoices by country",
+    "Invoice icons",
+    "Hotel invoices",
+    "Energy invoices",
+    "Funeral invoices",
+    "Invoices from Germany",
+    "Invoices from France"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1782-04-19 Königliches und Churfürstliches Intelligenz-Comptoir, Hannover, F. Winkelmann, Quittung Inserationsgebühren, Nro. 617.jpg",
+     "File:1910-1026 Th. v. Leesen Dampf-Seifen Fabrik Glückstadt Rechnung 9 Kisten Teer-Seife an Herrn A. C. Nickelsen Friedrichstadt.jpg",
+     "File:1911-08-11 Carl Gentner, Göppingen, Briefkopf mit Fabrik.png",
+     "File:1955-03-10 Falt-Postkarte Rechnungsvordruck Hans Meisert Samenzucht Hannover an Erich Gerloff Gartenbau Hamburg-Harburg 01.jpg",
+     "File:20200501 Moscow utilities bill.jpg"
+    ],
+    "other": [
+     "File:Bregenz-Fluh-revenue stamp on invoice (Austria)-04ASD.jpg",
+     "File:Facturas.jpg",
+     "File:Factuur J. & P. De Coninck Frères AAIGEM-056.jpg",
+     "File:Factuur van Le Lion D'Or AAIGEM-074.jpg",
+     "File:Ic 36 invoices true green.png"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Receipts": {
+   "category": "Receipts",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1508,
+   "unique_files_listed": 1502,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 128,
+   "pd_n": 50,
+   "other_n": 322,
+   "low_res_n": 10,
+   "usable_n": 178,
+   "est_unique": 1502,
+   "est_cc0": 385,
+   "est_pd": 150,
+   "est_other": 967,
+   "est_low": 30,
+   "est_usable": 535,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     192
+    ],
+    [
+     "CC0",
+     128
+    ],
+    [
+     "Public domain",
+     50
+    ],
+    [
+     "CC BY 4.0",
+     35
+    ],
+    [
+     "CC BY-SA 3.0",
+     34
+    ],
+    [
+     "CC BY 2.0",
+     19
+    ],
+    [
+     "CC BY-SA 2.0",
+     13
+    ],
+    [
+     "CC BY 3.0",
+     11
+    ],
+    [
+     "No restrictions",
+     4
+    ],
+    [
+     "MIT",
+     4
+    ],
+    [
+     "CC BY-SA 3.0 pl",
+     2
+    ],
+    [
+     "GFDL 1.2",
+     2
+    ]
+   ],
+   "mimes": {
+    "jpeg": 467,
+    "tiff": 4,
+    "png": 14,
+    "pdf": 2,
+    "svg+xml": 6,
+    "ogg": 3,
+    "webp": 2,
+    "gif": 2
+   },
+   "sub_categories": [
+    "Receipts in the Musée Carnavalet",
+    "Tickets",
+    "Receipts by country",
+    "Shop receipts",
+    "Restaurant checks",
+    "Parking tickets",
+    "Receipt icons"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1900 Appareil contrôleur CMP modèle billets.jpg",
+     "File:1919 107 2 PARMENTIER.jpg",
+     "File:2007.08.15.Kassazettel.WienerWasser.JPG",
+     "File:Asaph Churchill Receipt December 2, 1793 - NARA - 192843.jpg",
+     "File:DHL-Packstation-Einlieferungsbeleg 2011.jpg"
+    ],
+    "other": [
+     "File:-7 365- Good Times (5334644323).jpg",
+     "File:14-06-30-colmar-by-RalfR-122.jpg",
+     "File:Atac ticket machine of (metro,bus,train).06.jpg",
+     "File:Bee Network bus ticket Jan 2025.jpg",
+     "File:BenzinBon-1.jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Forms (documents)": {
+   "category": "Forms (documents)",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1469,
+   "unique_files_listed": 1456,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 152,
+   "pd_n": 134,
+   "other_n": 214,
+   "low_res_n": 18,
+   "usable_n": 279,
+   "est_unique": 1456,
+   "est_cc0": 443,
+   "est_pd": 390,
+   "est_other": 623,
+   "est_low": 52,
+   "est_usable": 812,
+   "licenses": [
+    [
+     "CC0",
+     152
+    ],
+    [
+     "Public domain",
+     134
+    ],
+    [
+     "CC BY-SA 4.0",
+     120
+    ],
+    [
+     "CC BY-SA 3.0",
+     47
+    ],
+    [
+     "CC BY 4.0",
+     10
+    ],
+    [
+     "CC BY 2.0",
+     8
+    ],
+    [
+     "CC BY 3.0",
+     6
+    ],
+    [
+     "CC BY-SA 2.0",
+     6
+    ],
+    [
+     "No restrictions",
+     4
+    ],
+    [
+     "Attribution",
+     4
+    ],
+    [
+     "Apache License 2.0",
+     2
+    ],
+    [
+     "Copyrighted free use",
+     2
+    ]
+   ],
+   "mimes": {
+    "jpeg": 427,
+    "png": 43,
+    "svg+xml": 4,
+    "tiff": 6,
+    "ogg": 8,
+    "pdf": 8,
+    "wav": 2,
+    "gif": 2
+   },
+   "sub_categories": [
+    "Invoices, bills and receipts",
+    "Receipts",
+    "Punch cards",
+    "Receipts of Germany",
+    "Prisoner registry forms",
+    "Behördenschreiben (Österreich)",
+    "Webforms"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:137th SOW services Airmen support 35th FSS mission while training (9268281).jpg",
+     "File:1916 022 AR MARBEUF.jpg",
+     "File:1919 321 AR CHAMPS ELYSEES.jpg",
+     "File:Barth Broader Receipt January 27, 1706 - NARA - 192852.jpg",
+     "File:Card for Imperial Domain of Golden Dragon issued to US sailor G. S. Fulghum 1944.jpg"
+    ],
+    "other": [
+     "File:AR EN 02 01.jpg",
+     "File:AR EX 02 01.jpg",
+     "File:ATFR rättningsblankett 2020.jpg",
+     "File:Alfred Charles Ayres Wellcome L0003553.jpg",
+     "File:Back of deposit slip.png"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Business cards": {
+   "category": "Business cards",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1484,
+   "unique_files_listed": 1467,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 18,
+   "pd_n": 135,
+   "other_n": 347,
+   "low_res_n": 9,
+   "usable_n": 149,
+   "est_unique": 1467,
+   "est_cc0": 53,
+   "est_pd": 396,
+   "est_other": 1018,
+   "est_low": 26,
+   "est_usable": 437,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     155
+    ],
+    [
+     "Public domain",
+     135
+    ],
+    [
+     "No restrictions",
+     73
+    ],
+    [
+     "CC BY 4.0",
+     47
+    ],
+    [
+     "CC BY 2.0",
+     39
+    ],
+    [
+     "CC0",
+     18
+    ],
+    [
+     "CC BY-SA 3.0",
+     18
+    ],
+    [
+     "CC BY-SA 2.0",
+     10
+    ],
+    [
+     "CC BY 3.0",
+     3
+    ],
+    [
+     "Copyrighted free use",
+     1
+    ],
+    [
+     "CC BY 2.5",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 475,
+    "pdf": 4,
+    "png": 13,
+    "svg+xml": 5,
+    "tiff": 1,
+    "gif": 1,
+    "webp": 1
+   },
+   "sub_categories": [
+    "Trade cards",
+    "Card cases",
+    "Cartes d'adresse",
+    "Business cards by country",
+    "Wikimedia business cards",
+    "Business cards exchanging",
+    "Presidential business cards"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:20250909 최광모 앞면 businesscard choikwangmo.jpg",
+     "File:Card Case (Scotland for export), ca. 1880–1900 (CH 18634307).jpg",
+     "File:Imprimerie A. Salmon Porcabeuf trade card.png",
+     "File:J. and P. Coats (3092748975).jpg",
+     "File:PB Signature.jpg"
+    ],
+    "other": [
+     "File:'t Japans Cultureel Centrum business cards, Amsterdam (2023) 01.jpg",
+     "File:'t Japans Cultureel Centrum business cards, Amsterdam (2023) 02.jpg",
+     "File:Afternoon Tea front view, Claricce Lim business cards and ASRock advertising pen 20241221.jpg",
+     "File:Andris Sprūds un komisijas deputāti tiekas ar Gruzijas parlamenta Eiropas integrācijas komisijas priekšsēdētāju un komisijas deputātiem.jpg",
+     "File:Aurora Office Equipment Xizhi Branch business card 20220110.jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Certificates": {
+   "category": "Certificates",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 2389,
+   "unique_files_listed": 2384,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 44,
+   "pd_n": 103,
+   "other_n": 353,
+   "low_res_n": 19,
+   "usable_n": 139,
+   "est_unique": 2384,
+   "est_cc0": 210,
+   "est_pd": 491,
+   "est_other": 1683,
+   "est_low": 91,
+   "est_usable": 663,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     238
+    ],
+    [
+     "Public domain",
+     103
+    ],
+    [
+     "CC BY-SA 3.0",
+     55
+    ],
+    [
+     "CC0",
+     44
+    ],
+    [
+     "CC BY 4.0",
+     20
+    ],
+    [
+     "CC BY 3.0",
+     9
+    ],
+    [
+     "OGL 3",
+     8
+    ],
+    [
+     "CC BY 2.0",
+     7
+    ],
+    [
+     "CC BY-SA 2.0",
+     4
+    ],
+    [
+     "No restrictions",
+     3
+    ],
+    [
+     "CC BY-SA 2.5",
+     2
+    ],
+    [
+     "MIT",
+     2
+    ]
+   ],
+   "mimes": {
+    "jpeg": 400,
+    "pdf": 22,
+    "png": 55,
+    "svg+xml": 12,
+    "tiff": 8,
+    "webm": 1,
+    "webp": 2
+   },
+   "sub_categories": [
+    "Guinness World Records certificates",
+    "Certification marks",
+    "Stock certificates",
+    "Death certificates",
+    "Certificates of appreciation",
+    "Certificate icons",
+    "Certificates by country"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:2008 Dyplom Najlepszy Sportowiec Roku.jpg",
+     "File:AccioBFF.jpg",
+     "File:AttestatoMinisteroSaluteMCB.pdf",
+     "File:Ceremonial image.jpg",
+     "File:Certificate of Walkshop for Ridha Dhib at WAC 25, Prespa (2025).pdf"
+    ],
+    "other": [
+     "File:1876.Confirm-Bertha-Beier.jpg",
+     "File:Afrinnama Of Wadera.jpg",
+     "File:Alex-silveira-biem-certificado-halal.jpg",
+     "File:Amtsdokument Paul Fischer 1942-11-18 Hauptmann Deutsches Reich Luftfahrerschein für Segelflugzeugführer Seite 06 und 07 Ausweis Nr. 1498 Luftamt Hamburg Einfache Erlaubnis.jpg",
+     "File:Attestato della Guinness World Record.jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Ledgers": {
+   "category": "Ledgers",
+   "exists": true,
+   "cats_listed": 19,
+   "sum_files_categoryinfo": 11321,
+   "unique_files_listed": 4530,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 11,
+   "pd_n": 480,
+   "other_n": 9,
+   "low_res_n": 0,
+   "usable_n": 491,
+   "est_unique": 4530,
+   "est_cc0": 100,
+   "est_pd": 4349,
+   "est_other": 82,
+   "est_low": 0,
+   "est_usable": 4448,
+   "licenses": [
+    [
+     "Public domain",
+     480
+    ],
+    [
+     "CC0",
+     11
+    ],
+    [
+     "CC BY-SA 3.0",
+     3
+    ],
+    [
+     "CC BY 4.0",
+     3
+    ],
+    [
+     "CC BY-SA 4.0",
+     2
+    ],
+    [
+     "No restrictions",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 343,
+    "tiff": 155,
+    "gif": 1,
+    "svg+xml": 1
+   },
+   "sub_categories": [
+    "Hotel ledgers, Camp Chesterfield",
+    "Edison Records cash books",
+    "Loan and Real Estate Ledgers and Journals USA, 1871-1974",
+    "Ledgers in Germany",
+    "World's Columbian Exposition Financial Ledger",
+    "Paper-ruling machines",
+    "General Ledger"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Camp Chesterfield general account ledger, 1910-1916 - DPLA - afd514e6fb6296a6c025e55f750d1715 (page 6).jpg",
+     "File:Camp Chesterfield general account ledger, 1917-1923 - DPLA - 0b67d4b57e1b50c00ece9dbe595094b8 (page 143).jpg",
+     "File:Camp Chesterfield general account ledger, 1917-1923 - DPLA - ae00c5c567576f9feb78a1d75f5b6454 (page 117).jpg",
+     "File:Camp Chesterfield general account ledger, 1917-1923 - DPLA - ae00c5c567576f9feb78a1d75f5b6454 (page 204).jpg",
+     "File:Camp Chesterfield general account ledger, 1917-1923 - DPLA - ae00c5c567576f9feb78a1d75f5b6454 (page 54).jpg"
+    ],
+    "other": [
+     "File:Specimens of type, borders, ornaments, brass rules and cuts, etc. - catalogue of printing machinery and materials, wood goods, etc (1897) (14785726033).jpg",
+     "File:Bestelboekje leveringen Firma De Cooman - binnenzijde - NINOVE-157.jpg",
+     "File:Museu de la Mar - Port de Sóller 10.jpg",
+     "File:Pinkas Kehilat Frankfurt de-Oder P1100269.JPG",
+     "File:Kasboek van Anna Bernardine Baelde-Delprat, objectnr 36013(2).JPG"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Account books": {
+   "category": "Account books",
+   "exists": true,
+   "cats_listed": 11,
+   "sum_files_categoryinfo": 188,
+   "unique_files_listed": 186,
+   "listing_truncated": false,
+   "sampled": 186,
+   "exact": true,
+   "cc0_n": 5,
+   "pd_n": 60,
+   "other_n": 121,
+   "low_res_n": 0,
+   "usable_n": 65,
+   "est_unique": 186,
+   "est_cc0": 5,
+   "est_pd": 60,
+   "est_other": 121,
+   "est_low": 0,
+   "est_usable": 65,
+   "licenses": [
+    [
+     "Public domain",
+     60
+    ],
+    [
+     "No restrictions",
+     49
+    ],
+    [
+     "CC BY-SA 4.0",
+     41
+    ],
+    [
+     "CC BY-SA 3.0",
+     16
+    ],
+    [
+     "CC BY 4.0",
+     13
+    ],
+    [
+     "CC0",
+     5
+    ],
+    [
+     "CC BY 2.0",
+     1
+    ],
+    [
+     "CC BY-SA 2.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "tiff": 4,
+    "jpeg": 156,
+    "pdf": 25,
+    "png": 1
+   },
+   "sub_categories": [
+    "Account book of John Goddard (1775)",
+    "Almeley Quaker Meeting accounts book",
+    "Account books in Germany",
+    "Inscriptiones graecae I³ 370",
+    "1920er Jahre circa Ferdinand Reichmacher Hauptbuch Gewerbeschutz",
+    "Account book of Thomas Mister (Wellcome MS 3584)",
+    "Edler & Krische"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1874-01-15 Rudolf Loeper Rechnung Andreaestraße 1, Hannover 01).tif",
+     "File:1874-01-15 Rudolf Loeper Rechnung Andreaestraße 1, Hannover 02).tif",
+     "File:1900 circa Carl Hans Pless Plakat Farben-Fabriken Gebr. Jänecke & Fr. Schneemann Hannover, Moskau, Newark N.J., Druck von J. G. Schelter & Giesecke, Leipzig, Ausschnitt.jpg",
+     "File:1900 circa Carl Hans Pless Plakat Farben-Fabriken Gebr. Jänecke & Fr. Schneemann Hannover, Moskau, Newark N.J., Druck von J. G. Schelter & Giesecke, Leipzig.jpg",
+     "File:1909 circa Siegmund von Suchodolski Plakat Pelikan-Tinte Günther Wagner.jpg"
+    ],
+    "other": [
+     "File:1909-11-19 Hannoversche Geschäftsbücher-Fabrik W. Oldemeyer Nachfolger Hannover Rechnung Otto Schmidt Aschersleben 300dpi.jpg",
+     "File:1910-09-30 Hannoversche Geschäftsbücher-Fabrik W. Oldemeyer Nachfolger Rechnungskopf Otto Schmidt Aschersleben 600dpi.jpg",
+     "File:1916-08-15 Hannoversche Geschäftsbücher-Fabrik W. Oldemeyer Rechnung Kopf an Otto Schmidt in Aschersleben 300dpi.jpg",
+     "File:1920er Jahre circa Hauptbuch Steuer-Buchführung Verlag Gewerbeschutz, Ferdinand Reichmacher, Dresden-N. 6, Nieritzstr. 3.jpg",
+     "File:1920er Jahre circa Hauptbuch Steuer-Buchführung Verlag Gewerbeschutz, Ferdinand Reichmacher, Dresden-N. 6, Nieritzstr. 3 (59966).jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Tickets": {
+   "category": "Tickets",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1494,
+   "unique_files_listed": 1450,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 51,
+   "pd_n": 63,
+   "other_n": 386,
+   "low_res_n": 5,
+   "usable_n": 112,
+   "est_unique": 1450,
+   "est_cc0": 148,
+   "est_pd": 183,
+   "est_other": 1119,
+   "est_low": 14,
+   "est_usable": 325,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     218
+    ],
+    [
+     "Public domain",
+     63
+    ],
+    [
+     "CC BY-SA 3.0",
+     55
+    ],
+    [
+     "CC0",
+     51
+    ],
+    [
+     "CC BY 2.0",
+     36
+    ],
+    [
+     "CC BY-SA 2.0",
+     27
+    ],
+    [
+     "CC BY 4.0",
+     20
+    ],
+    [
+     "CC BY 3.0",
+     14
+    ],
+    [
+     "CC BY-SA 3.0 pl",
+     5
+    ],
+    [
+     "No restrictions",
+     3
+    ],
+    [
+     "CC BY-SA 2.5",
+     2
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 478,
+    "png": 13,
+    "ogg": 2,
+    "webp": 1,
+    "tiff": 4,
+    "svg+xml": 2
+   },
+   "sub_categories": [
+    "Ticket offices",
+    "Ticket machines",
+    "Tickets by country",
+    "Ticket counters",
+    "Ticket barriers",
+    "Ticket shops",
+    "Ticketing companies"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:122007sco013 Image of Curatorial Object (54689581214).jpg",
+     "File:1900 00 AR Pte-VINCENNES V2.jpg",
+     "File:1903 117 AR PALAIS ROYAL.jpg",
+     "File:1911 248 2 ITALIE.jpg",
+     "File:1916 091 1 CITE.jpg"
+    ],
+    "other": [
+     "File:2017-03 Verona Mattes Pana Batch (4).JPG",
+     "File:2018-04-21-17-59-32-IMG 7891 (33078555548).jpg",
+     "File:Akushukai labrador.png",
+     "File:CRT跳磴 售票处.jpg",
+     "File:CWT56 subsidiary ticket 20201212 face.jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Letters": {
+   "category": "Letters",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 2074,
+   "unique_files_listed": 2062,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 36,
+   "pd_n": 115,
+   "other_n": 349,
+   "low_res_n": 37,
+   "usable_n": 133,
+   "est_unique": 2062,
+   "est_cc0": 148,
+   "est_pd": 474,
+   "est_other": 1439,
+   "est_low": 153,
+   "est_usable": 548,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     198
+    ],
+    [
+     "Public domain",
+     115
+    ],
+    [
+     "CC BY-SA 3.0",
+     55
+    ],
+    [
+     "CC0",
+     36
+    ],
+    [
+     "CC BY 4.0",
+     30
+    ],
+    [
+     "CC BY 2.0",
+     22
+    ],
+    [
+     "CC BY 3.0",
+     18
+    ],
+    [
+     "CC BY-SA 2.0",
+     17
+    ],
+    [
+     "No restrictions",
+     3
+    ],
+    [
+     "Copyrighted free use",
+     2
+    ],
+    [
+     "FAL",
+     1
+    ],
+    [
+     "CC BY 1.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 330,
+    "png": 108,
+    "pdf": 23,
+    "gif": 7,
+    "tiff": 14,
+    "svg+xml": 15,
+    "ogg": 1,
+    "webm": 1,
+    "webp": 1
+   },
+   "sub_categories": [
+    "Calligraphy",
+    "Big and small letter signs",
+    "Letters in art",
+    "Letters with diacritics",
+    "Food with inscriptions",
+    "Capital letters",
+    "Letters in logos"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:44.4b doubleheaded eagle.png",
+     "File:A) Bizhan Visiting Manizha; b) Page of Calligraphy, Two Folios from a Shahnama (Book of Kings) LACMA M.81.12a-b (2 of 2).jpg",
+     "File:Armand Desmarets de Saint-Sorlin.png",
+     "File:BiscuitsAmerican&British.png",
+     "File:Comparison of all the equivalent vowel letters of the Meitei (Manipuri), Odia (Oriya) and Eastern Nagari (Bengali or Assamese) writing systems.jpg"
+    ],
+    "other": [
+     "File:00 00 JMajia IMG 0578.jpg",
+     "File:Aashram, Samrup Rachna Calligraphy.jpg",
+     "File:Anti script alphabet.jpg",
+     "File:Blumen (12 von 16).jpg",
+     "File:Calligraphie ML.jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|United States government forms": {
+   "category": "United States government forms",
+   "exists": true,
+   "cats_listed": 4,
+   "sum_files_categoryinfo": 25,
+   "unique_files_listed": 25,
+   "listing_truncated": false,
+   "sampled": 25,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 24,
+   "other_n": 1,
+   "low_res_n": 0,
+   "usable_n": 24,
+   "est_unique": 25,
+   "est_cc0": 0,
+   "est_pd": 24,
+   "est_other": 1,
+   "est_low": 0,
+   "est_usable": 24,
+   "licenses": [
+    [
+     "Public domain",
+     24
+    ],
+    [
+     "CC BY-SA 4.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 18,
+    "pdf": 6,
+    "png": 1
+   },
+   "sub_categories": [
+    "FAFSA",
+    "Standard Form 312",
+    "Arne Duncan, Jill Biden, Jack Reed visit to Benjamin Banneker Academic High School to promote the new FAFSA application (January 5, 2010)"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:10-001 FAFSA 601 (9577919236).jpg",
+     "File:10-001 FAFSA 601 (9609815986).jpg",
+     "File:10-001 FAFSA 601 (9610637222).jpg",
+     "File:10-001 FAFSA 613 (9610637690).jpg",
+     "File:10-001 FAFSA 614 (9610638076).jpg"
+    ],
+    "other": [
+     "File:2020 Census Envelope Front and back.jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Taxation forms of the United States": {
+   "category": "Taxation forms of the United States",
+   "exists": true,
+   "cats_listed": 2,
+   "sum_files_categoryinfo": 60,
+   "unique_files_listed": 60,
+   "listing_truncated": false,
+   "sampled": 60,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 54,
+   "other_n": 6,
+   "low_res_n": 1,
+   "usable_n": 53,
+   "est_unique": 60,
+   "est_cc0": 0,
+   "est_pd": 54,
+   "est_other": 6,
+   "est_low": 1,
+   "est_usable": 53,
+   "licenses": [
+    [
+     "Public domain",
+     54
+    ],
+    [
+     "CC BY-SA 4.0",
+     5
+    ],
+    [
+     "CC BY 2.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "pdf": 31,
+    "png": 14,
+    "jpeg": 15
+   },
+   "sub_categories": [
+    "Form 990"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:06-30-2014 IRS Form 990 Wikimedia Foundation, Inc.pdf",
+     "File:2017 Form 990-EZ.pdf",
+     "File:2017 Form 990 or 990-EZ (Schedule A).pdf",
+     "File:2018 Schedule A (Form 990 or 990-EZ).pdf",
+     "File:2019 Form 990-EZ.pdf"
+    ],
+    "other": [
+     "File:2015-1099-K-form.png",
+     "File:2018 Form 990-EZ.pdf",
+     "File:Form 1040 - tax.png",
+     "File:Form 4868, 2010, with pen glasses phone.jpg",
+     "File:IRS tax form 1098-T (2016).jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Contracts": {
+   "category": "Contracts",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1099,
+   "unique_files_listed": 1095,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 18,
+   "pd_n": 165,
+   "other_n": 317,
+   "low_res_n": 18,
+   "usable_n": 178,
+   "est_unique": 1095,
+   "est_cc0": 39,
+   "est_pd": 361,
+   "est_other": 694,
+   "est_low": 39,
+   "est_usable": 390,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     185
+    ],
+    [
+     "Public domain",
+     165
+    ],
+    [
+     "CC BY-SA 3.0",
+     67
+    ],
+    [
+     "CC BY 4.0",
+     34
+    ],
+    [
+     "CC0",
+     18
+    ],
+    [
+     "CC BY-SA 2.0",
+     7
+    ],
+    [
+     "CC BY 2.0",
+     7
+    ],
+    [
+     "CC BY-SA 3.0 nl",
+     5
+    ],
+    [
+     "CC BY 3.0",
+     4
+    ],
+    [
+     "CC BY-SA 3.0 fr",
+     3
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     3
+    ],
+    [
+     "No restrictions",
+     2
+    ]
+   ],
+   "mimes": {
+    "jpeg": 447,
+    "tiff": 9,
+    "png": 19,
+    "svg+xml": 3,
+    "ogg": 10,
+    "pdf": 11,
+    "gif": 1
+   },
+   "sub_categories": [
+    "Warranties",
+    "Marriage contracts",
+    "Concessions in public transport in the Netherlands",
+    "Powers of attorney",
+    "Defense Contract Management Agency",
+    "Contracts in art",
+    "Employment contracts"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Contract of new construction construction of Ebina village office sa(1).jpg",
+     "File:Contract of new construction construction of Ebina village office sa(3).jpg",
+     "File:Contracts of employees with the Louisiana Purchase Exposition and with companies doing work for the Louisiana Purchase Exposition, September 23, 1902-February 7, 1903 - DPLA - 60d8ed0eeecbcfe357dc9f3de6667030 (page 44).jpg",
+     "File:Contrat de Mariage de Francoise Louise de Mailly.jpg",
+     "File:DCMA (3346445).jpeg"
+    ],
+    "other": [
+     "File:2022-08-03 Station Ede-Wageningen RRReis 2314.jpg",
+     "File:Agreement on the purchase prices of tar, signed by tar traders in Oulu 1894 (JOKAKAL3B6552-1).tif",
+     "File:Coolpad S50 battery worn-out 20110809.jpg",
+     "File:Font Awesome 5 solid file-contract.svg",
+     "File:Ketuba from Belgium.jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Purchase orders": {
+   "category": "Purchase orders",
+   "exists": true,
+   "cats_listed": 8,
+   "sum_files_categoryinfo": 154,
+   "unique_files_listed": 152,
+   "listing_truncated": false,
+   "sampled": 152,
+   "exact": true,
+   "cc0_n": 18,
+   "pd_n": 24,
+   "other_n": 110,
+   "low_res_n": 1,
+   "usable_n": 42,
+   "est_unique": 152,
+   "est_cc0": 18,
+   "est_pd": 24,
+   "est_other": 110,
+   "est_low": 1,
+   "est_usable": 42,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     51
+    ],
+    [
+     "Public domain",
+     24
+    ],
+    [
+     "CC BY 2.0",
+     20
+    ],
+    [
+     "CC BY-SA 2.0",
+     20
+    ],
+    [
+     "CC0",
+     18
+    ],
+    [
+     "CC BY-SA 3.0",
+     9
+    ],
+    [
+     "CC BY 4.0",
+     6
+    ],
+    [
+     "No restrictions",
+     3
+    ],
+    [
+     "CC BY 3.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 148,
+    "png": 2,
+    "svg+xml": 1,
+    "tiff": 1
+   },
+   "sub_categories": [
+    "Order forms",
+    "Ansichtsware",
+    "Food tickets",
+    "Purchase orders of Hong Kong",
+    "Food tickets in Japan",
+    "Food order forms",
+    "Restaurant food order machines"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1811-11-06-Bestellung fuer Napoleon durch seinen Kammerdiener.JPG",
+     "File:1814-Goethe-Bestellung.JPG",
+     "File:1866-06-23 G. F. Stölter & Co. Hildesheim Faltbrief-Vordruck beidseitig Bareinzahlung aus Olpe 01.jpg",
+     "File:1866-06-23 G. F. Stölter & Co. Hildesheim Faltbrief-Vordruck beidseitig Bareinzahlung aus Olpe 02.jpg",
+     "File:1914-01-01 NUEVO MUNDO P19.jpg"
+    ],
+    "other": [
+     "File:011 Bestellschein Fa. Glatzer Lemberg.jpg",
+     "File:141 月見うどん 142 ライス (3713144562).jpg",
+     "File:Bahamut Mall booth purchase order 20191229.jpg",
+     "File:Bestelblokje van Majo Lede AAIGEM-003.jpg",
+     "File:Bestelformulier van Brouwerij Slaghmuylder - NINOVE-146.jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Bills": {
+   "category": "Bills",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 1,
+   "unique_files_listed": 1,
+   "listing_truncated": false,
+   "sampled": 1,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 0,
+   "other_n": 1,
+   "low_res_n": 0,
+   "usable_n": 0,
+   "est_unique": 1,
+   "est_cc0": 0,
+   "est_pd": 0,
+   "est_other": 1,
+   "est_low": 0,
+   "est_usable": 0,
+   "licenses": [
+    [
+     "No restrictions",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 1
+   },
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [],
+    "other": [
+     "File:A Streetcar Named Desire playbill - DPLA - a9c72a8b372c121e8dc5b6fa83569406 (page 4).jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Invoices from Austria-Hungary": {
+   "category": "Invoices from Austria-Hungary",
+   "exists": true,
+   "cats_listed": 2,
+   "sum_files_categoryinfo": 25,
+   "unique_files_listed": 24,
+   "listing_truncated": false,
+   "sampled": 24,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 1,
+   "other_n": 23,
+   "low_res_n": 0,
+   "usable_n": 1,
+   "est_unique": 24,
+   "est_cc0": 0,
+   "est_pd": 1,
+   "est_other": 23,
+   "est_low": 0,
+   "est_usable": 1,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     23
+    ],
+    [
+     "Public domain",
+     1
+    ]
+   ],
+   "mimes": {
+    "png": 23,
+    "jpeg": 1
+   },
+   "sub_categories": [
+    "Invoices from Linz"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Faktura J-Florenz 1884.jpg"
+    ],
+    "other": [
+     "File:Budapest 1913 Dampfmühlen.png",
+     "File:Linz 1913 Kapler Farben.png",
+     "File:Linz 1915 Funke Schirme.png",
+     "File:Linz 1916 Büche Teigwaren.png",
+     "File:Linz 1916 Cusolle Kaffee.png"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Receipts of Russia": {
+   "category": "Receipts of Russia",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 10,
+   "unique_files_listed": 10,
+   "listing_truncated": false,
+   "sampled": 10,
+   "exact": true,
+   "cc0_n": 4,
+   "pd_n": 0,
+   "other_n": 6,
+   "low_res_n": 0,
+   "usable_n": 4,
+   "est_unique": 10,
+   "est_cc0": 4,
+   "est_pd": 0,
+   "est_other": 6,
+   "est_low": 0,
+   "est_usable": 4,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     6
+    ],
+    [
+     "CC0",
+     4
+    ]
+   ],
+   "mimes": {
+    "jpeg": 9,
+    "tiff": 1
+   },
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [
+     "File:20080225 Federal Treasury payment Sberbank.jpg",
+     "File:20190221 124822 Teremok Receipt Квитанция.jpg",
+     "File:Кассовый чек выданный при покупке в магазине DNS в России.jpg",
+     "File:Манты в кафе «Пышка» в Калининграде.JPEG"
+    ],
+    "other": [
+     "File:Krasnoselsky District Depo Tri Vokzala 2023-06 1686842085.tif",
+     "File:Leninka chek.jpg",
+     "File:Rekvizity-cheka-onlayn-kassy.jpg",
+     "File:Russian Leroy Merlin.jpg",
+     "File:Билет 17 маршрут.jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "1 business documents|Payment systems": {
+   "category": "Payment systems",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 650,
+   "unique_files_listed": 629,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 39,
+   "pd_n": 128,
+   "other_n": 333,
+   "low_res_n": 54,
+   "usable_n": 128,
+   "est_unique": 629,
+   "est_cc0": 49,
+   "est_pd": 161,
+   "est_other": 419,
+   "est_low": 68,
+   "est_usable": 161,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     196
+    ],
+    [
+     "Public domain",
+     126
+    ],
+    [
+     "CC BY-SA 3.0",
+     43
+    ],
+    [
+     "CC0",
+     39
+    ],
+    [
+     "CC BY 2.0",
+     31
+    ],
+    [
+     "CC BY-SA 2.0",
+     27
+    ],
+    [
+     "CC BY 4.0",
+     17
+    ],
+    [
+     "Attribution",
+     5
+    ],
+    [
+     "No restrictions",
+     4
+    ],
+    [
+     "CC BY 3.0",
+     3
+    ],
+    [
+     "Public Domain",
+     2
+    ],
+    [
+     "CC BY-SA 2.5",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 347,
+    "svg+xml": 62,
+    "png": 80,
+    "tiff": 1,
+    "webp": 2,
+    "gif": 3,
+    "pdf": 3,
+    "webm": 2
+   },
+   "sub_categories": [
+    "Cheques",
+    "Logos of payment systems",
+    "Mobile payment",
+    "Payment cards",
+    "Money transfer",
+    "WeChat Pay",
+    "Alipay"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1923 cash on delivery parcel card, HELSINKI to RIIHIMÄKI.jpg",
+     "File:Anglo-Palestine Co. cheque, 1913.jpg",
+     "File:Briefsendung Deutsche Bundespost, Postsache mit Nachnahme der Verstandstelle für Postwertzeichen in Weiden.jpg",
+     "File:Cedar Fair Fast Lane Plus availability icon.svg",
+     "File:Children Paying For Shcool Lunch - DPLA - 9a77b0803d2fee6723c7ccffccb034c9.jpg"
+    ],
+    "other": [
+     "File:02.06.2026 - Anúncio à imprensa sobre a inauguração do Instituto Federal Goiano – Campus Catalão - 55310375361.jpg",
+     "File:02.06.2026 - Anúncio à imprensa sobre a inauguração do Instituto Federal Goiano – Campus Catalão - 55310535183.jpg",
+     "File:1890s Bank of Toronto Cheque Graphic.jpg",
+     "File:Alipay Automatic Vending Machine in GDBC.jpg",
+     "File:Alipay illustration.jpg"
+    ]
+   },
+   "domain": "1 business documents"
+  },
+  "2 safety and quality|Safety signs": {
+   "category": "Safety signs",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 3086,
+   "unique_files_listed": 3041,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 120,
+   "pd_n": 232,
+   "other_n": 148,
+   "low_res_n": 137,
+   "usable_n": 225,
+   "est_unique": 3041,
+   "est_cc0": 730,
+   "est_pd": 1411,
+   "est_other": 900,
+   "est_low": 833,
+   "est_usable": 1368,
+   "licenses": [
+    [
+     "Public domain",
+     232
+    ],
+    [
+     "CC0",
+     120
+    ],
+    [
+     "CC BY-SA 4.0",
+     65
+    ],
+    [
+     "CC BY-SA 3.0",
+     26
+    ],
+    [
+     "CC BY-SA 2.0",
+     20
+    ],
+    [
+     "CC BY 2.0",
+     17
+    ],
+    [
+     "CC BY 3.0",
+     9
+    ],
+    [
+     "CC BY 4.0",
+     3
+    ],
+    [
+     "CC BY-SA 2.5",
+     2
+    ],
+    [
+     "Apache License 2.0",
+     1
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     1
+    ],
+    [
+     "CC SA 1.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 149,
+    "svg+xml": 327,
+    "png": 20,
+    "gif": 2,
+    "ogg": 1,
+    "webp": 1
+   },
+   "sub_categories": [
+    "Safety signs by standard",
+    "Safety signs by country",
+    "Diagrams of safety signs",
+    "Safety signs by subject",
+    "Safety slogans",
+    "Safety signs by category",
+    "Child safety signs"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:CSA Z321 Caution Work in Progress.svg",
+     "File:CSA Z321 Information Bus transportation.svg",
+     "File:CSA Z321 Information Stairs down.svg",
+     "File:Example of CSA safety sign with symbol M001.svg",
+     "File:GB 2893-2008 Pic A.3.jpg"
+    ],
+    "other": [
+     "File:2016 366 238 Proceed with Caution (29158196811).jpg",
+     "File:Aviso (8544821914).jpg",
+     "File:Cricetus cricetus, Kaiser-Franz-Josef-Spital, Vienna.jpg",
+     "File:DO NOT LOAD OR TRANSPORT. PACKAGE IF DAMAGED (4013255070).jpg",
+     "File:Dog House (2776007228).jpg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|Warning signs": {
+   "category": "Warning signs",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1194,
+   "unique_files_listed": 1155,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 47,
+   "pd_n": 76,
+   "other_n": 377,
+   "low_res_n": 55,
+   "usable_n": 98,
+   "est_unique": 1155,
+   "est_cc0": 109,
+   "est_pd": 176,
+   "est_other": 871,
+   "est_low": 127,
+   "est_usable": 226,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     152
+    ],
+    [
+     "CC BY-SA 3.0",
+     82
+    ],
+    [
+     "Public domain",
+     76
+    ],
+    [
+     "CC0",
+     47
+    ],
+    [
+     "CC BY 2.0",
+     39
+    ],
+    [
+     "CC BY-SA 2.0",
+     39
+    ],
+    [
+     "CC BY 4.0",
+     18
+    ],
+    [
+     "CC BY 3.0",
+     17
+    ],
+    [
+     "LGPL",
+     9
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     4
+    ],
+    [
+     "CC BY-SA 2.5",
+     4
+    ],
+    [
+     "CC BY-SA 3.0 lu",
+     3
+    ]
+   ],
+   "mimes": {
+    "jpeg": 348,
+    "svg+xml": 84,
+    "gif": 4,
+    "tiff": 1,
+    "png": 63
+   },
+   "sub_categories": [
+    "Multilingual warning signs",
+    "Warning signs by country",
+    "Triangular warning signs",
+    "Warning signs by subject",
+    "Electricity warning signs",
+    "Exclamation mark warning signs",
+    "Yellow warning signs"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Carteristas (308775636).jpg",
+     "File:GB 2894 2008 Usage of safety signs on poles.svg",
+     "File:GHS-pictogram-skull.svg",
+     "File:GHS-pictogram-unknown.svg",
+     "File:Konya tramvay uyarısı 3.jpg"
+    ],
+    "other": [
+     "File:2016 366 238 Proceed with Caution (29158196811).jpg",
+     "File:3 missing permission warnings.svg",
+     "File:Amasra 327.JPG",
+     "File:Blinking exclamation mark.gif",
+     "File:Bundesarchiv B 145 Bild-F079116-0016, Goslar.jpg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|Personal protective equipment": {
+   "category": "Personal protective equipment",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1946,
+   "unique_files_listed": 1906,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 55,
+   "pd_n": 179,
+   "other_n": 266,
+   "low_res_n": 20,
+   "usable_n": 219,
+   "est_unique": 1906,
+   "est_cc0": 210,
+   "est_pd": 682,
+   "est_other": 1014,
+   "est_low": 76,
+   "est_usable": 835,
+   "licenses": [
+    [
+     "Public domain",
+     179
+    ],
+    [
+     "CC BY-SA 4.0",
+     112
+    ],
+    [
+     "CC0",
+     55
+    ],
+    [
+     "CC BY-SA 3.0",
+     53
+    ],
+    [
+     "CC BY 2.0",
+     45
+    ],
+    [
+     "CC BY 4.0",
+     16
+    ],
+    [
+     "CC BY-SA 2.0",
+     12
+    ],
+    [
+     "No restrictions",
+     6
+    ],
+    [
+     "CC BY 3.0",
+     5
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     4
+    ],
+    [
+     "Attribution",
+     2
+    ],
+    [
+     "OGL v1.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 457,
+    "pdf": 4,
+    "svg+xml": 18,
+    "png": 13,
+    "webm": 3,
+    "ogg": 3,
+    "tiff": 2
+   },
+   "sub_categories": [
+    "Parachutes",
+    "Protective clothing",
+    "Life jackets",
+    "Climbing harnesses",
+    "Child safety seats",
+    "Child safety harnesses",
+    "Personal protective equipment signs"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:4th Force Recon Jumps Out of Helicopters in Hawaii 2015 150610-M-QH615-043.jpg",
+     "File:A Sailor practices security tactics at sea. (8414178342).jpg",
+     "File:Alfred T. Palmer bolt cutting (cropped).jpg",
+     "File:Alone in the sky (Unsplash).jpg",
+     "File:Avian Influenza Livestock PPE California 2025 011.jpg"
+    ],
+    "other": [
+     "File:1982 AMC Eagle 4-door wagon two-tone 09.jpg",
+     "File:1995 Ferrari 456 Convertible by Straman (100281), interior.jpg",
+     "File:2017-10-05 06 43 02 Parachutes for weather balloons in the storage room at the National Weather Service's Baltimore-Washington Weather Forecast Office in the Dulles section of Sterling, Loudoun County, Virginia.jpg",
+     "File:Abseiling rappelling down a London tower block 54m 15.jpg",
+     "File:COLLECTIE TROPENMUSEUM Arbeider aan het werk op de Kawah Kamojang TMnr 10030172.jpg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|Hard hats": {
+   "category": "Hard hats",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1094,
+   "unique_files_listed": 982,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 26,
+   "pd_n": 84,
+   "other_n": 390,
+   "low_res_n": 15,
+   "usable_n": 106,
+   "est_unique": 982,
+   "est_cc0": 51,
+   "est_pd": 165,
+   "est_other": 766,
+   "est_low": 29,
+   "est_usable": 208,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     115
+    ],
+    [
+     "CC BY-SA 3.0",
+     108
+    ],
+    [
+     "Public domain",
+     84
+    ],
+    [
+     "CC BY 2.0",
+     65
+    ],
+    [
+     "CC BY-SA 2.0",
+     33
+    ],
+    [
+     "CC BY 4.0",
+     31
+    ],
+    [
+     "CC0",
+     26
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     10
+    ],
+    [
+     "CC BY 3.0",
+     7
+    ],
+    [
+     "Attribution",
+     5
+    ],
+    [
+     "CC BY 3.0 br",
+     4
+    ],
+    [
+     "CC BY-SA 2.0 fr",
+     4
+    ]
+   ],
+   "mimes": {
+    "jpeg": 460,
+    "png": 24,
+    "svg+xml": 10,
+    "gif": 2,
+    "pdf": 1,
+    "tiff": 3
+   },
+   "sub_categories": [
+    "Firefighters' helmets",
+    "Police helmets",
+    "Miners helmets",
+    "Climbing helmets",
+    "Hard hat signs",
+    "Hard hats by colour",
+    "Hard hats by location"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:220824-M-PW644-1351 - USNS Guam (T-HST-1) docks at MCAS Iwakuni in support of Exercise Orient Shield 22.jpg",
+     "File:HelmORMOwca.jpg",
+     "File:Helmkennzeichnung 2Ringe rot.svg",
+     "File:Helmkennzeichnung Zugführer RD.svg",
+     "File:Judith Brewer Arlington fire dep helmet Womens Museum.jpg"
+    ],
+    "other": [
+     "File:1947 - Police Officer Uniform (8370811744).jpg",
+     "File:2011. День защиты детей в Донецке 059.jpg",
+     "File:812损毁消防车门车牌头盔.JPG",
+     "File:Atari E.T. Dig- Alamogordo, New Mexico (14039612574).jpg",
+     "File:BPChoque (9051311109).jpg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|Occupational Safety and Health Administration": {
+   "category": "Occupational Safety and Health Administration",
+   "exists": true,
+   "cats_listed": 7,
+   "sum_files_categoryinfo": 254,
+   "unique_files_listed": 254,
+   "listing_truncated": false,
+   "sampled": 254,
+   "exact": true,
+   "cc0_n": 1,
+   "pd_n": 193,
+   "other_n": 60,
+   "low_res_n": 19,
+   "usable_n": 175,
+   "est_unique": 254,
+   "est_cc0": 1,
+   "est_pd": 193,
+   "est_other": 60,
+   "est_low": 19,
+   "est_usable": 175,
+   "licenses": [
+    [
+     "Public domain",
+     193
+    ],
+    [
+     "CC BY 2.0",
+     57
+    ],
+    [
+     "CC BY-SA 4.0",
+     1
+    ],
+    [
+     "CC BY 4.0",
+     1
+    ],
+    [
+     "CC0",
+     1
+    ],
+    [
+     "CC BY-SA 3.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "png": 13,
+    "pdf": 80,
+    "gif": 14,
+    "jpeg": 120,
+    "webm": 22,
+    "svg+xml": 5
+   },
+   "sub_categories": [
+    "OSHA Docket H-049A",
+    "ASPExam",
+    "Memorandum of understanding signing ceremony between OSHA and NIOSH (April 7, 2022)",
+    "Marty Walsh visits OSHA Extreme Heat Small Business Assistance Site in Spanish Fort Alabama (April 14, 2022)",
+    "1997 proposed TB rule",
+    "Process safety management"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:46 FR 40704-40706.pdf",
+     "File:Applied Geo Technologies Inc receive VPP banner (SSC-2009-01675).jpeg",
+     "File:Chapter8 10.jpg",
+     "File:Chapter8 5.jpg",
+     "File:Counterfeit and Altered Respirators - The Importance of NIOSH Certification.webm"
+    ],
+    "other": [
+     "File:29 CFR 1910.119 14 Elements of Process Safety Management.png",
+     "File:Glossário de termos de segurança de processos.png",
+     "File:L-22-04-07-A-004 (51987481857).jpg",
+     "File:L-22-04-07-A-005 (51989043160).jpg",
+     "File:L-22-04-07-A-011 (51988486906).jpg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|Occupational safety and health": {
+   "category": "Occupational safety and health",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 2341,
+   "unique_files_listed": 2308,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 38,
+   "pd_n": 218,
+   "other_n": 244,
+   "low_res_n": 33,
+   "usable_n": 237,
+   "est_unique": 2308,
+   "est_cc0": 175,
+   "est_pd": 1006,
+   "est_other": 1126,
+   "est_low": 152,
+   "est_usable": 1094,
+   "licenses": [
+    [
+     "Public domain",
+     218
+    ],
+    [
+     "CC BY-SA 4.0",
+     107
+    ],
+    [
+     "CC BY-SA 3.0",
+     63
+    ],
+    [
+     "CC0",
+     38
+    ],
+    [
+     "CC BY 4.0",
+     15
+    ],
+    [
+     "Attribution",
+     15
+    ],
+    [
+     "CC BY 2.0",
+     14
+    ],
+    [
+     "CC BY 3.0",
+     13
+    ],
+    [
+     "CC BY-SA 2.0",
+     7
+    ],
+    [
+     "CC BY-SA 2.5",
+     4
+    ],
+    [
+     "No restrictions",
+     2
+    ],
+    [
+     "OGL 3",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 375,
+    "png": 66,
+    "ogg": 1,
+    "pdf": 15,
+    "gif": 6,
+    "svg+xml": 26,
+    "vnd.djvu": 2,
+    "tiff": 3,
+    "webm": 6
+   },
+   "sub_categories": [
+    "Firefighting",
+    "Safety equipment",
+    "Toxicology",
+    "Lead",
+    "Chlorine",
+    "Ethylene oxide",
+    "Electrical safety"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:\"Ground all Electric Tools for Safety to Avoid Electric Shock, Attach Ground First\" - NARA - 516303.jpg",
+     "File:\"Just a scratch\" But! LCCN98517931.jpg",
+     "File:9x12 Waarschuwing tegen onvoorzichtigheid tijdens het werk Safety last, Bestanddeelnr 256-1207.jpg",
+     "File:American Red Cross and Medical Research Committee, \"An Atlas of Gas Poisoning\" plate IV.jpg",
+     "File:Dodona inscription.png"
+    ],
+    "other": [
+     "File:108th session of the International Maritime Organization (IMO) Maritime Safety Committee (MSC 108) on 15 May 2024 - 7.jpg",
+     "File:A small boy stands by a fire hydrant with a fireman's helmet Wellcome V0039409.jpg",
+     "File:Branches of Environmental Toxicology - Entox-fields lrg.png",
+     "File:Chlorine (Element - 17) 1.jpg",
+     "File:Chlorine sphere (cropped).jpg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|Hazard symbols": {
+   "category": "Hazard symbols",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 0,
+   "unique_files_listed": 0,
+   "listing_truncated": false,
+   "sampled": 0,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 0,
+   "other_n": 0,
+   "low_res_n": 0,
+   "usable_n": 0,
+   "est_unique": 0,
+   "est_cc0": 0,
+   "est_pd": 0,
+   "est_other": 0,
+   "est_low": 0,
+   "est_usable": 0,
+   "licenses": [],
+   "mimes": {},
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [],
+    "other": []
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|Hazard signs": {
+   "category": "Hazard signs",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 2014,
+   "unique_files_listed": 1960,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 28,
+   "pd_n": 147,
+   "other_n": 325,
+   "low_res_n": 128,
+   "usable_n": 105,
+   "est_unique": 1960,
+   "est_cc0": 110,
+   "est_pd": 576,
+   "est_other": 1274,
+   "est_low": 502,
+   "est_usable": 412,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     176
+    ],
+    [
+     "Public domain",
+     147
+    ],
+    [
+     "CC BY-SA 3.0",
+     76
+    ],
+    [
+     "CC0",
+     28
+    ],
+    [
+     "CC BY 2.0",
+     27
+    ],
+    [
+     "CC BY-SA 2.0",
+     14
+    ],
+    [
+     "CC BY 4.0",
+     11
+    ],
+    [
+     "CC BY 3.0",
+     10
+    ],
+    [
+     "Attribution",
+     2
+    ],
+    [
+     "GPL",
+     2
+    ],
+    [
+     "CC BY-SA 2.5",
+     2
+    ],
+    [
+     "Copyrighted free use",
+     2
+    ]
+   ],
+   "mimes": {
+    "jpeg": 300,
+    "png": 107,
+    "svg+xml": 83,
+    "gif": 9,
+    "tiff": 1
+   },
+   "sub_categories": [
+    "Hazardous materials-related road signs",
+    "ISO 7010 warning signs",
+    "Electricity warning signs",
+    "Chemical hazard signs",
+    "Flood signs",
+    "Explosion hazard signs",
+    "Hazardous materials watercraft signs"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:2010년 8월 태국 360 Kwangmo's iPhone.jpg",
+     "File:Animal virus detection lab training in Hanoi (7948243446).jpg",
+     "File:Bulgarian Hazard Sign - Sharp object.svg",
+     "File:CA-ON road sign Rb-082.svg",
+     "File:Delaware Nat'l Guard tests for COVID-19 in Dover (50037509593).jpg"
+    ],
+    "other": [
+     "File:1080 Poison.jpg",
+     "File:Ankara yht uyarı levhası.jpg",
+     "File:Avertotabulo pri alta elektrotensio (Vjetnamio).jpg",
+     "File:BIOHAZARD onject 2013-07-02 03-10.jpg",
+     "File:Basura de residuos peligrosos.png"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|ISO 7010 safety signs": {
+   "category": "ISO 7010 safety signs",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1442,
+   "unique_files_listed": 1026,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 155,
+   "pd_n": 320,
+   "other_n": 25,
+   "low_res_n": 203,
+   "usable_n": 276,
+   "est_unique": 1026,
+   "est_cc0": 318,
+   "est_pd": 657,
+   "est_other": 51,
+   "est_low": 417,
+   "est_usable": 566,
+   "licenses": [
+    [
+     "Public domain",
+     320
+    ],
+    [
+     "CC0",
+     155
+    ],
+    [
+     "CC BY-SA 4.0",
+     19
+    ],
+    [
+     "CC BY 4.0",
+     6
+    ]
+   ],
+   "mimes": {
+    "svg+xml": 482,
+    "png": 3,
+    "jpeg": 15
+   },
+   "sub_categories": [
+    "ISO 7010 safety signs (vector drawings)",
+    "ISO 7010-like signs",
+    "ISO 7010 warning signs",
+    "ISO 7010 safe condition signs",
+    "ISO 7010 prohibition signs",
+    "ISO 7010 mandatory action signs",
+    "ISO 7010 safety sign examples"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:88 FR 8692 Figure 10 Textless warning symbol for products containing coin cells or button batteries.svg",
+     "File:Covid sneeze etiquette 04.svg",
+     "File:D-W002 Warning orange.svg",
+     "File:DIN 32912-2018 G04.svg",
+     "File:DIN 32912-2018 V06.svg"
+    ],
+    "other": [
+     "File:ISO 7010 E011 - Crescent Symbol.svg",
+     "File:Kombinált szöveg.png",
+     "File:Rendelkező jel2.jpg",
+     "File:Emergency exit UK 009.jpg",
+     "File:Figyelmeztető jel 3.jpg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|ISO 7010 warning signs": {
+   "category": "ISO 7010 warning signs",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 97,
+   "unique_files_listed": 97,
+   "listing_truncated": true,
+   "sampled": 97,
+   "exact": false,
+   "cc0_n": 60,
+   "pd_n": 30,
+   "other_n": 7,
+   "low_res_n": 7,
+   "usable_n": 84,
+   "est_unique": 97,
+   "est_cc0": 60,
+   "est_pd": 30,
+   "est_other": 7,
+   "est_low": 7,
+   "est_usable": 84,
+   "licenses": [
+    [
+     "CC0",
+     60
+    ],
+    [
+     "Public domain",
+     30
+    ],
+    [
+     "CC BY-SA 4.0",
+     5
+    ],
+    [
+     "OGL v1.0",
+     1
+    ],
+    [
+     "CC BY 4.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "svg+xml": 92,
+    "png": 2,
+    "jpeg": 3
+   },
+   "sub_categories": [
+    "Sign W010 (ISO 7010)",
+    "Sign W030 (ISO 7010)",
+    "Sign W009 (ISO 7010)",
+    "Sign W019 (ISO 7010)",
+    "Sign W028 (ISO 7010)",
+    "Sign W035 (ISO 7010)",
+    "Sign W039 (ISO 7010)"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Avalanche warning.svg",
+     "File:Biohazard.svg",
+     "File:DIN 4844-2 Warnung vor Kaelte D-W017.svg",
+     "File:ISO 7010 W001.svg",
+     "File:ISO 7010 W002.svg"
+    ],
+    "other": [
+     "File:HSR 1996 II 3.2k.svg",
+     "File:ISO 7010 W030.png",
+     "File:ISO 7010 W030.svg",
+     "File:ISO 7010 W035.svg",
+     "File:ISO 7010 W039.svg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|Prohibition signs": {
+   "category": "Prohibition signs",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 815,
+   "unique_files_listed": 799,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 39,
+   "pd_n": 86,
+   "other_n": 375,
+   "low_res_n": 83,
+   "usable_n": 84,
+   "est_unique": 799,
+   "est_cc0": 62,
+   "est_pd": 137,
+   "est_other": 599,
+   "est_low": 133,
+   "est_usable": 134,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     139
+    ],
+    [
+     "CC BY-SA 3.0",
+     90
+    ],
+    [
+     "Public domain",
+     86
+    ],
+    [
+     "CC BY-SA 2.0",
+     48
+    ],
+    [
+     "CC BY 2.0",
+     46
+    ],
+    [
+     "CC0",
+     39
+    ],
+    [
+     "CC BY 4.0",
+     15
+    ],
+    [
+     "CC BY 3.0",
+     9
+    ],
+    [
+     "LGPL",
+     7
+    ],
+    [
+     "CC BY-SA 2.5",
+     4
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     3
+    ],
+    [
+     "CC BY 2.0 de",
+     3
+    ]
+   ],
+   "mimes": {
+    "jpeg": 372,
+    "png": 78,
+    "svg+xml": 43,
+    "gif": 6,
+    "pdf": 1
+   },
+   "sub_categories": [
+    "Anti logos",
+    "Prohibition signs by country",
+    "Groups of prohibition signs",
+    "Signs of restricted areas",
+    "Dress code signs",
+    "Fire-related prohibition signs",
+    "Prohibition signs by prohibited action"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Bollinger Champagne Crate Matchsafe, late 19th century (CH 18494813).jpg",
+     "File:Bozen 2 (40).jpg",
+     "File:Buck Fire (25165713948).jpg",
+     "File:GB 2893-2008 Pic A.1.jpg",
+     "File:MUTCD-CA PREP-042.svg"
+    ],
+    "other": [
+     "File:14th St 6th Av td (2018-03-22) 20 - Greenwich Savings Bank 14th Street Office.jpg",
+     "File:2021 Pol’and’Rock (29) Lech.jpg",
+     "File:Antisocial.jpg",
+     "File:Apartheidmuseumhall.JPG",
+     "File:Base de plein air et de loisirs de Vaires-Torcy le 7 août 2017 - 35.jpg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|Safety symbols": {
+   "category": "Safety symbols",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 4452,
+   "unique_files_listed": 4232,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 192,
+   "pd_n": 296,
+   "other_n": 12,
+   "low_res_n": 177,
+   "usable_n": 315,
+   "est_unique": 4232,
+   "est_cc0": 1625,
+   "est_pd": 2505,
+   "est_other": 102,
+   "est_low": 1498,
+   "est_usable": 2666,
+   "licenses": [
+    [
+     "Public domain",
+     296
+    ],
+    [
+     "CC0",
+     192
+    ],
+    [
+     "CC BY-SA 3.0",
+     5
+    ],
+    [
+     "CC BY-SA 4.0",
+     3
+    ],
+    [
+     "CC BY-SA 2.0",
+     2
+    ],
+    [
+     "Copyrighted free use",
+     1
+    ],
+    [
+     "CC BY 4.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 7,
+    "svg+xml": 488,
+    "png": 5
+   },
+   "sub_categories": [
+    "SVG safety symbols",
+    "Safety signs",
+    "Safety labels",
+    "Safety flags",
+    "Big guy637's CC0 Safety symbols",
+    "Big guy637's CC0 Public information symbols (Series 2)",
+    "ISO 7010 safety signs (vector drawings)"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Big guy637's Safety sign M010a.svg",
+     "File:Big guy637's Safety sign M016a.svg",
+     "File:Big guy637's Safety sign M045c.svg",
+     "File:Big guy637's Safety sign P009a.svg",
+     "File:Big guy637's Safety sign W015b.svg"
+    ],
+    "other": [
+     "File:African Lion Safari (22939404446).jpg",
+     "File:Placard 5.2.svg",
+     "File:Gefahrenzettel 3.png",
+     "File:Safety Shower and Eye Wash Station.jpg",
+     "File:Sign first aid.svg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|GHS pictograms": {
+   "category": "GHS pictograms",
+   "exists": true,
+   "cats_listed": 3,
+   "sum_files_categoryinfo": 52,
+   "unique_files_listed": 42,
+   "listing_truncated": false,
+   "sampled": 42,
+   "exact": true,
+   "cc0_n": 2,
+   "pd_n": 26,
+   "other_n": 14,
+   "low_res_n": 5,
+   "usable_n": 25,
+   "est_unique": 42,
+   "est_cc0": 2,
+   "est_pd": 26,
+   "est_other": 14,
+   "est_low": 5,
+   "est_usable": 25,
+   "licenses": [
+    [
+     "Public domain",
+     26
+    ],
+    [
+     "CC BY-SA 4.0",
+     9
+    ],
+    [
+     "CC BY-SA 3.0",
+     5
+    ],
+    [
+     "CC0",
+     2
+    ]
+   ],
+   "mimes": {
+    "jpeg": 11,
+    "svg+xml": 23,
+    "png": 7,
+    "webp": 1
+   },
+   "sub_categories": [
+    "GHS pictograms (Vector drawings)",
+    "GHS pictogram proposals"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:AM-2201 Verpackung.jpg",
+     "File:Acetone - Pipe Marker (GHS) (R).svg",
+     "File:Faresymboler.jpg",
+     "File:GHS-pictogram-acid.svg",
+     "File:GHS-pictogram-bottle.svg"
+    ],
+    "other": [
+     "File:Consigli P.png",
+     "File:Environmentally hazardous substance–IMG 6878.jpg",
+     "File:Frasi H.png",
+     "File:GHS Diethylzink.png",
+     "File:GHS HAZCOM Safety Labels.jpg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "2 safety and quality|Chemical hazard signs": {
+   "category": "Chemical hazard signs",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1816,
+   "unique_files_listed": 1562,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 31,
+   "pd_n": 172,
+   "other_n": 297,
+   "low_res_n": 144,
+   "usable_n": 137,
+   "est_unique": 1562,
+   "est_cc0": 97,
+   "est_pd": 537,
+   "est_other": 928,
+   "est_low": 450,
+   "est_usable": 428,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     184
+    ],
+    [
+     "Public domain",
+     172
+    ],
+    [
+     "CC BY-SA 3.0",
+     50
+    ],
+    [
+     "CC0",
+     31
+    ],
+    [
+     "CC BY 2.0",
+     27
+    ],
+    [
+     "CC BY-SA 2.0",
+     9
+    ],
+    [
+     "CC BY 4.0",
+     7
+    ],
+    [
+     "CC BY 3.0",
+     6
+    ],
+    [
+     "Attribution",
+     5
+    ],
+    [
+     "Copyrighted free use",
+     4
+    ],
+    [
+     "OGL v1.0",
+     2
+    ],
+    [
+     "OFL",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 251,
+    "svg+xml": 131,
+    "png": 111,
+    "webp": 1,
+    "gif": 5,
+    "webm": 1
+   },
+   "sub_categories": [
+    "Biohazard symbols",
+    "NFPA 704 images",
+    "ADR images",
+    "Poison warning signs",
+    "Fire protection signs",
+    "ECB hazard symbols",
+    "Explosives labelling"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:ADR22 UN1977 Liquid nitrogen.png",
+     "File:ADR90 UN3028 Marine diesel oil.png",
+     "File:ADR 2.3.svg",
+     "File:Biohazard disposal bin.png",
+     "File:Delaware Nat'l Guard tests for COVID-19 in Dover (50038053356).jpg"
+    ],
+    "other": [
+     "File:1080 Poison.jpg",
+     "File:2017-09-12 (131) 37 84 7818 181-1 at Hauptbahnhof St. Pölten.jpg",
+     "File:2017-11-16 (223) 33 56 7829 205-3 at Bahnhof Korneuburg.jpg",
+     "File:2018-06-19 (101) 33 80 7848 891-7 at Bahnhof Herzogenburg.jpg",
+     "File:2018-06-19 (106) 33 80 7841 714-8 at Bahnhof Herzogenburg.jpg"
+    ]
+   },
+   "domain": "2 safety and quality"
+  },
+  "3 maps, routes, drawings|Floor plans": {
+   "category": "Floor plans",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 16151,
+   "unique_files_listed": 4200,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 64,
+   "pd_n": 119,
+   "other_n": 317,
+   "low_res_n": 10,
+   "usable_n": 180,
+   "est_unique": 4200,
+   "est_cc0": 538,
+   "est_pd": 1000,
+   "est_other": 2663,
+   "est_low": 84,
+   "est_usable": 1512,
+   "licenses": [
+    [
+     "CC BY 4.0",
+     206
+    ],
+    [
+     "Public domain",
+     119
+    ],
+    [
+     "CC BY-SA 4.0",
+     70
+    ],
+    [
+     "CC0",
+     64
+    ],
+    [
+     "CC BY-SA 3.0",
+     22
+    ],
+    [
+     "No restrictions",
+     14
+    ],
+    [
+     "Copyrighted free use",
+     1
+    ],
+    [
+     "CC BY 3.0",
+     1
+    ],
+    [
+     "Attribution",
+     1
+    ],
+    [
+     "CC BY-SA 3.0 it",
+     1
+    ],
+    [
+     "CC BY 2.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 401,
+    "tiff": 29,
+    "png": 54,
+    "svg+xml": 13,
+    "gif": 2,
+    "webp": 1
+   },
+   "sub_categories": [
+    "Staatsarchiv Ludwigsburg Findbuch K 412 IV",
+    "Floor plans by country",
+    "Floor plans of buildings",
+    "Schematic plans",
+    "Escape and evacuation plans",
+    "Floor plans of exhibitions",
+    "Plans of sports venues in England"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:A description of Bath Fleuron T064760-17.png",
+     "File:Architettura, Particolare, XVII secolo - Archivio Accademia delle Scienze Torino, Millon 48 14 049.jpg",
+     "File:Basement floor plan - National Zoological Park, Elephant House, 3001 Connecticut Avenue NW, Washington, District of Columbia, DC HABS dc-777-C (sheet 3 of 11).tif",
+     "File:Block House Plan and Section - NARA - 122207303.jpg",
+     "File:Byggnadsritningar. Ramlösa - Hallwylska museet - 105248.tif"
+    ],
+    "other": [
+     "File:340 of 'A Land March from England to Ceylon, forty years ago ... Illustrated with original sketches' (11090722836).jpg",
+     "File:AR-UTDT-AA-BA-PA-245 02.TIF",
+     "File:Aalen- Empfangsgebäude Schalterhalle Wandabwicklung - LABW - Staatsarchiv Ludwigsburg K 412 IV DO 146.jpeg",
+     "File:Aalen- Sozialgebäude - Umgebungsarbeiten Nebengeb. - LABW - Staatsarchiv Ludwigsburg K 412 IV DO 116.jpeg",
+     "File:Althengstett- Empfangsgebäude Ansichten - LABW - Staatsarchiv Ludwigsburg K 412 IV DO 411.jpg"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Blueprints": {
+   "category": "Blueprints",
+   "exists": true,
+   "cats_listed": 24,
+   "sum_files_categoryinfo": 2318,
+   "unique_files_listed": 2266,
+   "listing_truncated": false,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 132,
+   "pd_n": 218,
+   "other_n": 150,
+   "low_res_n": 4,
+   "usable_n": 348,
+   "est_unique": 2266,
+   "est_cc0": 598,
+   "est_pd": 988,
+   "est_other": 680,
+   "est_low": 18,
+   "est_usable": 1577,
+   "licenses": [
+    [
+     "Public domain",
+     218
+    ],
+    [
+     "CC0",
+     132
+    ],
+    [
+     "No restrictions",
+     79
+    ],
+    [
+     "CC BY-SA 4.0",
+     47
+    ],
+    [
+     "CC BY 2.0",
+     8
+    ],
+    [
+     "CC BY-SA 3.0",
+     6
+    ],
+    [
+     "CC BY-SA 2.0",
+     4
+    ],
+    [
+     "CC BY 3.0",
+     3
+    ],
+    [
+     "CC BY 4.0",
+     2
+    ],
+    [
+     "Copyrighted free use",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 403,
+    "tiff": 82,
+    "png": 7,
+    "svg+xml": 4,
+    "webp": 1,
+    "gif": 2,
+    "pdf": 1
+   },
+   "sub_categories": [
+    "Cyanotypes",
+    "Blueprints of architectural drawings",
+    "Blueprints of vehicles",
+    "Old blueprints of Ouessant",
+    "Blueprints and plans of Belleville Collegiate Institute and Vocational School",
+    "Blueprint of Victory",
+    "Lake Washington Ship Canal 1905 blueprints"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Aanleg van het Viaur Viaduct in Frankrijk door de Societé de Construction des Battignolles, 16 februari 1901, RP-F-2014-19-19.jpg",
+     "File:Ahwahnee Hotel Grounds Yosemite National Park Cottages Type \"B\" (fd6a4885-205b-466f-be73-4499d529707a).tif",
+     "File:Amgueddfa Cymru - New Zealand Ferns 087 - 74437.jpeg",
+     "File:Anton op sluis in achterdam van Ma retraite (titel op object), NG-1994-65-2-37-1.jpg",
+     "File:Boekband van Louis Couperus, Noodlot, 1898, RP-D-1986-19-301.jpg"
+    ],
+    "other": [
+     "File:(Two unidentified women being photographed) (LOC) (4483939157).jpg",
+     "File:Baiana Cianotipia.jpg",
+     "File:Cianotipia 4.jpg",
+     "File:Cinema Guido Guerra Montevarchi LM (19).jpg",
+     "File:Cyanotype.jpg"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Circuit diagrams": {
+   "category": "Circuit diagrams",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 5313,
+   "unique_files_listed": 4952,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 29,
+   "pd_n": 115,
+   "other_n": 356,
+   "low_res_n": 137,
+   "usable_n": 97,
+   "est_unique": 4952,
+   "est_cc0": 287,
+   "est_pd": 1139,
+   "est_other": 3526,
+   "est_low": 1357,
+   "est_usable": 961,
+   "licenses": [
+    [
+     "CC BY-SA 3.0",
+     183
+    ],
+    [
+     "CC BY-SA 4.0",
+     139
+    ],
+    [
+     "Public domain",
+     115
+    ],
+    [
+     "CC0",
+     29
+    ],
+    [
+     "CC BY 3.0",
+     9
+    ],
+    [
+     "CC BY 2.5",
+     4
+    ],
+    [
+     "No restrictions",
+     3
+    ],
+    [
+     "CC BY 4.0",
+     3
+    ],
+    [
+     "Attribution",
+     2
+    ],
+    [
+     "CC BY-SA 2.5",
+     2
+    ],
+    [
+     "Copyrighted free use",
+     2
+    ],
+    [
+     "CC BY 2.0",
+     2
+    ]
+   ],
+   "mimes": {
+    "jpeg": 161,
+    "png": 218,
+    "gif": 20,
+    "svg+xml": 95,
+    "pdf": 3,
+    "tiff": 2,
+    "webm": 1
+   },
+   "sub_categories": [
+    "Circuit images that should use vector graphics",
+    "Electronic diagrams",
+    "Electronic circuit diagrams",
+    "Operational amplifier circuit diagrams",
+    "Transformer circuits",
+    "Hand-drawn electronic circuit diagrams",
+    "LCR circuits"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Circuito pulsador.gif",
+     "File:Cyclo Image193.gif",
+     "File:ESR-vector.svg",
+     "File:EVWiring2.jpg",
+     "File:Ersatzschaltbild-spannungen-am-transformator-2.png"
+    ],
+    "other": [
+     "File:3 phase motor reverse.jpg",
+     "File:AkustischeRückkopplung.PNG",
+     "File:Analóg multiméter túlterhelés védelme.jpg",
+     "File:Binary multipler vs bit shifter.png",
+     "File:Bipolar stepper driver.png"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Schematics": {
+   "category": "Schematics",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 0,
+   "unique_files_listed": 0,
+   "listing_truncated": false,
+   "sampled": 0,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 0,
+   "other_n": 0,
+   "low_res_n": 0,
+   "usable_n": 0,
+   "est_unique": 0,
+   "est_cc0": 0,
+   "est_pd": 0,
+   "est_other": 0,
+   "est_low": 0,
+   "est_usable": 0,
+   "licenses": [],
+   "mimes": {},
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [],
+    "other": []
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Flowcharts": {
+   "category": "Flowcharts",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 0,
+   "unique_files_listed": 0,
+   "listing_truncated": false,
+   "sampled": 0,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 0,
+   "other_n": 0,
+   "low_res_n": 0,
+   "usable_n": 0,
+   "est_unique": 0,
+   "est_cc0": 0,
+   "est_pd": 0,
+   "est_other": 0,
+   "est_low": 0,
+   "est_usable": 0,
+   "licenses": [],
+   "mimes": {},
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [],
+    "other": []
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Transit maps": {
+   "category": "Transit maps",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 1,
+   "unique_files_listed": 1,
+   "listing_truncated": false,
+   "sampled": 1,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 0,
+   "other_n": 1,
+   "low_res_n": 0,
+   "usable_n": 0,
+   "est_unique": 1,
+   "est_cc0": 0,
+   "est_pd": 0,
+   "est_other": 1,
+   "est_low": 0,
+   "est_usable": 0,
+   "licenses": [
+    [
+     "CC BY 4.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 1
+   },
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [],
+    "other": [
+     "File:Sergey A. Demidov - 2015 - Drawing 22.jpg"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Metro maps": {
+   "category": "Metro maps",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 160,
+   "unique_files_listed": 160,
+   "listing_truncated": true,
+   "sampled": 160,
+   "exact": false,
+   "cc0_n": 16,
+   "pd_n": 16,
+   "other_n": 128,
+   "low_res_n": 1,
+   "usable_n": 31,
+   "est_unique": 160,
+   "est_cc0": 16,
+   "est_pd": 16,
+   "est_other": 128,
+   "est_low": 1,
+   "est_usable": 31,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     66
+    ],
+    [
+     "CC BY-SA 3.0",
+     29
+    ],
+    [
+     "CC BY-SA 2.0",
+     16
+    ],
+    [
+     "Public domain",
+     16
+    ],
+    [
+     "CC0",
+     16
+    ],
+    [
+     "CC BY 2.0",
+     6
+    ],
+    [
+     "CC BY 4.0",
+     4
+    ],
+    [
+     "CC BY 3.0",
+     3
+    ],
+    [
+     "GFDL",
+     2
+    ],
+    [
+     "KOGL Type 1",
+     1
+    ],
+    [
+     "CC BY-SA 2.5",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 94,
+    "png": 31,
+    "svg+xml": 33,
+    "gif": 1,
+    "pdf": 1
+   },
+   "sub_categories": [
+    "Metro maps by country",
+    "Car interior linear metro maps",
+    "Metro maps of China",
+    "Route diagrams of Madrid Metro",
+    "Metro maps of India",
+    "New York City Subway car interior linear maps",
+    "Metro maps of the United States"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Cincinnati Subway map, January 1913.jpg",
+     "File:Dynamic Route Map on MRT Pink Line - 5 July 2025.jpg",
+     "File:Jacksonville Skyway.jpg",
+     "File:Linea 1 Metro de Bogota.png",
+     "File:Madrid-MetroL11-Termometro.svg"
+    ],
+    "other": [
+     "File:\"Aquarel\" train, the 4th, \"gray\" car №0577 (Метропоезд \"Акварель\", 4ый, \"серый\" вагон №0577) (5936303881).jpg",
+     "File:119 Livingston Street.jpg",
+     "File:19690104 19 PATCO Rapid Transit Map (6739100959).jpg",
+     "File:81-740 741 \"Rusich\" metro car (Метровагон 81-740 741 \"Русич\") (6314581437).jpg",
+     "File:BHOJ METRO Route Map.png"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Railway maps": {
+   "category": "Railway maps",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 0,
+   "unique_files_listed": 0,
+   "listing_truncated": false,
+   "sampled": 0,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 0,
+   "other_n": 0,
+   "low_res_n": 0,
+   "usable_n": 0,
+   "est_unique": 0,
+   "est_cc0": 0,
+   "est_pd": 0,
+   "est_other": 0,
+   "est_low": 0,
+   "est_usable": 0,
+   "licenses": [],
+   "mimes": {},
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [],
+    "other": []
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Site plans": {
+   "category": "Site plans",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 884,
+   "unique_files_listed": 877,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 13,
+   "pd_n": 174,
+   "other_n": 313,
+   "low_res_n": 11,
+   "usable_n": 183,
+   "est_unique": 877,
+   "est_cc0": 23,
+   "est_pd": 305,
+   "est_other": 549,
+   "est_low": 19,
+   "est_usable": 321,
+   "licenses": [
+    [
+     "Public domain",
+     174
+    ],
+    [
+     "CC BY-SA 4.0",
+     142
+    ],
+    [
+     "CC BY-SA 3.0",
+     89
+    ],
+    [
+     "CC BY 4.0",
+     18
+    ],
+    [
+     "CC BY 3.0",
+     14
+    ],
+    [
+     "CC0",
+     13
+    ],
+    [
+     "CC BY-SA 2.5",
+     13
+    ],
+    [
+     "CC BY-SA 2.0",
+     11
+    ],
+    [
+     "CC BY 2.0",
+     5
+    ],
+    [
+     "Attribution",
+     5
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     3
+    ],
+    [
+     "CC BY-SA 3.0 at",
+     3
+    ]
+   ],
+   "mimes": {
+    "jpeg": 296,
+    "png": 84,
+    "svg+xml": 105,
+    "gif": 6,
+    "tiff": 7,
+    "pdf": 2
+   },
+   "sub_categories": [
+    "SVG site plans",
+    "Site plans by country",
+    "Maps of archaeological sites",
+    "Maps of cemeteries",
+    "Campus maps",
+    "Plans of Commonwealth War Graves Commission cemeteries",
+    "Stalag plans"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Beloch - Kyme.png",
+     "File:Detail of Rancho del Norte Landscape (5f9c5c2a-f574-0d79-d48c-cbba885f5ad1).JPG",
+     "File:Early Scandinavian Dublin - South-East.svg",
+     "File:Fredriksholm festning - an10071204042005.jpg",
+     "File:Grabungsplan der keltische Siedlung.jpg"
+    ],
+    "other": [
+     "File:Ad fines kastellplan.jpg",
+     "File:Benicia Arsenal Post Cemetery map.jpg",
+     "File:Cemetery Halbturn, Burgenland, Austria-basemap.at - map.png",
+     "File:Dortmund Ostenfriedhof Lageplan.png",
+     "File:Eanna4composite.svg"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Technical drawings": {
+   "category": "Technical drawings",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 10360,
+   "unique_files_listed": 9634,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 7,
+   "pd_n": 347,
+   "other_n": 146,
+   "low_res_n": 100,
+   "usable_n": 268,
+   "est_unique": 9634,
+   "est_cc0": 135,
+   "est_pd": 6686,
+   "est_other": 2813,
+   "est_low": 1927,
+   "est_usable": 5164,
+   "licenses": [
+    [
+     "Public domain",
+     347
+    ],
+    [
+     "CC BY-SA 4.0",
+     91
+    ],
+    [
+     "CC BY-SA 3.0",
+     21
+    ],
+    [
+     "CC BY 4.0",
+     14
+    ],
+    [
+     "CC0",
+     7
+    ],
+    [
+     "No restrictions",
+     6
+    ],
+    [
+     "CC BY 3.0",
+     3
+    ],
+    [
+     "CC BY-SA 2.0 de",
+     3
+    ],
+    [
+     "Copyrighted free use",
+     2
+    ],
+    [
+     "CC BY-SA 2.5",
+     2
+    ],
+    [
+     "CC BY 2.5",
+     2
+    ],
+    [
+     "GPLv3",
+     1
+    ]
+   ],
+   "mimes": {
+    "svg+xml": 56,
+    "jpeg": 301,
+    "png": 45,
+    "tiff": 86,
+    "pdf": 3,
+    "gif": 8,
+    "webm": 1
+   },
+   "sub_categories": [
+    "Technical drawings of Cockerill Yards",
+    "Collection Technical Drawings from Het Utrechts Archief",
+    "Technical drawings from the US National Archives and Records Administration",
+    "CAD drawings",
+    "Technical drawing worksheets",
+    "Unified system for design documentation",
+    "Technical drawings of Den Helder"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:02extrude1.svg",
+     "File:AS.1961.030.358.900-904.tif, asset ChoQLQWSTCp2AMaAGiySIJNM.jpg",
+     "File:Bovenbouw - Sleepboot, asset W2POUljYkIobL2gkMhv4iMsl.jpg",
+     "File:CalculatingMachinePatentBurroughs.jpg",
+     "File:Commandes de boulons, asset h1gPiUNMMiIWWXoAcF1ZKwQf.tif"
+    ],
+    "other": [
+     "File:Batterietrennschalter2.PNG",
+     "File:Bau und Unterhaltung einer Brücke über die Aach zwischen Hausen und Gailingen - LABW - Staatsarchiv Freiburg B 715-1 Nr. 160.jpg",
+     "File:Brücke über den Neumagen bei Etzenbach - LABW - Staatsarchiv Freiburg K 345 Nr. 0254.jpg",
+     "File:Dahnlander-ventilation.jpg",
+     "File:House system without chp.png"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Wiring diagrams": {
+   "category": "Wiring diagrams",
+   "exists": true,
+   "cats_listed": 21,
+   "sum_files_categoryinfo": 1041,
+   "unique_files_listed": 1039,
+   "listing_truncated": false,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 20,
+   "pd_n": 186,
+   "other_n": 294,
+   "low_res_n": 123,
+   "usable_n": 147,
+   "est_unique": 1039,
+   "est_cc0": 42,
+   "est_pd": 387,
+   "est_other": 611,
+   "est_low": 256,
+   "est_usable": 305,
+   "licenses": [
+    [
+     "Public domain",
+     186
+    ],
+    [
+     "CC BY-SA 3.0",
+     173
+    ],
+    [
+     "CC BY-SA 4.0",
+     82
+    ],
+    [
+     "CC0",
+     20
+    ],
+    [
+     "CC BY 3.0",
+     12
+    ],
+    [
+     "CC BY-SA 2.0 de",
+     9
+    ],
+    [
+     "FAL",
+     5
+    ],
+    [
+     "CC BY 2.5",
+     3
+    ],
+    [
+     "CC BY 4.0",
+     2
+    ],
+    [
+     "CC BY-SA 2.5",
+     2
+    ],
+    [
+     "GFDL",
+     1
+    ],
+    [
+     "BSD",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 134,
+    "svg+xml": 231,
+    "png": 113,
+    "gif": 21,
+    "pdf": 1
+   },
+   "sub_categories": [
+    "Optical fiber diagrams",
+    "Switch diagrams",
+    "Twisted-pair cable diagrams",
+    "3-phase motor driving diagrams",
+    "Wiring diagrams of lighting dimmers",
+    "Wiring diagrams of distribution boards",
+    "Wiring diagrams of fluorescent lamp power supplies"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Brockhaus-Efron Electrical Grid 18.jpg",
+     "File:Esquema it.png",
+     "File:Fi-rele2.gif",
+     "File:Fibra ottica.png",
+     "File:OpenLoopFOG.PNG"
+    ],
+    "other": [
+     "File:067-StarPower-Ground.jpg",
+     "File:Additional stop button reversing the motor.jpg",
+     "File:Bimetsymb.jpg",
+     "File:CARS Scheme.svg",
+     "File:Cablage hqi.jpg"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Subway maps": {
+   "category": "Subway maps",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 1,
+   "unique_files_listed": 1,
+   "listing_truncated": false,
+   "sampled": 1,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 0,
+   "other_n": 1,
+   "low_res_n": 0,
+   "usable_n": 0,
+   "est_unique": 1,
+   "est_cc0": 0,
+   "est_pd": 0,
+   "est_other": 1,
+   "est_low": 0,
+   "est_usable": 0,
+   "licenses": [
+    [
+     "CC BY 4.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 1
+   },
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [],
+    "other": [
+     "File:Sergey A. Demidov - 2015 - Drawing 22.jpg"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Rail transport maps": {
+   "category": "Rail transport maps",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 3060,
+   "unique_files_listed": 2978,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 11,
+   "pd_n": 169,
+   "other_n": 320,
+   "low_res_n": 44,
+   "usable_n": 139,
+   "est_unique": 2978,
+   "est_cc0": 66,
+   "est_pd": 1007,
+   "est_other": 1906,
+   "est_low": 262,
+   "est_usable": 828,
+   "licenses": [
+    [
+     "Public domain",
+     169
+    ],
+    [
+     "CC BY-SA 2.0",
+     85
+    ],
+    [
+     "CC BY-SA 3.0",
+     72
+    ],
+    [
+     "CC BY-SA 4.0",
+     72
+    ],
+    [
+     "CC BY 4.0",
+     44
+    ],
+    [
+     "No restrictions",
+     17
+    ],
+    [
+     "CC BY 3.0",
+     12
+    ],
+    [
+     "CC0",
+     11
+    ],
+    [
+     "CC BY-SA 2.5",
+     6
+    ],
+    [
+     "ODbL",
+     4
+    ],
+    [
+     "CC BY 2.0",
+     4
+    ],
+    [
+     "Attribution-Swisstopo",
+     2
+    ]
+   ],
+   "mimes": {
+    "jpeg": 140,
+    "png": 216,
+    "svg+xml": 137,
+    "pdf": 4,
+    "tiff": 3
+   },
+   "sub_categories": [
+    "Rail tracks map template",
+    "Rail transport maps by country",
+    "Rail transport map images that should use vector graphics",
+    "Rail transport electrification maps",
+    "SVG rail transport maps (current)",
+    "Rail transport maps of the world",
+    "Rail transport route maps"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Centraalspoorweg.png",
+     "File:Central Pacific Railroad, from section 32 to 54 - NARA - 102256276.jpg",
+     "File:Eisenbahnen- und Telegraphendichte der Erde um 1900.jpg",
+     "File:Eisenbahnkarte der vollendeten... und projectirten Bahnen in Deutschland, Belgien, Holland... (2. Auflage) - von Rudolf Gross... - btv1b84683875.jpg",
+     "File:Flevolijn.png"
+    ],
+    "other": [
+     "File:(Gorakhpur - Yesvantpur) (via Ayodhya) Express Route map.jpg",
+     "File:(Nanded - Bangalore) Express Route map.jpg",
+     "File:810000 - Ligne de Tarascon à Sète-Ville.png",
+     "File:Africa railway map gauge.jpg",
+     "File:Appenzeller Bahnen - Streckennetz.png"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Tram maps": {
+   "category": "Tram maps",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 675,
+   "unique_files_listed": 646,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 11,
+   "pd_n": 59,
+   "other_n": 430,
+   "low_res_n": 4,
+   "usable_n": 70,
+   "est_unique": 646,
+   "est_cc0": 14,
+   "est_pd": 76,
+   "est_other": 556,
+   "est_low": 5,
+   "est_usable": 90,
+   "licenses": [
+    [
+     "CC BY-SA 2.0",
+     192
+    ],
+    [
+     "CC BY-SA 4.0",
+     88
+    ],
+    [
+     "CC BY-SA 3.0",
+     62
+    ],
+    [
+     "Public domain",
+     59
+    ],
+    [
+     "CC BY-SA 2.5",
+     29
+    ],
+    [
+     "No restrictions",
+     23
+    ],
+    [
+     "CC BY 3.0",
+     17
+    ],
+    [
+     "CC0",
+     11
+    ],
+    [
+     "CC BY 2.5",
+     10
+    ],
+    [
+     "CC BY 4.0",
+     4
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     3
+    ],
+    [
+     "Copyrighted free use",
+     1
+    ]
+   ],
+   "mimes": {
+    "png": 293,
+    "svg+xml": 79,
+    "jpeg": 124,
+    "gif": 2,
+    "x-xcf": 2
+   },
+   "sub_categories": [
+    "Public transport country maps",
+    "Tram maps by country",
+    "Network types of public transport systems",
+    "Public transport maps of interurban tramway systems",
+    "Tram track diagrams",
+    "Tram maps of the Netherlands",
+    "Tram maps of Russia"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1914 Tacoma street railway map.png",
+     "File:1914 map of Puget Sound TLP Bellingham Division.png",
+     "File:CALLEJA (1924) 05.jpg",
+     "File:CrasnodarTram.png",
+     "File:James Street cable line, Seattle, 1904 (MOHAI 13395).jpg"
+    ],
+    "other": [
+     "File:Barnaul Tram System.svg",
+     "File:Birkenhead Heritage Tramway - OpenStreetMap.png",
+     "File:Brill tramway system diagram.png",
+     "File:Camborne and Redruth Tramway.jpg",
+     "File:DA Quartierbus.png"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Bus maps": {
+   "category": "Bus maps",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 2139,
+   "unique_files_listed": 2125,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 16,
+   "pd_n": 22,
+   "other_n": 462,
+   "low_res_n": 3,
+   "usable_n": 37,
+   "est_unique": 2125,
+   "est_cc0": 68,
+   "est_pd": 94,
+   "est_other": 1964,
+   "est_low": 13,
+   "est_usable": 157,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     301
+    ],
+    [
+     "CC BY-SA 3.0",
+     123
+    ],
+    [
+     "Public domain",
+     22
+    ],
+    [
+     "CC BY-SA 2.0",
+     18
+    ],
+    [
+     "CC0",
+     16
+    ],
+    [
+     "CC BY 4.0",
+     7
+    ],
+    [
+     "CC BY 3.0",
+     7
+    ],
+    [
+     "CC BY-SA 2.5",
+     5
+    ],
+    [
+     "CC BY 2.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 90,
+    "png": 371,
+    "svg+xml": 33,
+    "gif": 4,
+    "pdf": 2
+   },
+   "sub_categories": [
+    "Trolleybus maps",
+    "Bus rapid transit maps",
+    "Plans réseau Idelis",
+    "Bus maps by country",
+    "Bus maps by city",
+    "Schematics of bus stations",
+    "Maps (Buses in Hong Kong)"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:London General Omnibus Company route map May 1912 Cover.jpeg",
+     "File:RouteMap Inawashiro AizuBus 20110507.jpg",
+     "File:1934 map $1 Ride All Day on the Eastern Mass.png",
+     "File:TransjakartaKoridor6A.jpg",
+     "File:TransjakartaKoridor9C.jpg"
+    ],
+    "other": [
+     "File:12Y busz térképe.jpg",
+     "File:13-as busz térképe.jpg",
+     "File:38-as busz térképe.jpg",
+     "File:872RtMap.png",
+     "File:A41RtMap.png"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Public transport maps of London": {
+   "category": "Public transport maps of London",
+   "exists": true,
+   "cats_listed": 23,
+   "sum_files_categoryinfo": 498,
+   "unique_files_listed": 458,
+   "listing_truncated": false,
+   "sampled": 458,
+   "exact": true,
+   "cc0_n": 12,
+   "pd_n": 148,
+   "other_n": 298,
+   "low_res_n": 11,
+   "usable_n": 154,
+   "est_unique": 458,
+   "est_cc0": 12,
+   "est_pd": 148,
+   "est_other": 298,
+   "est_low": 11,
+   "est_usable": 154,
+   "licenses": [
+    [
+     "Public domain",
+     148
+    ],
+    [
+     "CC BY-SA 3.0",
+     86
+    ],
+    [
+     "CC BY-SA 2.0",
+     71
+    ],
+    [
+     "CC BY-SA 4.0",
+     55
+    ],
+    [
+     "CC BY 3.0",
+     51
+    ],
+    [
+     "No restrictions",
+     17
+    ],
+    [
+     "CC0",
+     12
+    ],
+    [
+     "CC BY-SA 2.0 ca",
+     4
+    ],
+    [
+     "CC BY 4.0",
+     2
+    ],
+    [
+     "CC BY-SA 2.5",
+     2
+    ],
+    [
+     "CC BY 2.5",
+     2
+    ],
+    [
+     "CC BY 2.0",
+     2
+    ]
+   ],
+   "mimes": {
+    "jpeg": 166,
+    "png": 206,
+    "svg+xml": 65,
+    "gif": 13,
+    "pdf": 7,
+    "webp": 1
+   },
+   "sub_categories": [
+    "Rail transport maps of London",
+    "London Underground maps",
+    "London Overground maps",
+    "Elizabeth line maps",
+    "Bus transport maps of London",
+    "Tram transport maps of London",
+    "Maps of Crossrail, London"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1920 Bacon Pocket Map of London, England and Environs - Geographicus - London-bacon-1920.jpg",
+     "File:Acton, Kew, South Acton & Turnham Green RJD 102.jpg",
+     "File:Acton, Kew, South Acton & Turnham Green RJD 102.svg",
+     "File:Airey Railway Map London & its Suburbs, Published 1894.jpg",
+     "File:Airey Railway Map London and its Suburbs, Published 1869.jpg"
+    ],
+    "other": [
+     "File:156 of 'Pitman's Commercial Geography of the World' (11248987925).jpg",
+     "File:16 of '(Cook's Handbook for London. With two maps.)' (11124681785).jpg",
+     "File:16 of '(Cook's Handbook for London. With two maps.)' (11129413205).jpg",
+     "File:16 of '(Cook's Handbook for London. With two maps.)' (11191924616).jpg",
+     "File:16 of '(Cook's Handbook for London. With two maps.)' (11245303263).jpg"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Schematic plans": {
+   "category": "Schematic plans",
+   "exists": true,
+   "cats_listed": 12,
+   "sum_files_categoryinfo": 604,
+   "unique_files_listed": 603,
+   "listing_truncated": false,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 6,
+   "pd_n": 377,
+   "other_n": 117,
+   "low_res_n": 52,
+   "usable_n": 357,
+   "est_unique": 603,
+   "est_cc0": 7,
+   "est_pd": 455,
+   "est_other": 141,
+   "est_low": 63,
+   "est_usable": 431,
+   "licenses": [
+    [
+     "Public domain",
+     377
+    ],
+    [
+     "CC BY-SA 3.0",
+     67
+    ],
+    [
+     "CC BY-SA 4.0",
+     34
+    ],
+    [
+     "CC0",
+     6
+    ],
+    [
+     "CC BY 3.0",
+     5
+    ],
+    [
+     "No restrictions",
+     3
+    ],
+    [
+     "CC BY-SA 2.5",
+     3
+    ],
+    [
+     "CC BY 4.0",
+     3
+    ],
+    [
+     "GFDL",
+     1
+    ],
+    [
+     "CC BY 2.5",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 170,
+    "png": 230,
+    "svg+xml": 66,
+    "vnd.djvu": 2,
+    "gif": 30,
+    "pdf": 2
+   },
+   "sub_categories": [
+    "Schematic plans of ancient Greek temples",
+    "Schematic church plans",
+    "Calculation of areas",
+    "Residential access diagrams",
+    "Architectural wiring diagrams",
+    "Development & Character of Gothic Architecture (1890)",
+    "History of architecture (Fletcher)"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Altchristliche Basilika MK1890.jpg",
+     "File:Fig 106 -Tower and Spire of Sta. Maria Novella.jpg",
+     "File:Fig 110 -Capital of the Palace of Diocletian.jpg",
+     "File:Fig 114 -Capital of the Triforium, Nave of Paris.png",
+     "File:Fig 116 -Capital of the St. Aignan at Senlis.jpg"
+    ],
+    "other": [
+     "File:Bruttogrundfläche.png",
+     "File:Cathedral schematic plan empty vectorial.svg",
+     "File:Circulation with 4 Front Doors.png",
+     "File:Galeriowiec schemat.svg",
+     "File:Gebundenes System.png"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Flow charts": {
+   "category": "Flow charts",
+   "exists": true,
+   "cats_listed": 26,
+   "sum_files_categoryinfo": 2611,
+   "unique_files_listed": 2452,
+   "listing_truncated": false,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 26,
+   "pd_n": 94,
+   "other_n": 380,
+   "low_res_n": 48,
+   "usable_n": 106,
+   "est_unique": 2452,
+   "est_cc0": 128,
+   "est_pd": 461,
+   "est_other": 1864,
+   "est_low": 235,
+   "est_usable": 520,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     228
+    ],
+    [
+     "CC BY-SA 3.0",
+     111
+    ],
+    [
+     "Public domain",
+     94
+    ],
+    [
+     "CC0",
+     26
+    ],
+    [
+     "CC BY 3.0",
+     13
+    ],
+    [
+     "CC BY 4.0",
+     9
+    ],
+    [
+     "CC BY 2.5",
+     6
+    ],
+    [
+     "CC BY-SA 2.5",
+     4
+    ],
+    [
+     "CC BY 2.0",
+     3
+    ],
+    [
+     "Attribution",
+     2
+    ],
+    [
+     "CC BY-SA 2.0",
+     1
+    ],
+    [
+     "FAL",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 139,
+    "png": 191,
+    "svg+xml": 157,
+    "gif": 6,
+    "pdf": 6,
+    "webp": 1
+   },
+   "sub_categories": [
+    "SVG flow charts",
+    "Computer science flowcharts",
+    "Flow charts for Wikimedia projects",
+    "FC Icons",
+    "Algorithm flowcharts elements",
+    "Systems flowcharts",
+    "Biology flow charts"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:(17) 2008-07-15 Real Property Work Order.jpg",
+     "File:(21) 2008-08-06 Employee Evaluation reports - FSO.jpg",
+     "File:Bogosort.png",
+     "File:CA Course Flowchart.png",
+     "File:Cjsflowco.svg"
+    ],
+    "other": [
+     "File:Aji Pangeran Kusumanegara (Aji Darma).jpg",
+     "File:CCC Flowchart 4.jpg",
+     "File:CMSA-CD.png",
+     "File:Compiling in C-ar.svg",
+     "File:Computer-science-stub-zaw-3.png"
+    ]
+   },
+   "domain": "3 maps, routes, drawings"
+  },
+  "3 maps, routes, drawings|Schematic drawings": {
+   "category": "Schematic drawings",
+   "exists": false,
+   "domain": "3 maps, routes, drawings"
+  },
+  "4 science, astronomy, satellite|NASA images": {
+   "category": "NASA images",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 0,
+   "unique_files_listed": 0,
+   "listing_truncated": false,
+   "sampled": 0,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 0,
+   "other_n": 0,
+   "low_res_n": 0,
+   "usable_n": 0,
+   "est_unique": 0,
+   "est_cc0": 0,
+   "est_pd": 0,
+   "est_other": 0,
+   "est_low": 0,
+   "est_usable": 0,
+   "licenses": [],
+   "mimes": {},
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [],
+    "other": []
+   },
+   "domain": "4 science, astronomy, satellite"
+  },
+  "4 science, astronomy, satellite|Images from NASA": {
+   "category": "Images from NASA",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 8653896,
+   "unique_files_listed": 23821,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 1,
+   "pd_n": 415,
+   "other_n": 84,
+   "low_res_n": 2,
+   "usable_n": 414,
+   "est_unique": 23821,
+   "est_cc0": 48,
+   "est_pd": 19771,
+   "est_other": 4002,
+   "est_low": 95,
+   "est_usable": 19724,
+   "licenses": [
+    [
+     "Public domain",
+     415
+    ],
+    [
+     "CC BY 2.0",
+     48
+    ],
+    [
+     "No restrictions",
+     29
+    ],
+    [
+     "CC BY-SA 2.0",
+     3
+    ],
+    [
+     "(none)",
+     2
+    ],
+    [
+     "CC BY 4.0",
+     2
+    ],
+    [
+     "CC0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 458,
+    "png": 15,
+    "gif": 3,
+    "tiff": 3,
+    "webm": 21
+   },
+   "sub_categories": [
+    "Files from NASA with known IDs",
+    "Images from the Earth Science and Remote Sensing Unit, Lyndon B. Johnson Space Center",
+    "Art from NASA",
+    "Images from NASA with broken source",
+    "Horizontal diagrams of the Solar System (NASA Planets2013)",
+    "NASA Flickr streams",
+    "NASA images (review needed)"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:'The Martian' World Premiere (NHQ201509110006).jpg",
+     "File:2012 RATS Tests MISSION DAYS (7859223130).jpg",
+     "File:2014 GHRC UWG Meeting (15155217753).jpg",
+     "File:2016GHRCUWGMeeting (29803048856).jpg",
+     "File:2022 Michael Collins Trophy Presentation (NHQ202203240008).jpg"
+    ],
+    "other": [
+     "File:Actor Seth Green visits NASA Goddard (5759376422).jpg",
+     "File:Bill Fecych and Don Johnson in control room in 1959. (9465040235).jpg",
+     "File:Global Hawk (8009107910).jpg",
+     "File:Hidden Figures cast at the Kennedy Space Center (31234496080).jpg",
+     "File:James Webb Space Telescope NIRSpec CAD drawing.jpg"
+    ]
+   },
+   "domain": "4 science, astronomy, satellite"
+  },
+  "4 science, astronomy, satellite|PD NASA": {
+   "category": "PD NASA",
+   "exists": true,
+   "cats_listed": 18,
+   "sum_files_categoryinfo": 5094687,
+   "unique_files_listed": 5401,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 0,
+   "pd_n": 500,
+   "other_n": 0,
+   "low_res_n": 9,
+   "usable_n": 491,
+   "est_unique": 5401,
+   "est_cc0": 0,
+   "est_pd": 5401,
+   "est_other": 0,
+   "est_low": 97,
+   "est_usable": 5304,
+   "licenses": [
+    [
+     "Public domain",
+     500
+    ]
+   ],
+   "mimes": {
+    "webm": 6,
+    "jpeg": 354,
+    "svg+xml": 6,
+    "png": 122,
+    "webp": 2,
+    "sla": 1,
+    "gif": 6,
+    "tiff": 1,
+    "pdf": 2
+   },
+   "sub_categories": [
+    "PD World Wind",
+    "PD NASA-AP",
+    "NASA SRTM images",
+    "NASA Advanced Automation for Space Missions images",
+    "Photographs by Paul Alers",
+    "Arabic Versions of PD NASA Images",
+    "NASA document collections"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:\"29 Days On The Edge\" Director's Cut Animations (SVS20352 - Jwst B roll Rotate Cam V2 1080).webm",
+     "File:\"First Man\" Premiere at NASM (NHQ201810040124).jpg",
+     "File:'A Beautiful Planet' World Premiere (NHQ201604160003).jpg",
+     "File:(ESP 011358 1255) Layering in Northwest-Trending Sinuous Ridge 3.jpg",
+     "File:(ESP 011365 1365) Knobs and Thermokarst 2.jpg"
+    ],
+    "other": []
+   },
+   "domain": "4 science, astronomy, satellite"
+  },
+  "4 science, astronomy, satellite|Astronomical images": {
+   "category": "Astronomical images",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 30234,
+   "unique_files_listed": 3015,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 4,
+   "pd_n": 115,
+   "other_n": 381,
+   "low_res_n": 22,
+   "usable_n": 102,
+   "est_unique": 3015,
+   "est_cc0": 24,
+   "est_pd": 693,
+   "est_other": 2297,
+   "est_low": 133,
+   "est_usable": 615,
+   "licenses": [
+    [
+     "CC BY 4.0",
+     314
+    ],
+    [
+     "Public domain",
+     115
+    ],
+    [
+     "CC BY-SA 4.0",
+     32
+    ],
+    [
+     "CC BY-SA 3.0",
+     10
+    ],
+    [
+     "CC BY 3.0",
+     7
+    ],
+    [
+     "CC BY 2.0",
+     7
+    ],
+    [
+     "CC BY-SA 2.5",
+     4
+    ],
+    [
+     "CC0",
+     4
+    ],
+    [
+     "No restrictions",
+     2
+    ],
+    [
+     "CC BY 2.5",
+     2
+    ],
+    [
+     "FAL",
+     1
+    ],
+    [
+     "Attribution",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 294,
+    "tiff": 164,
+    "gif": 11,
+    "png": 21,
+    "svg+xml": 5,
+    "pdf": 2,
+    "webm": 3
+   },
+   "sub_categories": [
+    "Deep fields",
+    "2MASS images",
+    "Astronomical composite images",
+    "Astronomical maps",
+    "Direct images of exoplanets",
+    "Featured pictures of astronomy",
+    "Earth viewed from the Moon"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Abell S1063.jpg",
+     "File:Exoplanets PDS 70 b and c (2019-26-4502).tif",
+     "File:Milky Way Galaxy shot on Samsung Galaxy S26.jpg",
+     "File:NASA-ExoplanetarySystem-HR8799-JWST-20250317.png",
+     "File:NGC 3147GALEX.jpg"
+    ],
+    "other": [
+     "File:\"First light\" for NAOS-CONICA at VLT YEPUN (eso0137a).jpg",
+     "File:1000px-MessierStarChart svg.jpg",
+     "File:2012-10-13 15-29-35-sun.jpg",
+     "File:3-ALMA-antennas-interferometry.jpg",
+     "File:360 degree panorama view of Paranal at sunset (wesson-5177-ext).tiff"
+    ]
+   },
+   "domain": "4 science, astronomy, satellite"
+  },
+  "4 science, astronomy, satellite|Satellite images": {
+   "category": "Satellite images",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 0,
+   "unique_files_listed": 0,
+   "listing_truncated": false,
+   "sampled": 0,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 0,
+   "other_n": 0,
+   "low_res_n": 0,
+   "usable_n": 0,
+   "est_unique": 0,
+   "est_cc0": 0,
+   "est_pd": 0,
+   "est_other": 0,
+   "est_low": 0,
+   "est_usable": 0,
+   "licenses": [],
+   "mimes": {},
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [],
+    "other": []
+   },
+   "domain": "4 science, astronomy, satellite"
+  },
+  "4 science, astronomy, satellite|Satellite imagery": {
+   "category": "Satellite imagery",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 21212,
+   "unique_files_listed": 2813,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 2,
+   "pd_n": 407,
+   "other_n": 91,
+   "low_res_n": 4,
+   "usable_n": 406,
+   "est_unique": 2813,
+   "est_cc0": 11,
+   "est_pd": 2290,
+   "est_other": 512,
+   "est_low": 23,
+   "est_usable": 2284,
+   "licenses": [
+    [
+     "Public domain",
+     407
+    ],
+    [
+     "Attribution",
+     39
+    ],
+    [
+     "CC BY-SA 4.0",
+     19
+    ],
+    [
+     "CC BY 4.0",
+     10
+    ],
+    [
+     "CC BY 2.0",
+     9
+    ],
+    [
+     "CC BY-SA 3.0",
+     6
+    ],
+    [
+     "CC BY 3.0",
+     3
+    ],
+    [
+     "CC BY-SA 3.0 igo",
+     3
+    ],
+    [
+     "CC0",
+     2
+    ],
+    [
+     "(none)",
+     1
+    ],
+    [
+     "OGL-C 2.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "gif": 147,
+    "jpeg": 123,
+    "webm": 162,
+    "png": 33,
+    "webp": 15,
+    "tiff": 10,
+    "pdf": 3,
+    "svg+xml": 5,
+    "ogg": 2
+   },
+   "sub_categories": [
+    "Eagle Vision Program",
+    "Satellite pictures",
+    "Satellite imagery of Tropical cyclone",
+    "Satellite imagery companies",
+    "Satellite imaging sensors",
+    "Satellite Derived Bathymetry",
+    "Animations of satellite pictures"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1-min images of wave clouds and snowmelt in New Mexico (CIRA 2019-02-21).gif",
+     "File:A Cluster of Storms Pushing across Texas (CIRA 2023-04-10 - nolabels).gif",
+     "File:A Low Swirls in the Western Atlantic Ocean (CIRA 2024-03-26 - labels).gif",
+     "File:A Low Swirls in the Western Atlantic Ocean (CIRA 2024-03-26 - nolabels).webm",
+     "File:A Very Stormy 48 Hours for Argentina and Uruguay (CIRA 2024-03-14 - nolabels).gif"
+    ],
+    "other": [
+     "File:1-s2.0-S0012821X24003510-gr1 lrg.jpg",
+     "File:Argentinian floods ESA507378 - Argentinian floods.jpg",
+     "File:El Salvador ESA19419696.jpeg",
+     "File:Hyperspectral image of \"sugar end\" potato strips.jpg",
+     "File:Kamchatka superbolide - Hima820181219094000fd (crop).png"
+    ]
+   },
+   "domain": "4 science, astronomy, satellite"
+  },
+  "4 science, astronomy, satellite|NASA Earth Observatory images (review needed)": {
+   "category": "NASA Earth Observatory images (review needed)",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 670,
+   "unique_files_listed": 670,
+   "listing_truncated": false,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 0,
+   "pd_n": 498,
+   "other_n": 2,
+   "low_res_n": 6,
+   "usable_n": 492,
+   "est_unique": 670,
+   "est_cc0": 0,
+   "est_pd": 667,
+   "est_other": 3,
+   "est_low": 8,
+   "est_usable": 659,
+   "licenses": [
+    [
+     "Public domain",
+     498
+    ],
+    [
+     "(none)",
+     2
+    ]
+   ],
+   "mimes": {
+    "webm": 7,
+    "jpeg": 483,
+    "gif": 7,
+    "mpeg": 2,
+    "png": 1
+   },
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Europe’s Scorching Summer (1278406).webm",
+     "File:Extreme January Cold (1195166).webm",
+     "File:Eyeing the Richat Structure (1212324).jpg",
+     "File:Fiery Fall Color in Southern Chile (1215743 - oli2 20260412).jpg",
+     "File:Fighting Drought in Texas Cotton Country (1473102 - texasdrought oli 20250922).jpg"
+    ],
+    "other": [
+     "File:Rains Swamp the Gandak River (1447420 - amo 20260929 lrg).jpg",
+     "File:Fire Cloud with a Pileus on Top (1422768 - master 20260811 lrg).jpg"
+    ]
+   },
+   "domain": "4 science, astronomy, satellite"
+  },
+  "4 science, astronomy, satellite|Hubble Space Telescope": {
+   "category": "Hubble Space Telescope",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 14986,
+   "unique_files_listed": 7045,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 1,
+   "pd_n": 322,
+   "other_n": 177,
+   "low_res_n": 29,
+   "usable_n": 299,
+   "est_unique": 7045,
+   "est_cc0": 14,
+   "est_pd": 4537,
+   "est_other": 2494,
+   "est_low": 409,
+   "est_usable": 4213,
+   "licenses": [
+    [
+     "Public domain",
+     322
+    ],
+    [
+     "CC BY 4.0",
+     102
+    ],
+    [
+     "CC BY 2.0",
+     44
+    ],
+    [
+     "CC BY-SA 3.0",
+     26
+    ],
+    [
+     "CC BY-SA 4.0",
+     2
+    ],
+    [
+     "CC BY-SA 2.5",
+     1
+    ],
+    [
+     "CC BY 3.0",
+     1
+    ],
+    [
+     "CC0",
+     1
+    ],
+    [
+     "No restrictions",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 280,
+    "tiff": 143,
+    "png": 61,
+    "svg+xml": 2,
+    "webm": 5,
+    "pdf": 6,
+    "gif": 1,
+    "mpeg": 1,
+    "ogg": 1
+   },
+   "sub_categories": [
+    "Files from Hubble Space Telescope Flickr stream",
+    "Images by the Hubble Space Telescope",
+    "Views of the Hubble Space Telescope",
+    "Diagrams of the Hubble Space Telescope",
+    "Beyond the Deep Field - Hubble’s Legacy and the Future of Cosmic Observation",
+    "Cosmic Evolution Survey",
+    "CANDELS"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:10093036 Space Shuttle Mission.jpg",
+     "File:ACS Z-band (opo0206f).tiff",
+     "File:Artist's Illustration of Black Hole in NGC 3147 (2019-35-4549).tif",
+     "File:Astronaut Duane G. Carey (27411463604).jpg",
+     "File:Beyond the Deep Field- Hubble’s Legacy and the Future of Cosmic Observation (NHQ202606050018).jpg"
+    ],
+    "other": [
+     "File:AM 0515-540 (48047644442).png",
+     "File:A superbubble scene (potm2608a).jpg",
+     "File:Arp 282.png",
+     "File:Comet-like asteroid P-2010 A2 (opo1007b).jpg",
+     "File:Crater Cluster.png"
+    ]
+   },
+   "domain": "4 science, astronomy, satellite"
+  },
+  "4 science, astronomy, satellite|Microscopy": {
+   "category": "Microscopy",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 5216,
+   "unique_files_listed": 5083,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 16,
+   "pd_n": 59,
+   "other_n": 425,
+   "low_res_n": 38,
+   "usable_n": 67,
+   "est_unique": 5083,
+   "est_cc0": 163,
+   "est_pd": 600,
+   "est_other": 4321,
+   "est_low": 386,
+   "est_usable": 681,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     167
+    ],
+    [
+     "CC BY 4.0",
+     150
+    ],
+    [
+     "Public domain",
+     59
+    ],
+    [
+     "CC BY-SA 3.0",
+     40
+    ],
+    [
+     "CC BY 2.0",
+     21
+    ],
+    [
+     "CC BY 2.5",
+     17
+    ],
+    [
+     "CC0",
+     16
+    ],
+    [
+     "CC BY-SA 2.0",
+     11
+    ],
+    [
+     "CC BY 3.0",
+     9
+    ],
+    [
+     "No restrictions",
+     6
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     2
+    ],
+    [
+     "CC BY-SA 2.5",
+     1
+    ]
+   ],
+   "mimes": {
+    "png": 96,
+    "jpeg": 317,
+    "ogg": 26,
+    "tiff": 20,
+    "vnd.djvu": 1,
+    "pdf": 16,
+    "gif": 6,
+    "webp": 5,
+    "svg+xml": 6,
+    "webm": 7
+   },
+   "sub_categories": [
+    "Microscopic images",
+    "Microbiology",
+    "Microscopes",
+    "Image Data Resource",
+    "Microscopists",
+    "Microscopy staining methods",
+    "Light microscopy"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:EB1911 - Microscope - Fig. 28.png",
+     "File:Haeckel - Les Preuves du transformisme, trad. Soury, 1879.djvu",
+     "File:Haeckel 1882.jpg",
+     "File:Jenaische Zeitschrift für Medicin und Naturwissenschaft. Bd. 02, 1865-1866 (IA jenaischezeitsc04jenagoog).pdf",
+     "File:Magnetic fields; Transmission electron microscope (5884978021).jpg"
+    ],
+    "other": [
+     "File:12985 2019 1268 Fig5A HTML.png",
+     "File:41598 2023 29969 Fig5ABC Ostreopsis lenticularis.jpg",
+     "File:A-Novel-Validation-Algorithm-Allows-for-Automated-Cell-Tracking-and-the-Extraction-of-Biologically-pone.0027315.s008.ogv",
+     "File:Annales de l'Institut Pasteur (1912) (18201138202).jpg",
+     "File:Bacterial colony microscopy building interesting structures on the agar 04.jpg"
+    ]
+   },
+   "domain": "4 science, astronomy, satellite"
+  },
+  "4 science, astronomy, satellite|Anatomical plates and drawings in English": {
+   "category": "Anatomical plates and drawings in English",
+   "exists": true,
+   "cats_listed": 2,
+   "sum_files_categoryinfo": 15,
+   "unique_files_listed": 15,
+   "listing_truncated": false,
+   "sampled": 15,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 15,
+   "other_n": 0,
+   "low_res_n": 0,
+   "usable_n": 15,
+   "est_unique": 15,
+   "est_cc0": 0,
+   "est_pd": 15,
+   "est_other": 0,
+   "est_low": 0,
+   "est_usable": 15,
+   "licenses": [
+    [
+     "Public domain",
+     15
+    ]
+   ],
+   "mimes": {
+    "pdf": 1,
+    "vnd.djvu": 1,
+    "webp": 13
+   },
+   "sub_categories": [
+    "A handbook of anatomy for art students"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:A handbook of anatomy for art students (electronic resource) (IA b20410475).pdf",
+     "File:A handbook of anatomy for students.djvu",
+     "File:Thomson plate 01 - male skeleton, front view.webp",
+     "File:Thomson plate 02 - female skeleton, front view.webp",
+     "File:Thomson plate 03 - male skeleton, back view.webp"
+    ],
+    "other": []
+   },
+   "domain": "4 science, astronomy, satellite"
+  },
+  "4 science, astronomy, satellite|Anatomography": {
+   "category": "Anatomography",
+   "exists": true,
+   "cats_listed": 19,
+   "sum_files_categoryinfo": 1047,
+   "unique_files_listed": 1043,
+   "listing_truncated": false,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 2,
+   "pd_n": 0,
+   "other_n": 498,
+   "low_res_n": 124,
+   "usable_n": 2,
+   "est_unique": 1043,
+   "est_cc0": 4,
+   "est_pd": 0,
+   "est_other": 1039,
+   "est_low": 259,
+   "est_usable": 4,
+   "licenses": [
+    [
+     "CC BY-SA 2.1 jp",
+     492
+    ],
+    [
+     "CC BY-SA 4.0",
+     6
+    ],
+    [
+     "CC0",
+     2
+    ]
+   ],
+   "mimes": {
+    "gif": 296,
+    "png": 146,
+    "sla": 51,
+    "svg+xml": 5,
+    "jpeg": 2
+   },
+   "sub_categories": [
+    "STL files from BodyParts3D",
+    "Images of human anatomy from Anatomography",
+    "Animations from Anatomography",
+    "Human brain from Anatomography",
+    "Human cartilages from Anatomography",
+    "Human liver from Anatomography",
+    "Human muscles from Anatomography"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:The Human Skull 02.jpg",
+     "File:The Human Skull 03.jpg"
+    ],
+    "other": [
+     "File:Adductor brevis.gif",
+     "File:Areas of 3rd ventricle -- animation.gif",
+     "File:BA312 - Primary Somatosensory Cortex - medial view - with homunculus.png",
+     "File:BA35 - medial view.png",
+     "File:BA36 - medial view.png"
+    ]
+   },
+   "domain": "4 science, astronomy, satellite"
+  },
+  "5 old Japanese materials|Newspapers of Japan": {
+   "category": "Newspapers of Japan",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1088,
+   "unique_files_listed": 840,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 9,
+   "pd_n": 292,
+   "other_n": 199,
+   "low_res_n": 20,
+   "usable_n": 282,
+   "est_unique": 840,
+   "est_cc0": 15,
+   "est_pd": 491,
+   "est_other": 334,
+   "est_low": 34,
+   "est_usable": 474,
+   "licenses": [
+    [
+     "Public domain",
+     292
+    ],
+    [
+     "CC BY 2.0",
+     47
+    ],
+    [
+     "CC BY-SA 4.0",
+     44
+    ],
+    [
+     "CC BY-SA 3.0",
+     39
+    ],
+    [
+     "CC BY-SA 2.0",
+     38
+    ],
+    [
+     "CC BY 3.0",
+     14
+    ],
+    [
+     "CC0",
+     9
+    ],
+    [
+     "CC BY 4.0",
+     7
+    ],
+    [
+     "Attribution",
+     3
+    ],
+    [
+     "CC BY-SA 2.1 jp",
+     2
+    ],
+    [
+     "No restrictions",
+     2
+    ],
+    [
+     "GFDL",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 449,
+    "png": 41,
+    "svg+xml": 5,
+    "webm": 1,
+    "gif": 4
+   },
+   "sub_categories": [
+    "Asahi Shimbun",
+    "Newspaper clippings from Japan",
+    "Yomiuri Shimbun",
+    "Kitanippon Shimbun",
+    "Mainichi Shimbun",
+    "Newspaper stands in Japan",
+    "Newspapers of Japan by year"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1955年秋の早立1回戦 2.jpg",
+     "File:A Cat Interrupts a Dogfight to Avenge the Death of Her Mother LACMA M.84.31.159.jpg",
+     "File:A newspaper article on a Chinese poison gas attack during the Battle of Shanghai.jpg",
+     "File:Asahi Shimbun 1941-08-26.jpg",
+     "File:Logo-japan-times.png"
+    ],
+    "other": [
+     "File:AircraftHallBoonHughes369.jpg",
+     "File:Fujieda City Ekinan Library database corner ac.jpg",
+     "File:Geekhouse Higashinihonbashi.jpg",
+     "File:Hokkaido-Shimbun-Hakodate-01.jpg",
+     "File:Keihan Biwako Train to Otsu Plate.jpg"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|1910s newspapers of Japan": {
+   "category": "1910s newspapers of Japan",
+   "exists": true,
+   "cats_listed": 7,
+   "sum_files_categoryinfo": 16,
+   "unique_files_listed": 16,
+   "listing_truncated": false,
+   "sampled": 16,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 16,
+   "other_n": 0,
+   "low_res_n": 0,
+   "usable_n": 16,
+   "est_unique": 16,
+   "est_cc0": 0,
+   "est_pd": 16,
+   "est_other": 0,
+   "est_low": 0,
+   "est_usable": 16,
+   "licenses": [
+    [
+     "Public domain",
+     16
+    ]
+   ],
+   "mimes": {
+    "jpeg": 15,
+    "png": 1
+   },
+   "sub_categories": [
+    "1912 newspapers of Japan",
+    "1917 newspapers of Japan",
+    "1913 newspapers of Japan",
+    "1914 newspapers of Japan",
+    "1916 newspapers of Japan",
+    "1919 newspapers of Japan"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1919 臺灣日日新報記載「醫學專門學校野球團南下」 Taiwan Daily Newspaper's article concerning Taiwan Medical School Baseball Team.jpg",
+     "File:Chōsen Jihō (1910-07-13 page 1).jpg",
+     "File:Chōsen Jihō (1910-07-13 page 2).jpg",
+     "File:Mainichi Shinpo Ad 6Apr1917.jpg",
+     "File:Okazaki-Choho-July-1-1916.jpg"
+    ],
+    "other": []
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|1920s newspapers of Japan": {
+   "category": "1920s newspapers of Japan",
+   "exists": true,
+   "cats_listed": 10,
+   "sum_files_categoryinfo": 50,
+   "unique_files_listed": 50,
+   "listing_truncated": false,
+   "sampled": 50,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 49,
+   "other_n": 1,
+   "low_res_n": 0,
+   "usable_n": 49,
+   "est_unique": 50,
+   "est_cc0": 0,
+   "est_pd": 49,
+   "est_other": 1,
+   "est_low": 0,
+   "est_usable": 49,
+   "licenses": [
+    [
+     "Public domain",
+     49
+    ],
+    [
+     "CC BY-SA 4.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 41,
+    "pdf": 1,
+    "png": 8
+   },
+   "sub_categories": [
+    "1923 newspapers of Japan",
+    "1922 newspapers of Japan",
+    "1927 newspapers of Japan",
+    "1924 newspapers of Japan",
+    "1926 newspapers of Japan",
+    "1928 newspapers of Japan",
+    "1929 newspapers of Japan"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1923 臺北 北門 金工模型 獻納品.jpg",
+     "File:1924 本島人知識份子政治結社新臺灣聯盟之臺灣議會請願運動 Taiwanese Intellectuals Form Political Coalition for Democratically-Elected Assembly.jpg",
+     "File:CNTS-00094170594 每日申報 1922-10-24.pdf",
+     "File:Chosen Theatre Open 6NOV1922.jpg",
+     "File:Dismiss Nationalist Party Japan 1922.jpg"
+    ],
+    "other": [
+     "File:函館新聞1923年10月7日紙面.jpg"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|1930s newspapers of Japan": {
+   "category": "1930s newspapers of Japan",
+   "exists": true,
+   "cats_listed": 11,
+   "sum_files_categoryinfo": 42,
+   "unique_files_listed": 42,
+   "listing_truncated": false,
+   "sampled": 42,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 42,
+   "other_n": 0,
+   "low_res_n": 1,
+   "usable_n": 41,
+   "est_unique": 42,
+   "est_cc0": 0,
+   "est_pd": 42,
+   "est_other": 0,
+   "est_low": 1,
+   "est_usable": 41,
+   "licenses": [
+    [
+     "Public domain",
+     42
+    ]
+   ],
+   "mimes": {
+    "jpeg": 33,
+    "png": 8,
+    "gif": 1
+   },
+   "sub_categories": [
+    "1936 newspapers of Japan",
+    "1937 newspapers of Japan",
+    "1933 newspapers of Japan",
+    "1932 newspapers of Japan",
+    "1934 newspapers of Japan",
+    "1935 newspapers of Japan",
+    "1939 newspapers of Japan"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1931 奉天(918)事變.jpg",
+     "File:1932 大稻埕 舊曆新年.png",
+     "File:1935 Taiwan election 02.jpg",
+     "File:1938 air combat Taiwan 02.jpg",
+     "File:87g1933y12m10d.jpg"
+    ],
+    "other": []
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Newspapers in Japanese": {
+   "category": "Newspapers in Japanese",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 6870,
+   "unique_files_listed": 2363,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 4,
+   "pd_n": 429,
+   "other_n": 67,
+   "low_res_n": 8,
+   "usable_n": 425,
+   "est_unique": 2363,
+   "est_cc0": 19,
+   "est_pd": 2027,
+   "est_other": 317,
+   "est_low": 38,
+   "est_usable": 2009,
+   "licenses": [
+    [
+     "Public domain",
+     429
+    ],
+    [
+     "CC BY-SA 4.0",
+     16
+    ],
+    [
+     "CC BY-SA 3.0",
+     14
+    ],
+    [
+     "CC BY 2.0",
+     12
+    ],
+    [
+     "CC BY-SA 2.0",
+     8
+    ],
+    [
+     "No restrictions",
+     7
+    ],
+    [
+     "CC BY 3.0",
+     4
+    ],
+    [
+     "CC0",
+     4
+    ],
+    [
+     "CC BY 4.0",
+     3
+    ],
+    [
+     "Attribution",
+     2
+    ],
+    [
+     "GFDL",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 153,
+    "pdf": 331,
+    "gif": 1,
+    "png": 12,
+    "svg+xml": 3
+   },
+   "sub_categories": [
+    "Asahi Shimbun",
+    "Newspapers of Japan",
+    "Tairiku Nippo",
+    "Hochi Shimbun",
+    "Sports Nippon",
+    "Hokkaido Shimbun",
+    "Nishinippon Shimbun"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1936-11-27-경성일보 김일성-정도익.jpg",
+     "File:April Fools' Day Japan.jpg",
+     "File:Asahi Shimbun Evening Edition newspaper clipping (14 July 1959 issue).jpg",
+     "File:CNTS-00113718904 京城日報 1924-01-30.pdf",
+     "File:CNTS-00113720174 京城日報 1924-02-04.pdf"
+    ],
+    "other": [
+     "File:2021年11月1日粘處長接受北海道新聞社採訪.jpg",
+     "File:Cessna Citation V.JPG",
+     "File:Newspaper 20250317 115353.jpg",
+     "File:Nikkan-hokkaido.jpg",
+     "File:Yomiuriseibu.JPG"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Old maps of Japan": {
+   "category": "Old maps of Japan",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 456,
+   "unique_files_listed": 444,
+   "listing_truncated": true,
+   "sampled": 444,
+   "exact": false,
+   "cc0_n": 10,
+   "pd_n": 364,
+   "other_n": 70,
+   "low_res_n": 9,
+   "usable_n": 365,
+   "est_unique": 444,
+   "est_cc0": 10,
+   "est_pd": 364,
+   "est_other": 70,
+   "est_low": 9,
+   "est_usable": 365,
+   "licenses": [
+    [
+     "Public domain",
+     364
+    ],
+    [
+     "No restrictions",
+     45
+    ],
+    [
+     "CC BY-SA 4.0",
+     15
+    ],
+    [
+     "CC0",
+     10
+    ],
+    [
+     "CC BY 2.0",
+     3
+    ],
+    [
+     "CC BY-SA 3.0",
+     3
+    ],
+    [
+     "CC BY 4.0",
+     2
+    ],
+    [
+     "CC BY 3.0",
+     1
+    ],
+    [
+     "CC BY-SA 2.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 380,
+    "png": 19,
+    "tiff": 39,
+    "pdf": 4,
+    "svg+xml": 1,
+    "gif": 1
+   },
+   "sub_categories": [
+    "Old maps of Ezo",
+    "17th-century maps of Japan",
+    "Old maps of Japan by prefecture",
+    "Old maps of cities in Japan",
+    "18th-century maps of Japan",
+    "19th-century maps of Japan",
+    "Old maps of the Yellow Sea"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:085 lander-des-gelben-meeres-und-der-sudliche-mandschurei.png",
+     "File:1305 map of Japan from Ninnaji (detail).jpg",
+     "File:1594 double hemisphere world map by Petrus Plancius detail Japan Colunas.png",
+     "File:1596 map of the world - Orbis Terrae Compendiosa Descriptio Ex peristissimorum totius orbis Gaeographorum operibus desumpta (Aquita).jpg",
+     "File:1680 Map of Formosa (Taiwan) and Surrounding Countries by Dutch 荷蘭人所繪福爾摩沙-臺灣與鄰國.jpg"
+    ],
+    "other": [
+     "File:\"Xantung, Sinarum Imperii provincia quarta.\" (21632336863).jpg",
+     "File:156 of 'The Cruise of Her Majesty's Ship “Bacchante,” 1879-1882. Compiled from the private journals, letters and note-books of Prince Albert Victor and Prince George of Wales, with additions by J. N. Dalton' (11097656186).jpg",
+     "File:162 of 'A School Geography' (11294843593).jpg",
+     "File:1968年の路線図.jpg",
+     "File:22 of 'Voyage of His Majesty's Ship Alceste, along the coast of Corea, to the island of Lewchew ... Second edition' (11003628575).jpg"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Old maps of Tokyo": {
+   "category": "Old maps of Tokyo",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 257,
+   "unique_files_listed": 252,
+   "listing_truncated": true,
+   "sampled": 252,
+   "exact": false,
+   "cc0_n": 2,
+   "pd_n": 177,
+   "other_n": 73,
+   "low_res_n": 2,
+   "usable_n": 178,
+   "est_unique": 252,
+   "est_cc0": 2,
+   "est_pd": 177,
+   "est_other": 73,
+   "est_low": 2,
+   "est_usable": 178,
+   "licenses": [
+    [
+     "Public domain",
+     177
+    ],
+    [
+     "No restrictions",
+     41
+    ],
+    [
+     "CC BY-SA 4.0",
+     13
+    ],
+    [
+     "CC BY 2.0",
+     10
+    ],
+    [
+     "CC BY-SA 3.0",
+     5
+    ],
+    [
+     "CC BY-SA 2.0",
+     2
+    ],
+    [
+     "CC0",
+     2
+    ],
+    [
+     "CC BY 3.0",
+     1
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 175,
+    "png": 20,
+    "pdf": 56,
+    "svg+xml": 1
+   },
+   "sub_categories": [
+    "Old maps of Edo",
+    "Old maps of Minato, Tokyo",
+    "Old maps of Chūō, Tokyo",
+    "Old maps of Taito, Tokyo",
+    "Old maps of Koto, Tokyo",
+    "Old maps of Shinjuku, Tokyo",
+    "東京大小區分繪圖"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1752 Schely Plan or Map of Edo or Tokyo, Japan - Geographicus - EdoTokyo-schley-1752.jpg",
+     "File:1847 Japanese Edo Period Woodblock Map of the Izu Islands (Tokyo or Edo) - Geographicus - IsuIslands-japanese-1730.jpg",
+     "File:1849 Edo Period Japanese Woodcut Map of Edo or Tokyo Japan - Geographicus - Edo-japan-1849.jpg",
+     "File:1849 Japanese Map of Edo or Tokyo, Japan - Geographicus - Edo-tokyo-1849.jpg",
+     "File:1849 map of Tokyo (Jeddo, Edo), by Takai Ranzan, from the Digital Commonwealth - commonwealth ht250b870.jpg"
+    ],
+    "other": [
+     "File:\"Samurai Art of War\" exibition (Выставка \"Самураи Art of War\") (5893962642).jpg",
+     "File:(Density of population in greater Tokyo - census of 1926) (17801406624).jpg",
+     "File:(District within fire limit of Tokyo - 1928) (18237868189).jpg",
+     "File:(Gas and water-supply in greater Tokyo - 1928) (17803387583).jpg",
+     "File:(Reconstruction work in Tokyo) (17803385583).jpg"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Timetables of Japan": {
+   "category": "Timetables of Japan",
+   "exists": true,
+   "cats_listed": 5,
+   "sum_files_categoryinfo": 491,
+   "unique_files_listed": 491,
+   "listing_truncated": false,
+   "sampled": 491,
+   "exact": true,
+   "cc0_n": 267,
+   "pd_n": 24,
+   "other_n": 200,
+   "low_res_n": 4,
+   "usable_n": 291,
+   "est_unique": 491,
+   "est_cc0": 267,
+   "est_pd": 24,
+   "est_other": 200,
+   "est_low": 4,
+   "est_usable": 291,
+   "licenses": [
+    [
+     "CC0",
+     267
+    ],
+    [
+     "CC BY-SA 4.0",
+     93
+    ],
+    [
+     "CC BY-SA 3.0",
+     44
+    ],
+    [
+     "Public domain",
+     24
+    ],
+    [
+     "CC BY 2.0",
+     21
+    ],
+    [
+     "CC BY-SA 2.0",
+     21
+    ],
+    [
+     "CC BY 4.0",
+     11
+    ],
+    [
+     "CC BY 3.0",
+     7
+    ],
+    [
+     "Copyrighted free use",
+     1
+    ],
+    [
+     "CC BY 2.5",
+     1
+    ],
+    [
+     "GFDL",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 482,
+    "png": 7,
+    "pdf": 2
+   },
+   "sub_categories": [
+    "Public transport timetables of Japan",
+    "School timetables in Japan",
+    "Bus timetables in Japan",
+    "Train timetables in Japan"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1960年代の交通公社の時刻表 (7887576454).jpg",
+     "File:27dai.JPG",
+     "File:AizuKawaguchiEkimae AizuBus 20231023.jpg",
+     "File:AjigauraEki IbarakiKotsu 20080615.jpg",
+     "File:AkashimaOhashi TsushimaKotsu 20181215.jpg"
+    ],
+    "other": [
+     "File:\"Trolley Bus Schedule\" board at Kurobe Dam Station on the Kanden Tunnel line (2013).jpg",
+     "File:1968-timetable-joban.jpg",
+     "File:1970年大阪万博ビフォー・アフター展 ～あのパビリオンはいまどこに？～ 2026 EXPO’70 パビリオン 万博記念公園 Expo’70 Commemorative Park (55386565530).jpg",
+     "File:2014-11-10 長井市役所前バス停時刻表.jpg",
+     "File:202506 Last train timetable in Kyoto-Kawaramachi Station.jpg"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Train timetables in Japan": {
+   "category": "Train timetables in Japan",
+   "exists": true,
+   "cats_listed": 12,
+   "sum_files_categoryinfo": 201,
+   "unique_files_listed": 198,
+   "listing_truncated": false,
+   "sampled": 198,
+   "exact": true,
+   "cc0_n": 47,
+   "pd_n": 30,
+   "other_n": 121,
+   "low_res_n": 4,
+   "usable_n": 77,
+   "est_unique": 198,
+   "est_cc0": 47,
+   "est_pd": 30,
+   "est_other": 121,
+   "est_low": 4,
+   "est_usable": 77,
+   "licenses": [
+    [
+     "CC0",
+     47
+    ],
+    [
+     "CC BY-SA 4.0",
+     46
+    ],
+    [
+     "Public domain",
+     30
+    ],
+    [
+     "CC BY-SA 3.0",
+     30
+    ],
+    [
+     "CC BY 2.0",
+     15
+    ],
+    [
+     "CC BY-SA 2.0",
+     15
+    ],
+    [
+     "CC BY 4.0",
+     9
+    ],
+    [
+     "CC BY 3.0",
+     4
+    ],
+    [
+     "CC BY 2.5",
+     1
+    ],
+    [
+     "GFDL",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 183,
+    "png": 4,
+    "pdf": 11
+   },
+   "sub_categories": [
+    "Timetables of Hanshin Electric Railway",
+    "Portable train timetables in Japan",
+    "新橋国府津間汽車時刻表",
+    "東京浜松間汽車時刻表",
+    "汽車時間表",
+    "九州線汽車時間表",
+    "日本全国汽車時間表"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1960年代の交通公社の時刻表 (7887576454).jpg",
+     "File:27dai.JPG",
+     "File:JNR 19641001 Table1.png",
+     "File:JNR Kurayoshi Line Timetable at Kuyayoshi Sta.jpg",
+     "File:JP 日本 Japan 沖繩 OKINAWA Route 253 浦西站 Tedako-Uranishi Station concourse poster n sign January 2025 R12S 05.jpg"
+    ],
+    "other": [
+     "File:1970年大阪万博ビフォー・アフター展 ～あのパビリオンはいまどこに？～ 2026 EXPO’70 パビリオン 万博記念公園 Expo’70 Commemorative Park (55386565530).jpg",
+     "File:202506 Last train timetable in Kyoto-Kawaramachi Station.jpg",
+     "File:885Siries EMU multi-purpose space.JPG",
+     "File:Amagi-sta-timetable2.jpg",
+     "File:Annakaharuna-ekimeihyo.JPG"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Public transport timetables of Japan": {
+   "category": "Public transport timetables of Japan",
+   "exists": true,
+   "cats_listed": 14,
+   "sum_files_categoryinfo": 519,
+   "unique_files_listed": 516,
+   "listing_truncated": false,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 273,
+   "pd_n": 30,
+   "other_n": 197,
+   "low_res_n": 4,
+   "usable_n": 303,
+   "est_unique": 516,
+   "est_cc0": 282,
+   "est_pd": 31,
+   "est_other": 203,
+   "est_low": 4,
+   "est_usable": 313,
+   "licenses": [
+    [
+     "CC0",
+     273
+    ],
+    [
+     "CC BY-SA 4.0",
+     93
+    ],
+    [
+     "CC BY-SA 3.0",
+     43
+    ],
+    [
+     "Public domain",
+     30
+    ],
+    [
+     "CC BY 2.0",
+     21
+    ],
+    [
+     "CC BY-SA 2.0",
+     21
+    ],
+    [
+     "CC BY 4.0",
+     9
+    ],
+    [
+     "CC BY 3.0",
+     7
+    ],
+    [
+     "CC BY 2.5",
+     1
+    ],
+    [
+     "Copyrighted free use",
+     1
+    ],
+    [
+     "GFDL",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 484,
+    "pdf": 10,
+    "png": 6
+   },
+   "sub_categories": [
+    "Bus timetables in Japan",
+    "Train timetables in Japan",
+    "Timetables of Hanshin Electric Railway",
+    "Portable train timetables in Japan",
+    "新橋国府津間汽車時刻表",
+    "東京浜松間汽車時刻表",
+    "汽車時間表"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:AizuKawaguchiEkimae AizuBus 20231023.jpg",
+     "File:BosekiGuchi2 NiigataKotsu 20210211.jpg",
+     "File:FukuuraHonmachiS SandenKotsu 20191123.jpg",
+     "File:HamanomiyaKaisuiyokujoMae WakayamaBus 20051127.jpg",
+     "File:Hirose SankoBus 20080713.jpg"
+    ],
+    "other": [
+     "File:885Siries EMU multi-purpose space.JPG",
+     "File:Futamata-timetable.jpg",
+     "File:Goryokaku-zikoku.jpg",
+     "File:Himeji-monorail6.jpg",
+     "File:JRKumayamaStn AkaiwaCity 20251018.jpg"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Tickets of Japan": {
+   "category": "Tickets of Japan",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1109,
+   "unique_files_listed": 1078,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 70,
+   "pd_n": 42,
+   "other_n": 388,
+   "low_res_n": 10,
+   "usable_n": 110,
+   "est_unique": 1078,
+   "est_cc0": 151,
+   "est_pd": 91,
+   "est_other": 837,
+   "est_low": 22,
+   "est_usable": 237,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     167
+    ],
+    [
+     "CC BY 2.0",
+     95
+    ],
+    [
+     "CC0",
+     70
+    ],
+    [
+     "CC BY-SA 3.0",
+     52
+    ],
+    [
+     "CC BY-SA 2.0",
+     44
+    ],
+    [
+     "Public domain",
+     42
+    ],
+    [
+     "CC BY 4.0",
+     14
+    ],
+    [
+     "CC BY 3.0",
+     12
+    ],
+    [
+     "CC BY 2.5",
+     2
+    ],
+    [
+     "CC BY 2.1 jp",
+     1
+    ],
+    [
+     "CC BY-SA 2.1 jp",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 493,
+    "png": 6,
+    "gif": 1
+   },
+   "sub_categories": [
+    "Ticket machines in Japan",
+    "Ticket counters in Japan",
+    "Numbered tickets in Japan",
+    "Ticket barriers in Japan",
+    "Ticket shops in Japan",
+    "Public transport tickets of Japan",
+    "Cinema tickets of Japan"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Goryokaku-STA Gate Ticket.jpg",
+     "File:Kanachu pasmo suica.JPG",
+     "File:Kotoden Kataharamachi-STA Gate Ticket.jpg",
+     "File:Miyagi Kawauchi-STA Ticket Gate.jpg",
+     "File:SendaiCitySubway TransitTicket from train.jpg"
+    ],
+    "other": [
+     "File:2014-02-28 Shuri Castle,Naha,Okinawa 首里城（沖縄県那覇市 ）DSCF8667.jpg",
+     "File:Ano Station4.JPG",
+     "File:Aoimori Mutsu-Ichikawa Station Inside, Aomori Pref.jpg",
+     "File:Aoimori Ottomo Station Gate, Aomori Pref.jpg",
+     "File:Aoimori railway 20210813074014 (51812008566).jpg"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Posters of Japan": {
+   "category": "Posters of Japan",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 748,
+   "unique_files_listed": 670,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 15,
+   "pd_n": 180,
+   "other_n": 305,
+   "low_res_n": 13,
+   "usable_n": 185,
+   "est_unique": 670,
+   "est_cc0": 20,
+   "est_pd": 241,
+   "est_other": 409,
+   "est_low": 17,
+   "est_usable": 248,
+   "licenses": [
+    [
+     "Public domain",
+     180
+    ],
+    [
+     "CC BY-SA 4.0",
+     115
+    ],
+    [
+     "CC BY 2.0",
+     87
+    ],
+    [
+     "CC BY-SA 2.0",
+     54
+    ],
+    [
+     "CC BY-SA 3.0",
+     34
+    ],
+    [
+     "CC0",
+     15
+    ],
+    [
+     "CC BY 4.0",
+     9
+    ],
+    [
+     "CC BY 3.0",
+     3
+    ],
+    [
+     "CC BY 2.5",
+     3
+    ]
+   ],
+   "mimes": {
+    "jpeg": 456,
+    "webp": 5,
+    "png": 18,
+    "svg+xml": 19,
+    "pdf": 2
+   },
+   "sub_categories": [
+    "Posters of Japan by year",
+    "Illustrated posters of Japan",
+    "Poster artists from Japan",
+    "Posters of Japan by decade",
+    "Posters of Japan by subject",
+    "Posters of Japan by location",
+    "Posters of Japan by century"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Art from 1930s Japan Travel Poster - 08 (cropped).jpg",
+     "File:Caution1923 NeverSpreadFalseRumors.jpg",
+     "File:Expo 1940 Poster.jpg",
+     "File:Ginza line extension poster (1930).jpg",
+     "File:Iyo-Yokota Station 20251012 (6).jpg"
+    ],
+    "other": [
+     "File:2007-08-26 JR- Yakujin Station,Kakogawa Line JNR103系改造車両 横尾忠則「走れ!Y字路」 8260236.JPG",
+     "File:2007-08-26 JR- Yakujin Station,Kakogawa Line JNR103系改造車両 横尾忠則「走れ!Y字路」 8260241.JPG",
+     "File:2007-08-26 JR- Yakujin Station,Kakogawa Line JNR103系改造車両 横尾忠則「走れ!Y字路」 8260244.JPG",
+     "File:2016 0512 Ama BunkazaiS Movie Always.jpg",
+     "File:AutoVender NakaiTokyo200505.jpg"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Japanese-language posters": {
+   "category": "Japanese-language posters",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 32,
+   "unique_files_listed": 32,
+   "listing_truncated": false,
+   "sampled": 32,
+   "exact": true,
+   "cc0_n": 1,
+   "pd_n": 17,
+   "other_n": 14,
+   "low_res_n": 1,
+   "usable_n": 17,
+   "est_unique": 32,
+   "est_cc0": 1,
+   "est_pd": 17,
+   "est_other": 14,
+   "est_low": 1,
+   "est_usable": 17,
+   "licenses": [
+    [
+     "Public domain",
+     17
+    ],
+    [
+     "CC BY-SA 4.0",
+     4
+    ],
+    [
+     "CC BY 3.0",
+     3
+    ],
+    [
+     "CC BY-SA 3.0",
+     2
+    ],
+    [
+     "CC BY 4.0",
+     2
+    ],
+    [
+     "CC BY 2.0",
+     2
+    ],
+    [
+     "CC0",
+     1
+    ],
+    [
+     "CC BY-SA 2.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 28,
+    "png": 3,
+    "webp": 1
+   },
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [
+     "File:14 novembre, 12ème rerpésentation du groupe de Nadeshiko, salle de Zinju à Tokyo affiche, non identifié.jpg",
+     "File:1928 Japanese General Election Poster.JPG",
+     "File:1932 Japanese General Election Poster.jpg",
+     "File:A3poster (17712191374).jpg",
+     "File:AMERICA EXPO 2014 Flyer (17711910234).jpg"
+    ],
+    "other": [
+     "File:5 Chome Morino, Machida-shi, Tōkyō-to 194-0022, Japan - panoramio (1).jpg",
+     "File:A poster of special industrial zone higashisumida.JPG",
+     "File:Azabu Tailor order suit.jpg",
+     "File:Bideo Kurabu Paurisuta (2101067020).jpg",
+     "File:Example of Tamegaki(為書き).png"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Advertisements in Japan by year": {
+   "category": "Advertisements in Japan by year",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1081,
+   "unique_files_listed": 1081,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 13,
+   "pd_n": 66,
+   "other_n": 421,
+   "low_res_n": 3,
+   "usable_n": 76,
+   "est_unique": 1081,
+   "est_cc0": 28,
+   "est_pd": 143,
+   "est_other": 910,
+   "est_low": 6,
+   "est_usable": 164,
+   "licenses": [
+    [
+     "CC BY 2.0",
+     131
+    ],
+    [
+     "CC BY-SA 4.0",
+     114
+    ],
+    [
+     "CC BY-SA 2.0",
+     82
+    ],
+    [
+     "CC BY-SA 3.0",
+     68
+    ],
+    [
+     "Public domain",
+     66
+    ],
+    [
+     "CC BY 4.0",
+     15
+    ],
+    [
+     "CC0",
+     13
+    ],
+    [
+     "CC BY 3.0",
+     9
+    ],
+    [
+     "GFDL",
+     1
+    ],
+    [
+     "CC BY-SA 2.1 jp",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 490,
+    "png": 9,
+    "webp": 1
+   },
+   "sub_categories": [
+    "2026 advertisements in Japan",
+    "2017 advertisements in Japan",
+    "2016 advertisements in Japan",
+    "2025 advertisements in Japan",
+    "1967 advertisements in Japan",
+    "2010 advertisements in Japan",
+    "2018 advertisements in Japan"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Chunichi1964-01-07-2.jpg",
+     "File:Chunichi1964-02-03-2.jpg",
+     "File:Chunichi1966-12-09-1.jpg",
+     "File:Chunichi1967-04-22-1.jpg",
+     "File:Chunichi1967-06-22-1.jpg"
+    ],
+    "other": [
+     "File:2011 Matsumoto Station (6410954341).jpg",
+     "File:2015Halloween in Osaka(35).JPG",
+     "File:Daihatsu Move 2025 Autumn at Shin-Osaka Station.jpg",
+     "File:FESTA (30057892867).jpg",
+     "File:Family Mart Glow (38266081906).jpg"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Meiji era": {
+   "category": "Meiji era",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1967,
+   "unique_files_listed": 1757,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 26,
+   "pd_n": 351,
+   "other_n": 123,
+   "low_res_n": 51,
+   "usable_n": 327,
+   "est_unique": 1757,
+   "est_cc0": 91,
+   "est_pd": 1233,
+   "est_other": 432,
+   "est_low": 179,
+   "est_usable": 1149,
+   "licenses": [
+    [
+     "Public domain",
+     351
+    ],
+    [
+     "CC BY 2.0",
+     84
+    ],
+    [
+     "CC0",
+     26
+    ],
+    [
+     "CC BY-SA 4.0",
+     16
+    ],
+    [
+     "No restrictions",
+     8
+    ],
+    [
+     "CC BY 4.0",
+     6
+    ],
+    [
+     "CC BY 3.0",
+     4
+    ],
+    [
+     "CC BY-SA 3.0",
+     3
+    ],
+    [
+     "CC BY 2.5",
+     1
+    ],
+    [
+     "CC BY-SA 2.5",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 474,
+    "png": 18,
+    "pdf": 4,
+    "svg+xml": 2,
+    "gif": 1,
+    "tiff": 1
+   },
+   "sub_categories": [
+    "Black and white photographs of Japan in the 1900s",
+    "Japan in the 1890s",
+    "Japan in the 1880s",
+    "Domains of Japan",
+    "Japan and Japanese",
+    "Japan in the 1900s",
+    "Japan in the 1910s"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:1st anniversary of Taga Denki company.jpg",
+     "File:Beato courier or postman.jpg",
+     "File:Decimal system by Fudetaro Suzuki in1927.jpg",
+     "File:Emperor Nintoku looks people.png",
+     "File:Guimet - Promenades japonaises, 1880 (page 121 crop).jpg"
+    ],
+    "other": [
+     "File:Between 1914 and 1918 Raising a Post in Japan.jpg",
+     "File:Bonga Travel 1917, probably in the Philippines (1917 by Elstner Hilton).jpg",
+     "File:Chrysanthemum Market (菊市場) in Japan, Taisho era (1914 by Elstner Hilton).jpg",
+     "File:Fishing Platforms in Japan (1915 by Elstner Hilton).jpg",
+     "File:Gathering Seaweed in Japan (1914 by Elstner Hilton).jpg"
+    ]
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "5 old Japanese materials|Meiji period": {
+   "category": "Meiji period",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 0,
+   "unique_files_listed": 0,
+   "listing_truncated": false,
+   "sampled": 0,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 0,
+   "other_n": 0,
+   "low_res_n": 0,
+   "usable_n": 0,
+   "est_unique": 0,
+   "est_cc0": 0,
+   "est_pd": 0,
+   "est_other": 0,
+   "est_low": 0,
+   "est_usable": 0,
+   "licenses": [],
+   "mimes": {},
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [],
+    "other": []
+   },
+   "domain": "5 old Japanese materials"
+  },
+  "6 charts, graphs, tables, UI|Charts": {
+   "category": "Charts",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 19950,
+   "unique_files_listed": 11905,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 55,
+   "pd_n": 62,
+   "other_n": 383,
+   "low_res_n": 25,
+   "usable_n": 104,
+   "est_unique": 11905,
+   "est_cc0": 1310,
+   "est_pd": 1476,
+   "est_other": 9119,
+   "est_low": 595,
+   "est_usable": 2476,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     231
+    ],
+    [
+     "CC BY-SA 3.0",
+     87
+    ],
+    [
+     "Public domain",
+     62
+    ],
+    [
+     "CC0",
+     55
+    ],
+    [
+     "CC BY 4.0",
+     27
+    ],
+    [
+     "CC BY 3.0",
+     27
+    ],
+    [
+     "Copyrighted free use",
+     3
+    ],
+    [
+     "CC BY-SA 2.0 de",
+     1
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     1
+    ],
+    [
+     "OGL v1.0",
+     1
+    ],
+    [
+     "CC BY-SA 3.0 igo",
+     1
+    ],
+    [
+     "FAL",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 124,
+    "png": 289,
+    "svg+xml": 53,
+    "pdf": 10,
+    "webp": 9,
+    "tiff": 4,
+    "gif": 10,
+    "webm": 1
+   },
+   "sub_categories": [
+    "Charts on white background",
+    "Plots",
+    "Categories per capita",
+    "SVG charts",
+    "Charts by country",
+    "Charts comparing countries",
+    "Charts by language"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:5 regimes of modified Allan variance as a function of averaging time.png",
+     "File:AEO wind and solar capacity projections.png",
+     "File:Australian federal election polling - 48th parliament - VIC primary.svg",
+     "File:Bias described using LMM.jpg",
+     "File:Offices in New France, 1578-1650.png"
+    ],
+    "other": [
+     "File:1998-2005 German-production-of-coal-mine-methane.jpg",
+     "File:2pl.png",
+     "File:5 Largest Producers of Solar Photovoltaics, % of Total World Solar PV Production 2001-10.jpg",
+     "File:AFI Vogais Tapayuna.png",
+     "File:Academic works by discipline over time (visualization of studies data in OpenAlex).png"
+    ]
+   },
+   "domain": "6 charts, graphs, tables, UI"
+  },
+  "6 charts, graphs, tables, UI|Graphs": {
+   "category": "Graphs",
+   "exists": true,
+   "cats_listed": 14,
+   "sum_files_categoryinfo": 1946,
+   "unique_files_listed": 1854,
+   "listing_truncated": false,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 72,
+   "pd_n": 77,
+   "other_n": 351,
+   "low_res_n": 9,
+   "usable_n": 144,
+   "est_unique": 1854,
+   "est_cc0": 267,
+   "est_pd": 286,
+   "est_other": 1302,
+   "est_low": 33,
+   "est_usable": 534,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     173
+    ],
+    [
+     "CC BY-SA 3.0",
+     96
+    ],
+    [
+     "Public domain",
+     77
+    ],
+    [
+     "CC0",
+     72
+    ],
+    [
+     "CC BY 4.0",
+     53
+    ],
+    [
+     "CC BY 3.0",
+     22
+    ],
+    [
+     "Attribution",
+     2
+    ],
+    [
+     "CC BY-SA 2.0",
+     2
+    ],
+    [
+     "CC BY 2.0",
+     1
+    ],
+    [
+     "CC BY 2.5",
+     1
+    ],
+    [
+     "CC BY-SA 2.5",
+     1
+    ]
+   ],
+   "mimes": {
+    "png": 212,
+    "svg+xml": 184,
+    "jpeg": 70,
+    "gif": 15,
+    "webp": 10,
+    "tiff": 3,
+    "ogg": 2,
+    "webm": 3,
+    "pdf": 1
+   },
+   "sub_categories": [
+    "Global warming graphs",
+    "Graphs in art",
+    "Warming stripes",
+    "Hockey stick temperature graph",
+    "Atmospheric CO2 time series",
+    "Keeling curves",
+    "Future greenhouse gas emission paths"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:9K2 graph.svg",
+     "File:Atmospheric Circulation effect of an expanding tropics.png",
+     "File:Gases de efecto invernadero.es.png",
+     "File:GlobalMeanTemperatureChangeSince1891-JP.png",
+     "File:GlobalTemps21stCent.png"
+    ],
+    "other": [
+     "File:65 MJ Klima Änderungen.png",
+     "File:Berlin4Future.jpg",
+     "File:Changes in methane emissions by region and source for 2017 compared with mean annual value for 2000–2006.jpg",
+     "File:Climate change-fr.svg",
+     "File:Comparison real temperature data vs.Vahrenholt andLünings 2012 prognosis, english.jpg"
+    ]
+   },
+   "domain": "6 charts, graphs, tables, UI"
+  },
+  "6 charts, graphs, tables, UI|Tables": {
+   "category": "Tables",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 1865,
+   "unique_files_listed": 1862,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 30,
+   "pd_n": 111,
+   "other_n": 359,
+   "low_res_n": 36,
+   "usable_n": 126,
+   "est_unique": 1862,
+   "est_cc0": 112,
+   "est_pd": 413,
+   "est_other": 1337,
+   "est_low": 134,
+   "est_usable": 469,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     161
+    ],
+    [
+     "Public domain",
+     111
+    ],
+    [
+     "CC BY-SA 3.0",
+     80
+    ],
+    [
+     "CC BY 2.0",
+     38
+    ],
+    [
+     "CC0",
+     30
+    ],
+    [
+     "CC BY-SA 2.0",
+     21
+    ],
+    [
+     "No restrictions",
+     19
+    ],
+    [
+     "CC BY 4.0",
+     19
+    ],
+    [
+     "CC BY 3.0",
+     10
+    ],
+    [
+     "CC BY-SA 2.5",
+     5
+    ],
+    [
+     "CC BY 2.5",
+     2
+    ],
+    [
+     "CC BY 2.0 fr",
+     1
+    ]
+   ],
+   "mimes": {
+    "jpeg": 436,
+    "png": 24,
+    "svg+xml": 6,
+    "tiff": 16,
+    "ogg": 3,
+    "wav": 11,
+    "vnd.djvu": 3,
+    "pdf": 1
+   },
+   "sub_categories": [
+    "Table settings",
+    "Tables in art",
+    "Tables by country",
+    "Benches with tables",
+    "Table-turning",
+    "Quality images of tables",
+    "Tables by function"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Analemmatic sundial Carmichael.jpg",
+     "File:Art-yellow-table-picture (23957326149).jpg",
+     "File:George W. Bush White House state china.jpg",
+     "File:Interior of the Villa Ephrussi de Rothschild - DSC04609.JPG",
+     "File:Isadore Goldberg, Tavern Table, c. 1936, NGA 17966.jpg"
+    ],
+    "other": [
+     "File:A one table with four chairs from Table 18.jpg",
+     "File:A smiling market woman at the Monday Market in Kakuri, Kaduna 02.jpg",
+     "File:At Tenerife 2023 1605.jpg",
+     "File:At the Intrepid Museum 2023 207.jpg",
+     "File:Center glass table.jpg"
+    ]
+   },
+   "domain": "6 charts, graphs, tables, UI"
+  },
+  "6 charts, graphs, tables, UI|Screenshots": {
+   "category": "Screenshots",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 51299,
+   "unique_files_listed": 4731,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 42,
+   "pd_n": 44,
+   "other_n": 414,
+   "low_res_n": 35,
+   "usable_n": 80,
+   "est_unique": 4731,
+   "est_cc0": 397,
+   "est_pd": 416,
+   "est_other": 3917,
+   "est_low": 331,
+   "est_usable": 757,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     160
+    ],
+    [
+     "CC BY-SA 3.0",
+     80
+    ],
+    [
+     "GPL",
+     76
+    ],
+    [
+     "Public domain",
+     44
+    ],
+    [
+     "CC0",
+     42
+    ],
+    [
+     "CC BY 4.0",
+     18
+    ],
+    [
+     "CC BY 3.0",
+     10
+    ],
+    [
+     "GPLv2",
+     9
+    ],
+    [
+     "MIT",
+     9
+    ],
+    [
+     "LGPL",
+     6
+    ],
+    [
+     "GPLv3",
+     6
+    ],
+    [
+     "CC BY-SA 2.0",
+     5
+    ]
+   ],
+   "mimes": {
+    "jpeg": 193,
+    "png": 285,
+    "gif": 8,
+    "webp": 7,
+    "tiff": 2,
+    "webm": 3,
+    "svg+xml": 1,
+    "pdf": 1
+   },
+   "sub_categories": [
+    "Free screenshots",
+    "Text-only screenshots",
+    "Screenshots for tutorials",
+    "Online meetings screenshots",
+    "Student training modules (screenshot)",
+    "Screenshots by language",
+    "Screenshots with cursors"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:013 AWB illustrations for AWB manual.png",
+     "File:2014-05-30-xubuntu-14-04-lts-02.png",
+     "File:2025 United States federal government shutdown notification by department.png",
+     "File:Actual 2015 result.png",
+     "File:Anant singh.png"
+    ],
+    "other": [
+     "File:-uri amaiera euskal toponimian.jpg",
+     "File:028 Tworca Menu nowy EK.jpg",
+     "File:098 Jednostka Dodani tworcy EK.jpg",
+     "File:152 Nabytek Nabytek EK.jpg",
+     "File:1932 Milly Steger Aktgruppe.jpg"
+    ]
+   },
+   "domain": "6 charts, graphs, tables, UI"
+  },
+  "6 charts, graphs, tables, UI|Diagrams": {
+   "category": "Diagrams",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 36978,
+   "unique_files_listed": 12307,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 55,
+   "pd_n": 87,
+   "other_n": 358,
+   "low_res_n": 58,
+   "usable_n": 119,
+   "est_unique": 12307,
+   "est_cc0": 1354,
+   "est_pd": 2141,
+   "est_other": 8812,
+   "est_low": 1428,
+   "est_usable": 2929,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     209
+    ],
+    [
+     "CC BY-SA 3.0",
+     105
+    ],
+    [
+     "Public domain",
+     87
+    ],
+    [
+     "CC0",
+     55
+    ],
+    [
+     "CC BY 4.0",
+     19
+    ],
+    [
+     "CC BY 3.0",
+     9
+    ],
+    [
+     "Attribution",
+     3
+    ],
+    [
+     "CC BY 2.5",
+     2
+    ],
+    [
+     "CC BY 2.0",
+     2
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     2
+    ],
+    [
+     "CC BY-SA 2.0 de",
+     2
+    ],
+    [
+     "CC BY-SA 2.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "png": 214,
+    "pdf": 11,
+    "jpeg": 176,
+    "svg+xml": 81,
+    "gif": 13,
+    "webp": 3,
+    "tiff": 2
+   },
+   "sub_categories": [
+    "Diagram images that should use vector graphics",
+    "PNG diagrams",
+    "Unidentified diagrams",
+    "JPG diagrams",
+    "Schematic diagrams",
+    "SVG diagrams",
+    "Matrica disko de Kotavao"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Aspect Ratios.svg",
+     "File:C MemMap Exam VS.png",
+     "File:Eak (koe ek).png",
+     "File:Formula 1 constructors graph 2009.png",
+     "File:Lotkegel.svg"
+    ],
+    "other": [
+     "File:12 Phases of Research - FSNA.png",
+     "File:1995HeatWaveChicago.png",
+     "File:5474 TI 0214 schematic.pdf",
+     "File:802.11 Frame Control.png",
+     "File:Aa Perm Arrows 35.png"
+    ]
+   },
+   "domain": "6 charts, graphs, tables, UI"
+  },
+  "6 charts, graphs, tables, UI|Infographics": {
+   "category": "Infographics",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 1,
+   "unique_files_listed": 1,
+   "listing_truncated": false,
+   "sampled": 1,
+   "exact": true,
+   "cc0_n": 1,
+   "pd_n": 0,
+   "other_n": 0,
+   "low_res_n": 0,
+   "usable_n": 1,
+   "est_unique": 1,
+   "est_cc0": 1,
+   "est_pd": 0,
+   "est_other": 0,
+   "est_low": 0,
+   "est_usable": 1,
+   "licenses": [
+    [
+     "CC0",
+     1
+    ]
+   ],
+   "mimes": {
+    "png": 1
+   },
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Semicolon infographic.png"
+    ],
+    "other": []
+   },
+   "domain": "6 charts, graphs, tables, UI"
+  },
+  "6 charts, graphs, tables, UI|Bar charts": {
+   "category": "Bar charts",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 4669,
+   "unique_files_listed": 4566,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 38,
+   "pd_n": 110,
+   "other_n": 352,
+   "low_res_n": 83,
+   "usable_n": 100,
+   "est_unique": 4566,
+   "est_cc0": 347,
+   "est_pd": 1005,
+   "est_other": 3214,
+   "est_low": 758,
+   "est_usable": 913,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     181
+    ],
+    [
+     "Public domain",
+     110
+    ],
+    [
+     "CC BY-SA 3.0",
+     99
+    ],
+    [
+     "CC0",
+     38
+    ],
+    [
+     "(none)",
+     28
+    ],
+    [
+     "CC BY 4.0",
+     18
+    ],
+    [
+     "CC BY 3.0",
+     10
+    ],
+    [
+     "GFDL",
+     3
+    ],
+    [
+     "CC BY 2.5",
+     3
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     3
+    ],
+    [
+     "CC BY 2.0",
+     2
+    ],
+    [
+     "CC BY-SA 2.5",
+     2
+    ]
+   ],
+   "mimes": {
+    "jpeg": 121,
+    "svg+xml": 104,
+    "png": 248,
+    "gif": 15,
+    "pdf": 7,
+    "ogg": 2,
+    "tiff": 2,
+    "webp": 1
+   },
+   "sub_categories": [
+    "Vertical bar charts",
+    "Bar chart elements for Korean Wikipedia",
+    "Horizontal bar charts",
+    "Time series bar charts",
+    "SVG bar charts",
+    "Histograms",
+    "Pareto charts"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:2024 business faculty statistics donostia 034.jpg",
+     "File:Canadian federal election results.png",
+     "File:Crimes (1971-75), Sekilas Lintas Kepolisian Republik Indonesia, p99.jpg",
+     "File:Déficit commercial (biens) des Etats-Unis.png",
+     "File:Results of the 2021 April Fools' Day AfD vote.png"
+    ],
+    "other": [
+     "File:1Q12 NC Gov Fundraising.jpg",
+     "File:20220712 Global economic damage due to greenhouse gas emissions - by country.svg",
+     "File:8민10.svg",
+     "File:Alignment Shuffling for Identity.jpg",
+     "File:AllCauseDeathsExcessPerc ISL.svg"
+    ]
+   },
+   "domain": "6 charts, graphs, tables, UI"
+  },
+  "6 charts, graphs, tables, UI|Line graphs": {
+   "category": "Line graphs",
+   "exists": true,
+   "cats_listed": 2,
+   "sum_files_categoryinfo": 22,
+   "unique_files_listed": 22,
+   "listing_truncated": false,
+   "sampled": 22,
+   "exact": true,
+   "cc0_n": 6,
+   "pd_n": 2,
+   "other_n": 14,
+   "low_res_n": 4,
+   "usable_n": 6,
+   "est_unique": 22,
+   "est_cc0": 6,
+   "est_pd": 2,
+   "est_other": 14,
+   "est_low": 4,
+   "est_usable": 6,
+   "licenses": [
+    [
+     "CC BY-SA 3.0",
+     8
+    ],
+    [
+     "CC0",
+     6
+    ],
+    [
+     "CC BY-SA 4.0",
+     5
+    ],
+    [
+     "Public domain",
+     2
+    ],
+    [
+     "CC BY 4.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "svg+xml": 15,
+    "png": 6,
+    "jpeg": 1
+   },
+   "sub_categories": [
+    "Line graph construction"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:Bipartite line graph.svg",
+     "File:DeBruijn-as-line-digraph.svg",
+     "File:Diamond line graph.svg",
+     "File:Forbidden line subgraphs.svg",
+     "File:Line graph construction 0.svg"
+    ],
+    "other": [
+     "File:2021-26 Goyslop by platform.svg",
+     "File:A linear line quickly going into the millions.png",
+     "File:Common MOS links log frequency.svg",
+     "File:Geraph-khat.jpg",
+     "File:Krausz-Partition 2.png"
+    ]
+   },
+   "domain": "6 charts, graphs, tables, UI"
+  },
+  "6 charts, graphs, tables, UI|Pie charts": {
+   "category": "Pie charts",
+   "exists": true,
+   "cats_listed": 30,
+   "sum_files_categoryinfo": 3109,
+   "unique_files_listed": 2811,
+   "listing_truncated": true,
+   "sampled": 500,
+   "exact": false,
+   "cc0_n": 70,
+   "pd_n": 96,
+   "other_n": 334,
+   "low_res_n": 89,
+   "usable_n": 125,
+   "est_unique": 2811,
+   "est_cc0": 394,
+   "est_pd": 540,
+   "est_other": 1878,
+   "est_low": 500,
+   "est_usable": 703,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     141
+    ],
+    [
+     "CC BY-SA 3.0",
+     133
+    ],
+    [
+     "Public domain",
+     96
+    ],
+    [
+     "CC0",
+     70
+    ],
+    [
+     "CC BY 3.0",
+     32
+    ],
+    [
+     "CC BY 4.0",
+     8
+    ],
+    [
+     "Attribution",
+     6
+    ],
+    [
+     "CC BY-SA 3.0 igo",
+     3
+    ],
+    [
+     "CC BY 2.5",
+     3
+    ],
+    [
+     "CC BY-SA 3.0 de",
+     2
+    ],
+    [
+     "CC BY-SA 2.5",
+     1
+    ],
+    [
+     "CC SA 1.0",
+     1
+    ]
+   ],
+   "mimes": {
+    "svg+xml": 148,
+    "jpeg": 104,
+    "png": 221,
+    "pdf": 11,
+    "gif": 12,
+    "x-xcf": 1,
+    "webp": 2,
+    "ogg": 1
+   },
+   "sub_categories": [
+    "Pie charts on white background",
+    "SVG pie charts",
+    "Donut charts",
+    "Fractions (pie chart)",
+    "Exploded pie charts",
+    "Pie charts by language",
+    "Multi-series pie charts"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:2004 Format.svg",
+     "File:2016 Bolivian referendum pie chart.svg",
+     "File:Campaniatorta2.PNG",
+     "File:Composition of the the Vojvodina Parliament.SVG",
+     "File:Elektrimasinate rikete statistika.jpg"
+    ],
+    "other": [
+     "File:12-year trends in mathematics achievement, 15-year-olds.svg",
+     "File:14-15.electroless.nickel.jpg",
+     "File:Acid2compliancebyusage.png",
+     "File:Bild Wiki Ausgaben.jpg",
+     "File:Conclave 2013 by continent.svg"
+    ]
+   },
+   "domain": "6 charts, graphs, tables, UI"
+  },
+  "6 charts, graphs, tables, UI|Computer screenshots": {
+   "category": "Computer screenshots",
+   "exists": true,
+   "cats_listed": 3,
+   "sum_files_categoryinfo": 267,
+   "unique_files_listed": 261,
+   "listing_truncated": false,
+   "sampled": 261,
+   "exact": true,
+   "cc0_n": 11,
+   "pd_n": 23,
+   "other_n": 227,
+   "low_res_n": 31,
+   "usable_n": 27,
+   "est_unique": 261,
+   "est_cc0": 11,
+   "est_pd": 23,
+   "est_other": 227,
+   "est_low": 31,
+   "est_usable": 27,
+   "licenses": [
+    [
+     "CC BY-SA 4.0",
+     84
+    ],
+    [
+     "CC BY-SA 3.0",
+     55
+    ],
+    [
+     "GPL",
+     32
+    ],
+    [
+     "Public domain",
+     23
+    ],
+    [
+     "BSD",
+     12
+    ],
+    [
+     "CC0",
+     11
+    ],
+    [
+     "CC BY 2.0",
+     10
+    ],
+    [
+     "APSL",
+     5
+    ],
+    [
+     "CC BY 3.0",
+     4
+    ],
+    [
+     "MPL 1.1",
+     4
+    ],
+    [
+     "CC BY-SA 2.0",
+     4
+    ],
+    [
+     "CC BY 4.0",
+     3
+    ]
+   ],
+   "mimes": {
+    "jpeg": 46,
+    "png": 206,
+    "webp": 1,
+    "tiff": 2,
+    "gif": 3,
+    "webm": 1,
+    "svg+xml": 2
+   },
+   "sub_categories": [
+    "MacOS screenshots",
+    "Mac OS X screenshots"
+   ],
+   "samples": {
+    "cc0_or_pd": [
+     "File:386BSD installer screenshot.png",
+     "File:About Finder window.png",
+     "File:Apple BlackScreen.jpg",
+     "File:Blender Open Movie - Spring (2019).png",
+     "File:Ecomail screenshot 4.jpg"
+    ],
+    "other": [
+     "File:04 gpx copied.jpg",
+     "File:3D-plot Chinese.png",
+     "File:4 gasto mp.png",
+     "File:5G in Italia01.png",
+     "File:5If8A2yj.jpg"
+    ]
+   },
+   "domain": "6 charts, graphs, tables, UI"
+  },
+  "6 charts, graphs, tables, UI|Graphical user interface": {
+   "category": "Graphical user interface",
+   "exists": true,
+   "cats_listed": 1,
+   "sum_files_categoryinfo": 2,
+   "unique_files_listed": 2,
+   "listing_truncated": false,
+   "sampled": 2,
+   "exact": true,
+   "cc0_n": 0,
+   "pd_n": 0,
+   "other_n": 2,
+   "low_res_n": 0,
+   "usable_n": 0,
+   "est_unique": 2,
+   "est_cc0": 0,
+   "est_pd": 0,
+   "est_other": 2,
+   "est_low": 0,
+   "est_usable": 0,
+   "licenses": [
+    [
+     "CC BY 3.0",
+     2
+    ]
+   ],
+   "mimes": {
+    "jpeg": 2
+   },
+   "sub_categories": [],
+   "samples": {
+    "cc0_or_pd": [],
+    "other": [
+     "File:Susan Kare Mac Demo 1984 01.jpg",
+     "File:Susan Kare Mac Demo 1984 02.jpg"
+    ]
+   },
+   "domain": "6 charts, graphs, tables, UI"
+  }
+ },
+ "elapsed_s_this_run": 2139
+}
