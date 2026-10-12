@@ -114,6 +114,11 @@ def main(argv=None) -> int:
     for st in (sys.stdout, sys.stderr):
         st.reconfigure(encoding="utf-8", errors="replace")
     args = parse_args(argv)
+    try:                         # keep onnxruntime's per-node warnings (thousands of lines, e.g. ScatterND) out of the logs; WIKIQA_ORT_LOG=0..4 overrides
+        import onnxruntime as _ort
+        _ort.set_default_logger_severity(int(os.environ.get("WIKIQA_ORT_LOG", "3")))
+    except Exception:            # noqa: BLE001  (a model that does not use onnxruntime, or an old version)
+        pass
     from adapters import GPU_PROVIDERS, REGISTRY, REPOS, load
     if args.model not in REGISTRY:
         raise SystemExit("unknown model %r (kev is not part of the picture bench)" % args.model)

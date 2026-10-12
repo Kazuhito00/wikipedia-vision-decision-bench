@@ -17,7 +17,7 @@ folder (the real dist/ and results/ are never written):
   * timing-only blocks (``..._cpu_speed<N>``, `speed_only: true`) never become a run: they are written as speed_cpu_v1.json and shown only in the
     speed section (CPU reference next to the GPU time of the same questions);
 Only blocks that a Colab run made (a sidecar in work/colab/blocks) are used, unless --include-all-blocks.
-Pictures are not embedded (--no-images): images-224px.zip is not part of dist/ on a fresh clone.
+Pictures: thumbnails are embedded when images-224px.zip is given (--images-zip, or dist/v1/images-224px.zip); otherwise the page has none.
 """
 from __future__ import annotations
 
@@ -27,6 +27,7 @@ import json
 import os
 import pathlib
 import sys
+import shutil
 import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -139,6 +140,8 @@ def main(argv=None) -> int:
     work = pathlib.Path(os.environ.get("BENCH_WORK") or ROOT / "work")
     ap.add_argument("--out", default=str(work / "colab" / "out" / "v1_report.html"))
     ap.add_argument("--runs-dir", default=str(ROOT / "results" / "runs" / "v1"))
+    ap.add_argument("--images-zip", default="", help="images-224px.zip to embed thumbnails from (default: dist/v1/images-224px.zip when it exists)")
+    ap.add_argument("--no-images", action="store_true", help="build the page without pictures")
     ap.add_argument("--blocks-dir", default=str(work / "colab" / "blocks"))
     ap.add_argument("--include-all-blocks", action="store_true", help="also use blocks that this machine did not run (no Colab sidecar)")
     ap.add_argument("--strict-passages", action="store_true",
@@ -192,7 +195,14 @@ def main(argv=None) -> int:
     found = vm.discover_runs(runs_tmp)
     print("v1 report: %d runs (%s), %d (question, language) pairs answered by every run, %d questions" %
           (len(found), ", ".join(sorted(found)), len(pairs), n_cases))
-    return v1_report.main(["--out", str(a.out), "--runs-dir", str(runs_tmp), "--dist-dir", str(dist), "--no-images"])
+    zp = pathlib.Path(a.images_zip) if a.images_zip else ROOT / "dist" / "v1" / "images-224px.zip"
+    args = ["--out", str(a.out), "--runs-dir", str(runs_tmp), "--dist-dir", str(dist)]
+    if a.no_images or not zp.exists():
+        print("no pictures in the page (%s)" % ("--no-images" if a.no_images else "%s not found; pass --images-zip" % zp))
+        args.append("--no-images")
+    else:
+        shutil.copyfile(zp, dist / "images-224px.zip")          # thumbnails are embedded in the page (the zip itself is not kept)
+    return v1_report.main(args)
 
 
 if __name__ == "__main__":

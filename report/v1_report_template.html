@@ -109,7 +109,9 @@ svg .ax{stroke:var(--mute);stroke-width:1}
 .q img,.q .ph{width:72px;height:72px;object-fit:cover;border-radius:6px;background:var(--soft)}
 .q .ph{display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mute);text-align:center}
 .q .t{font-size:14px;font-weight:600;overflow-wrap:anywhere} .q .m{font-size:12px;color:var(--mute)}
-.ans{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.ans{display:flex;flex-wrap:wrap;gap:3px 4px;margin-top:4px;align-items:center}
+.ans .chip{font-size:10.5px;padding:0 6px;margin:0}
+.ans .chip.pk{outline:1.5px solid currentColor;outline-offset:-1px;font-weight:700}
 .modal{position:fixed;inset:0;background:rgba(10,14,24,.6);display:none;z-index:50;padding:12px;overflow:auto}
 .modal.open{display:block}
 .modal .box{max-width:760px;margin:20px auto;background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--line)}
@@ -192,7 +194,7 @@ ul.n{margin:6px 0;padding-left:20px} ul.n li{margin:3px 0}
 <section id="dataset"><h2>データセット概要</h2><div id="dsBody"></div></section>
 
 <section id="explorer"><h2>質問エクスプローラ</h2>
-<p class="sub">質問文・選択肢・正解・答えを見られます。カードには A / B の答え、押すと全 run の答えを出します。</p>
+<p class="sub">質問文・選択肢・正解・答えを見られます。カードに全 run の答えを横に並べます（A / B に選んだ run は太字＋枠）。押すと選択肢ごとの内訳を出します。</p>
 <div class="filters" id="filters"></div><div class="pager" id="pagerTop"></div><div class="list" id="list"></div><div class="pager" id="pagerBot"></div></section>
 
 <section id="notes"><h2>注意事項</h2><div class="card" id="notesBody"></div></section>
@@ -735,7 +737,9 @@ function pass(r) {
 }
 let CUR = [];
 function chips(r) {
-  return picked().map(k => { const a = r.L.a[k]; return '<span class="chip ' + (a[1] ? "good" : "bad") + '">' + esc(rlabel(k)) + ": " + esc(a[0]) + "</span>"; }).join("") + '<span class="chip">' + r.nok + " / " + NR + " run 正解</span>";
+  // every run's answer, flowing horizontally; the runs picked as A / B get an outline
+  const pk = picked();
+  return ORDER.map(k => { const a = r.L.a[k]; return '<span class="chip ' + (a[1] ? "good" : "bad") + (pk.indexOf(k) >= 0 ? " pk" : "") + '" title="' + esc(rlabel(k)) + '">' + esc(rlabel(k)) + ": " + esc(a[0]) + "</span>"; }).join("") + '<span class="chip">' + r.nok + " / " + NR + " run 正解</span>";
 }
 function thumbHtml(it) { return it.im >= 0 && D.has_images ? '<img loading="lazy" alt="" src="' + D.thumbs[it.im] + '">' : '<div class="ph">' + (it.im >= 0 ? "画像なし" : "文章のみ") + "</div>"; }
 function render() {
