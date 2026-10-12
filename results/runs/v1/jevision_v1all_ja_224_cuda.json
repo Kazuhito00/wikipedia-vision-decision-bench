@@ -85,5 +85,42 @@
    }
   },
   "ms_median": 72
+ },
+ "host": {
+  "schema": 1,
+  "cpu": {
+   "name": "12th Gen Intel(R) Core(TM) i7-12800H",
+   "physical_cores": 14,
+   "logical_cores": 20
+  },
+  "ram_gb": 31.7,
+  "os": {
+   "name": "Windows 11",
+   "version": "10.0.26300"
+  },
+  "gpu": {
+   "name": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+   "vram_mb": 4096,
+   "driver": "596.47",
+   "cuda_version": "13.2",
+   "count": 1,
+   "cuda_runtime": "13.4",
+   "cudnn": "9.20"
+  },
+  "onnxruntime": {
+   "onnxruntime-gpu": "1.31.0"
+  },
+  "python": "3.12.14",
+  "threads": 8,
+  "remote": false,
+  "source": "backfilled",
+  "host_id": "d688782a97",
+  "label": "i7-12800H / RTX 3050 Ti 4 GB",
+  "reported_fields": [
+   "onnxruntime",
+   "gpu.cuda_runtime",
+   "gpu.cudnn"
+  ],
+  "backfill_note": "hardware collected after the measurement on the same PC; fields in reported_fields come from runner/README.md"
  }
 }

@@ -100,6 +100,10 @@ Wikimedia Commons の写真を含むため、画像はリポジトリにも入�
   - ローカルで、このリポジトリの試行結果（jevision CPU/GPU と openai の `all`）に対して実行し、HTML が作られ検査 3 件が OK になることを確認しました。ブロックを分けた結果の結合も、試行結果を分割した擬似データで確認しました（実際の Colab の結果では未実行）。
 - 結果の zip（`colab_results_<日時>.zip`: 結果 json/csv、ログ、デバイス確認、集計、v1_report.html）
 
+## 実行環境の記録
+
+Colab も `runner.run` 経由なので、結果 json に `host`（CPU・コア数・RAM・OS・GPU 名/VRAM/ドライバ/CUDA・onnxruntime・スレッド数、`source: "measured"`）が自動で入り、`v1_report.html` の「実行環境」と比較表の環境列に出ます（ホスト名・ユーザー名・パスは書きません）。自分の PC と Colab の結果が混ざるときは、時間の列を環境をまたいで比べないでください（ページに注記が出ます）。
+
 ## 秘密の扱い
 
 `GITHUB_TOKEN` / `OPENAI_API_KEY` は環境変数だけ（ノートブックが Colab Secrets から入れる）。出力・ファイル・URL には出しません（子プロセスの出力は、値が含まれていたら `***` に置き換えます）。ノートブックは出力を消した状態で保存してあります。コミット前に `python tools/scan_secrets.py` を実行してください。

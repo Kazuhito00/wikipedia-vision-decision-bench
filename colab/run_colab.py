@@ -8,13 +8,19 @@ One-stop (what the notebook does, in one command):
 Steps (--steps, comma separated; default setup,images,bench,report):
   env      print the runtime (GPU, CUDA version, RAM, disk, onnxruntime) and write work/colab/env.json
   setup    install dependencies with uv (`uv pip install --system`): pillow, numpy, onnxruntime-gpu (or onnxruntime), tokenizers (d3 only)
-  images   get images-224px.zip (Drive cache / local path / Release URL), check its sha256, extract, check every question's picture exists
+  images   get images-224px.zip: --images-zip / Drive cache (only with --use-drive) / --images-url / the bench repository's GitHub Release (default:
+           <owner>/wikipedia-vision-decision-bench, tag v0.0.0, like the models' download_model.py); SHA256SUMS or --images-sha256 is checked,
+           split parts are joined, an interrupted download resumes; extract, check every question's picture exists
   bench    per model, in order: clone the model repository -> download the weights -> for each device (cpu, cuda): smoke -> full blocks
            -> (optionally) delete the weights.  A model that cannot be fetched / does not fit / falls back to the CPU is SKIPPED and
            listed at the end; the others continue.  Resumable: finished blocks are skipped, an interrupted block continues from its log.
   report   summary of every result (markdown / csv / html), the v1 report page when its inputs exist, a zip bundle for download
-  sync     copy logs + results to / from Google Drive (also done every --sync-min minutes while a block runs)
+  sync     copy logs + results to / from Google Drive (only with --use-drive; also done every --sync-min minutes while a block runs)
   plan     print the plan only (no network, no install, no GPU needed).  --dry-run does the same for any steps.
+
+Google Drive is OFF by default (no mount, no sync, no cache, no restore): results and logs stay on the local disk and `report` makes a zip to download.
+Pass --use-drive (the notebook: USE_DRIVE = True) to use Drive.  Everything is cloned by default (--models all: every repository, shared ones once; weights via
+download_model.py; with --weights auto they are deleted after each model only when they do not all fit the disk).
 
 Secrets: GITHUB_TOKEN (private repositories) and OPENAI_API_KEY (the openai model) are read from the environment ONLY; the notebook fills
 them from Colab Secrets. They are never printed, never written to a file, never put in a URL.
@@ -84,8 +90,12 @@ SPECS = {
 GLINER = dict(repo="GLiNER2.5-Decide-ONNX-CPU", model_dir="models/onnx", download=["download_model.py"], disk_gb=1.7)   # calibration only
 ALL_MODELS = list(SPECS)
 
-# images-224px.zip of dataset v1 as built on 2026-10-11 (dist/v1/manifest_v1.json). Override with --images-sha256 once the Release exists.
+# images-224px.zip of dataset v1 as built on 2026-10-11 (dist/v1/manifest_v1.json). Used only when the Release has no SHA256SUMS and --images-sha256 is not given.
 IMAGES_ZIP = "images-224px.zip"
+BENCH_REPO_NAME = "wikipedia-vision-decision-bench"           # the Release that holds images-224px.zip (public, like the models' repositories)
+DEFAULT_DRIVE_DIR = "/content/drive/MyDrive/wikipedia-vision-decision-bench-colab"
+# exit codes of the images step (the notebook explains each one)
+EXIT_NO_RELEASE, EXIT_DOWNLOAD, EXIT_SHA, EXIT_PICTURES = 3, 4, 5, 6
 IMAGES_SHA256 = "c079de9251aa1eed4c779472b4c515ade955d7553b119c0b848444f73cd299b2"
 IMAGES_MEMBERS = 2128
 
@@ -287,12 +297,14 @@ def parse_args(argv=None):
     ap.add_argument("--model-ref", action="append", default=[], metavar="REPO=REF", help="branch / tag of a model repository (default: its default branch)")
     ap.add_argument("--model-dir", action="append", default=[], metavar="KEY=PATH", help="weights folder of a model that has no download script (Drive path ok)")
     ap.add_argument("--download-args", action="append", default=[], metavar="KEY=ARGS", help='extra download_model.py arguments, e.g. "strands=--seq-len 384"')
-    ap.add_argument("--images-url", default="", help="URL of images-224px.zip (the dataset Release; empty = not published yet)")
-    ap.add_argument("--images-zip", default="", help="a local / Drive path of images-224px.zip")
-    ap.add_argument("--images-sha256", default=IMAGES_SHA256)
+    ap.add_argument("--images-url", default="", help="URL of images-224px.zip (empty = the default Release: https://github.com/<owner>/%s/releases/download/<--images-tag>/%s)" % (BENCH_REPO_NAME, IMAGES_ZIP))
+    ap.add_argument("--images-tag", default="v0.0.0", help="Release tag of the bench repository that holds images-224px.zip (+ SHA256SUMS; > 2 GiB: %s.partNN parts)" % IMAGES_ZIP)
+    ap.add_argument("--images-zip", default="", help="a local / Drive path of images-224px.zip (takes precedence over every URL)")
+    ap.add_argument("--images-sha256", default="", help="expected sha256 of images-224px.zip (empty: the Release's SHA256SUMS, else the built-in value of the 2026-10-11 build)")
     ap.add_argument("--images-members", type=int, default=IMAGES_MEMBERS)
     # resources / persistence
-    ap.add_argument("--drive", default="", help="Drive folder for logs, results and caches (the notebook mounts Drive; empty = no Drive)")
+    ap.add_argument("--use-drive", action="store_true", help="use Google Drive (logs, results, images zip, weights cache; restore + sync). DEFAULT OFF: nothing touches Drive. The notebook mounts it (USE_DRIVE = True)")
+    ap.add_argument("--drive", default="", help="Drive folder for logs, results and caches, used only with --use-drive (default %s)" % DEFAULT_DRIVE_DIR)
     ap.add_argument("--drive-cache-max-gb", type=float, default=10.0, help="do not cache a model's weights on Drive above this size (free Drive is 15 GB)")
     ap.add_argument("--no-drive-cache", action="store_true", help="Drive keeps logs/results only, never weights")
     ap.add_argument("--weights", default="auto", choices=["auto", "keep", "purge"],
@@ -584,13 +596,127 @@ def safe_extract(z: zipfile.ZipFile, dest: pathlib.Path) -> int:
     return n
 
 
-def download(url: str, dest: pathlib.Path) -> None:
+UA = {"User-Agent": "wikipedia-vision-decision-bench-colab/0.2"}
+
+
+class DownloadError(Exception):
+    def __init__(self, msg: str, code: int = EXIT_DOWNLOAD):
+        super().__init__(msg)
+        self.code = code
+
+
+def download(url: str, dest: pathlib.Path, tries: int = 6) -> None:
+    """GET url -> dest. Resumes an interrupted download (dest.part + Range), retries with back-off, prints the progress. A 404 -> DownloadError(EXIT_NO_RELEASE)."""
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_name(dest.name + ".part")
-    req = urllib.request.Request(url, headers={"User-Agent": "wikipedia-vision-decision-bench-colab/0.1"})
-    with urllib.request.urlopen(req, timeout=120) as r, open(tmp, "wb") as f:
-        shutil.copyfileobj(r, f, 1 << 20)
-    os.replace(tmp, dest)
+    delay, last_pct, err = 2.0, -1, ""
+    for attempt in range(tries):
+        have = tmp.stat().st_size if tmp.exists() else 0
+        req = urllib.request.Request(url, headers=dict(UA, **({"Range": "bytes=%d-" % have} if have else {})))
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r:
+                resumed = bool(have) and r.status == 206
+                total = (int(r.headers.get("Content-Length") or 0) + (have if resumed else 0)) or None
+                done = have if resumed else 0
+                with open(tmp, "ab" if resumed else "wb") as f:
+                    for chunk in iter(lambda: r.read(1 << 20), b""):
+                        f.write(chunk)
+                        done += len(chunk)
+                        pct = int(100 * done / total) // 10 * 10 if total else -1
+                        if pct != last_pct and total and total > (8 << 20):
+                            last_pct = pct
+                            say("    %s: %d%% (%.0f MB)" % (dest.name, pct, done / 1e6))
+            os.replace(tmp, dest)
+            return
+        except urllib.error.HTTPError as e:
+            if e.code == 416 and tmp.exists():                  # the .part already is the whole file
+                os.replace(tmp, dest)
+                return
+            if e.code in (401, 403, 404, 410):
+                raise DownloadError("HTTP %d for %s (not published yet / wrong tag / private?)" % (e.code, url), EXIT_NO_RELEASE)
+            err = "HTTP %d" % e.code
+        except (urllib.error.URLError, TimeoutError, ConnectionError, OSError) as e:
+            err = "%s" % e
+        if attempt < tries - 1:
+            say("    %s failed (%s): retry %d/%d in %.0f s (resumes from the .part file)" % (dest.name, err, attempt + 1, tries - 1, delay))
+            time.sleep(delay)
+            delay *= 2
+    raise DownloadError("download of %s failed after %d tries (%s)" % (url, tries, err))
+
+
+def fetch_sums(base: str) -> dict:
+    """SHA256SUMS of the Release (sha256sum format: '<hex>  <name>'). {} when there is none."""
+    try:
+        req = urllib.request.Request(base + "/SHA256SUMS", headers=UA)
+        with urllib.request.urlopen(req, timeout=60) as r:
+            text = r.read().decode("utf-8", "replace")
+    except (urllib.error.URLError, TimeoutError, OSError):
+        return {}
+    return parse_sums(text)
+
+
+def parse_sums(text: str) -> dict:
+    out = {}
+    for ln in text.splitlines():
+        m = re.match(r"^([0-9a-fA-F]{64})\s+\*?(\S+)\s*$", ln)
+        if m:
+            out[m.group(2)] = m.group(1).lower()
+    return out
+
+
+def images_asset_name(args) -> str:
+    return args.images_url.rsplit("/", 1)[1] if args.images_url else IMAGES_ZIP
+
+
+def images_release_base(args) -> str:
+    """Folder URL of the Release assets (no trailing slash)."""
+    if args.images_url:
+        return args.images_url.rsplit("/", 1)[0]
+    return "https://github.com/%s/%s/releases/download/%s" % (args.owner, BENCH_REPO_NAME, args.images_tag)
+
+
+def download_images_zip(args, dest_dir: pathlib.Path) -> tuple[pathlib.Path, str]:
+    """-> (zip path, expected sha256). Single asset, or the .partNN assets listed in SHA256SUMS (each checked, then joined). Raises DownloadError."""
+    base, name = images_release_base(args), images_asset_name(args)
+    sums = fetch_sums(base)
+    say("Release %s : SHA256SUMS %s" % (base, ("found (%d entries)" % len(sums)) if sums else "not found"))
+    want = args.images_sha256 or sums.get(name) or IMAGES_SHA256
+    zp = dest_dir / name
+    if zp.exists() and sha256_file(zp) == want:
+        say("already downloaded: %s" % zp)
+        return zp, want
+    parts = sorted(n for n in sums if n.startswith(name + ".part"))
+    if name not in sums and parts:
+        say("the Release has %s as %d parts: downloading and joining them" % (name, len(parts)))
+        for n in parts:
+            pp = dest_dir / n
+            if not (pp.exists() and sha256_file(pp) == sums[n]):
+                say("downloading %s/%s" % (base, n))
+                download("%s/%s" % (base, n), pp)
+                if sha256_file(pp) != sums[n]:
+                    pp.unlink()
+                    raise DownloadError("sha256 of %s differs from SHA256SUMS (file deleted: run again)" % n, EXIT_SHA)
+        tmp = zp.with_name(zp.name + ".join")
+        with open(tmp, "wb") as out:
+            for n in parts:
+                with open(dest_dir / n, "rb") as f:
+                    shutil.copyfileobj(f, out, 1 << 20)
+        os.replace(tmp, zp)
+        for n in parts:
+            (dest_dir / n).unlink()
+        return zp, want
+    say("downloading %s/%s" % (base, name))
+    download("%s/%s" % (base, name), zp)
+    return zp, want
+
+
+def no_release_help(args) -> str:
+    return ("images-224px.zip could not be fetched from the Release (%s).\n"
+            "  - Release not published yet / wrong tag: publish it (colab/README.md: gh release create ...) or pass --images-tag / --images-url.\n"
+            "  - Own copy of the zip: --images-zip PATH (IMAGES_ZIP in the notebook).\n"
+            "  - Last resort without the Release (covers only the Wikimedia Commons photos, NOT the drawn pictures of biz/rsn): the bench's own tool\n"
+            "    `python -m datasets.fetch fetch` fetches them politely (1 request/s); it needs WIKIQA_CONTACT = your own contact in the environment\n"
+            "    (Colab Secrets -> WIKIQA_CONTACT; never print or save it). Pictures are not redistributed with the repository." % images_release_base(args))
 
 
 def check_pictures(args, sets: list[str]) -> list[str]:
@@ -611,37 +737,45 @@ def check_pictures(args, sets: list[str]) -> list[str]:
 
 
 def step_images(args, sets: list[str], sync: DriveSync) -> None:
-    hdr("images (dataset v1, images-224px.zip)")
+    hdr("images (dataset v1, %s)" % IMAGES_ZIP)
     rc, rcfg, _, _ = bench_imports()
     root = rcfg.data_root()
+    cache = sync.root / "cache" / IMAGES_ZIP if sync.enabled else None
     if args.dry_run:
-        say("[dry-run] images root %s; source: zip=%r url=%r drive cache=%s" % (root, args.images_zip, args.images_url,
-                                                                           (sync.root / "cache" / IMAGES_ZIP) if sync.root else "-"))
+        say("[dry-run] images root %s" % root)
+        say("[dry-run] source order: 1. --images-zip %r  2. Drive cache %s  3. %s/%s" % (
+            args.images_zip, cache if cache else "(Drive off)", images_release_base(args), images_asset_name(args)))
+        say("[dry-run] the sha256 is checked (SHA256SUMS of the Release, or --images-sha256); a Release with %s.partNN parts is joined; an interrupted download resumes" % IMAGES_ZIP)
+        say("[dry-run] expected: %d members (2127 pictures + ATTRIBUTION.md), about 20 MB" % IMAGES_MEMBERS)
         if (root / "data").exists():
             probs = check_pictures(args, sets)
             say("pictures check: %s" % ("OK" if not probs else probs[:5]))
         return
     marker = root / ".images_v1_ok"
-    if marker.exists() and marker.read_text().strip() == args.images_sha256:
+    if marker.exists() and (not args.images_sha256 or marker.read_text().strip() == args.images_sha256):
         say("already extracted (%s)" % marker)
     else:
-        cache = sync.root / "cache" / IMAGES_ZIP if sync.enabled else None
-        zp = None
+        zp, want = None, ""
         for cand in (pathlib.Path(args.images_zip) if args.images_zip else None, cache if cache and cache.exists() else None):
             if cand and cand.exists():
-                zp = cand
+                zp, want = cand, args.images_sha256 or IMAGES_SHA256
                 break
+        if args.images_zip and zp is None:
+            say("!! --images-zip %s does not exist" % args.images_zip)
+            raise SystemExit(EXIT_NO_RELEASE)
         if zp is None:
-            if not args.images_url:
-                raise SystemExit("images-224px.zip is not available: the dataset Release is not published yet.\n"
-                                 "  Set IMAGES_URL (the Release asset URL) or IMAGES_ZIP (a file you put on Drive / uploaded), see colab/README.md.\n"
-                                 "  Pictures are not redistributed with the repository; Wikimedia Commons files are fetched by each user (README).")
-            zp = work_dir() / "dl" / IMAGES_ZIP
-            say("downloading %s" % args.images_url)
-            download(args.images_url, zp)
+            try:
+                zp, want = download_images_zip(args, work_dir() / "dl")
+            except DownloadError as e:
+                say("!! " + str(e))
+                if e.code == EXIT_NO_RELEASE:
+                    say(no_release_help(args))
+                raise SystemExit(e.code)
         got = sha256_file(zp)
-        if got != args.images_sha256:
-            raise SystemExit("sha256 of %s is %s, expected %s: refusing to extract (pass --images-sha256 if the Release was rebuilt)" % (zp, got, args.images_sha256))
+        if got != want:
+            say("!! sha256 of %s is %s, expected %s: refusing to extract (corrupt download? delete it and run again; "
+                "if the Release was rebuilt, its SHA256SUMS or --images-sha256 must match)" % (zp, got, want))
+            raise SystemExit(EXIT_SHA)
         say("sha256 ok: %s" % got)
         if cache and not cache.exists() and zp != cache:
             cache.parent.mkdir(parents=True, exist_ok=True)
@@ -653,10 +787,11 @@ def step_images(args, sets: list[str], sync: DriveSync) -> None:
                 say("warning: %d members, expected %d" % (len(names), args.images_members))
             n = safe_extract(z, root)
         say("extracted %d files into %s" % (n, root))
-        marker.write_text(args.images_sha256 + "\n")
+        marker.write_text(got + "\n")
     probs = check_pictures(args, sets)
     if probs:
-        raise SystemExit("picture check failed:\n  " + "\n  ".join(probs[:10]))
+        say("!! picture check failed (%d problems):\n  " % len(probs) + "\n  ".join(probs[:10]))
+        raise SystemExit(EXIT_PICTURES)
     say("picture check: OK")
 
 
@@ -1239,9 +1374,14 @@ def main(argv=None) -> int:
     devices = resolve_devices(args, gpu)
     sets = [s for s in args.sets.split(",") if s]
     langs = [s for s in args.langs.split(",") if s]
-    sync = DriveSync(args.drive or None)
-    if args.drive and not sync.enabled:
-        say("Drive folder %s is not usable (is Drive mounted?): continuing without Drive" % args.drive)
+    if args.use_drive:
+        sync = DriveSync(args.drive or DEFAULT_DRIVE_DIR)
+        if not sync.enabled:
+            say("--use-drive: the Drive folder %s is not usable (is Drive mounted? the notebook does it): continuing WITHOUT Drive" % sync.root)
+    else:
+        sync = DriveSync(None)
+        if args.drive:
+            say("--drive is ignored without --use-drive: Drive is OFF (results stay on this machine; `report` makes a zip to download)")
     rc, rcfg, logfmt, results = bench_imports()
     sync.add(work_dir() / "logs" / "v1", "logs_v1")
     sync.add(ROOT / "results" / "runs" / "v1", "runs_v1")

@@ -445,8 +445,26 @@ def main(argv=None):
                 mism = sum(1 for x in asked if pqk.get((x["id"], x["lang"])) != str(x[k]["ok"]))
                 chk("per_question_v1.csv mismatching rows (%s)" % k, float(mism), 0.0)
 
+    # ---- environments (the `host` key of the result files; a run without it is "unknown")
+    hosts, run_host = {}, {}
+    for r in runs:
+        hs = [meta_json[(r["key"], lg)].get("host") for lg in LANGS if (r["key"], lg) in meta_json]
+        hs = [h for h in hs if h and h.get("host_id")]
+        ids = []
+        for h in hs:
+            ids += [h["host_id"]] + [x["host_id"] for x in (h.get("also_resumed_on") or []) if x.get("host_id")]
+            hosts.setdefault(h["host_id"], dict(h, runs=[]))
+            if r["key"] not in hosts[h["host_id"]]["runs"]:
+                hosts[h["host_id"]]["runs"].append(r["key"])
+        run_host[r["key"]] = dict(host_id=hs[0]["host_id"] if hs else None, label=hs[0].get("label") if hs else None,
+                                  source=hs[0].get("source") if hs else None, remote=bool(hs and hs[0].get("remote")),
+                                  threads=hs[0].get("threads") if hs else None, mixed=len(set(ids)) > 1,
+                                  missing=len(hs) < len([1 for lg in LANGS if (r["key"], lg) in meta_json]))
+    for h in hosts.values():
+        h.pop("also_resumed_on", None)
+
     data = dict(
-        generated=manifest.get("generated_at"), dataset=manifest.get("dataset_version", "v1"),
+        hosts=list(hosts.values()), generated=manifest.get("generated_at"), dataset=manifest.get("dataset_version", "v1"),
         models=[dict(key=m["key"], name=m["name"], short=m["short"], kind=m["kind"], color=m["color"], weights_gb=m.get("weights_gb"),
                      runs=[r["key"] for r in m["runs"]]) for m in MODELS],
         runs=[dict(key=r["key"], label=r["label"], device=r["device"], model=mdl_of[r["key"]]["key"], name=mdl_of[r["key"]]["name"],
@@ -454,7 +472,8 @@ def main(argv=None):
                    weights_gb=next((meta_json[(r["key"], lg)].get("weights_gb") for lg in LANGS if (r["key"], lg) in meta_json
                                     and meta_json[(r["key"], lg)].get("weights_gb") is not None), mdl_of[r["key"]].get("weights_gb")),
                    variant=next((meta_json[(r["key"], lg)].get("variant") for lg in LANGS if (r["key"], lg) in meta_json), None),
-                   langs=sorted(r["files"])) for r in runs],
+                   langs=sorted(r["files"]), host=run_host[r["key"]],
+                   ort=next(((meta_json[(r["key"], lg)].get("host") or {}).get("onnxruntime") for lg in LANGS if (r["key"], lg) in meta_json), None)) for r in runs],
         aggs=aggs, speed=speed, blocks=blocks, cal_limit=CAL_LIMIT, cost=cost, pricing=PRICING,
         ds=dsstat, label_check=label_check, lc_ids=sorted(lc_ids), checks=checks,
         items=items, thumbs=uris, has_images=not no_images, dropped=dropped, placeholder=placeholder,

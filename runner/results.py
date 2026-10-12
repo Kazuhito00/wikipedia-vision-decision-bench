@@ -12,6 +12,7 @@ import json
 import pathlib
 import platform
 import statistics
+import sys
 
 from . import config
 
@@ -55,11 +56,42 @@ def tally(rows: list[dict]) -> dict:
     return out
 
 
+def keep_earlier_host(rec: dict, path: pathlib.Path) -> dict:
+    """A resumed block keeps the host its record already has (never overwritten). Resumed on another machine (other host_id): warn, and
+    list that machine under host["also_resumed_on"]. An earlier record without a host: the new host is kept but marked, because the
+    earlier part of the block was measured on an unknown machine."""
+    if not rec.get("resumed") or not path.exists():
+        return rec
+    try:
+        old = json.loads(path.read_text(encoding="utf-8")).get("host")
+    except (OSError, ValueError):
+        old = None
+    new = rec.get("host")
+    if not new:
+        return rec
+    if not old:
+        rec["host"] = dict(new, earlier_session_host_unknown=True)
+        print("warning: %s was resumed but its earlier record has no host: the earlier part was measured on an unknown machine" % path.name,
+              file=sys.stderr, flush=True)
+        return rec
+    host = dict(old)
+    if old.get("host_id") != new.get("host_id"):
+        print("warning: %s was started on host %s (%s) and is resumed on host %s (%s): its times mix two machines"
+              % (path.name, old.get("host_id"), old.get("label"), new.get("host_id"), new.get("label")), file=sys.stderr, flush=True)
+        seen = host.get("also_resumed_on") or []
+        if new.get("host_id") not in [x.get("host_id") for x in seen]:
+            seen.append({k: new.get(k) for k in ("host_id", "label", "threads", "source")})
+        host["also_resumed_on"] = seen
+    rec["host"] = host
+    return rec
+
+
 def write(block: str, meta: dict, rows: list[dict]) -> pathlib.Path:
     """Write <block>.json and <block>.csv. ``meta`` carries the conditions; ``rows`` one dict per question."""
     d = results_dir(meta["dataset_version"])
     d.mkdir(parents=True, exist_ok=True)
     rec = dict(meta, python=platform.python_version(), manifest=manifest_ref(), question_list=question_list_ref(meta["dataset_version"]), counts=tally(rows))
+    rec = keep_earlier_host(rec, d / (block + ".json"))
     (d / (block + ".json")).write_text(json.dumps(rec, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     with open(d / (block + ".csv"), "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, lineterminator="\n")

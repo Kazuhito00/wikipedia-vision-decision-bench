@@ -27,7 +27,7 @@ import pathlib
 import sys
 import time
 
-from . import config, logfmt, results
+from . import config, hostinfo, logfmt, results
 from .cases import load_cases
 
 
@@ -207,7 +207,7 @@ def main(argv=None) -> int:
                     endpoint=info.get("endpoint"), model_name=info.get("model_name"),
                     usage=dict(info["usage"]) if info.get("usage") else None,     # this session's requests / tokens (remote adapters)
                     started=started, finished=datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
-                    resumed=bool(earlier))
+                    resumed=bool(earlier), host=hostinfo.collect(threads=args.threads, remote=remote))
         print("results:", results.write(block, meta, rows), flush=True)
     return 0
 

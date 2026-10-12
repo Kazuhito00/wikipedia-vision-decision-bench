@@ -120,6 +120,11 @@ svg .ax{stroke:var(--mute);stroke-width:1}
 .opt .who{margin-left:auto}
 .pager{display:flex;gap:6px;align-items:center;margin:10px 0;flex-wrap:wrap}
 footer{max-width:1200px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font-size:12px}
+.env{display:inline-flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap}
+.env i{width:9px;height:9px;border-radius:50%;flex:none;border:1px solid var(--ink)}
+.eh0 i{background:var(--m0)}.eh1 i{background:var(--m1)}.eh2 i{background:var(--m2)}.eh3 i{background:var(--m3)}.eh4 i{background:var(--warn)}.ehn i{background:transparent;border-style:dashed}
+table.envt{min-width:820px}table.envt td,table.envt th{white-space:normal;text-align:left;vertical-align:top}
+table.cmp td.envc{text-align:left;font-size:12px}
 ul.n{margin:6px 0;padding-left:20px} ul.n li{margin:3px 0}
 @media (max-width:600px){main{padding:12px}.kpi .v{font-size:23px}.rows .lab{max-width:96px;font-size:12px}.rows.wide .lab{max-width:130px}.modal .pic{float:none;margin:0 0 8px}.modal .pic img{max-width:60vw}
   .pick{position:static}.pick select{max-width:calc(100vw - 80px)}html{scroll-padding-top:56px}.pick .hint{display:none}}
@@ -128,7 +133,7 @@ ul.n{margin:6px 0;padding-left:20px} ul.n li{margin:3px 0}
 <body>
 <header class="top"><div class="in">
   <strong>v1 まとめ</strong>
-  <a href="#summary">比較表</a><a href="#all">全モデル</a><a href="#detail">詳細</a><a href="#compare">A/B 比較</a>
+  <a href="#env">実行環境</a><a href="#summary">比較表</a><a href="#all">全モデル</a><a href="#detail">詳細</a><a href="#compare">A/B 比較</a>
   <a href="#speed">速度</a><a href="#cost">費用</a><a href="#calib">較正</a><a href="#label">ラベル検査</a><a href="#dataset">データセット</a><a href="#explorer">質問探索</a><a href="#notes">注意</a>
   <button id="theme" type="button" title="ライト/ダーク切替">◐</button>
 </div></header>
@@ -137,7 +142,7 @@ ul.n{margin:6px 0;padding-left:20px} ul.n li{margin:3px 0}
   <label>A <select id="selA"></select></label>
   <label>B <select id="selB"></select></label>
   <button type="button" id="swap" title="A と B を入れ替え">⇄</button>
-  <span class="hint">「詳細」「A/B 比較」「速度」「質問探索」はここで選んだ A / B だけを描きます</span>
+  <span id="envPick"></span><span class="hint">「詳細」「A/B 比較」「速度」「質問探索」はここで選んだ A / B だけを描きます</span>
 </div></div>
 <main id="app">
 <h1>Wikipedia 画像セット v1 まとめ</h1>
@@ -145,10 +150,13 @@ ul.n{margin:6px 0;padding-left:20px} ul.n li{margin:3px 0}
 <div class="note"><b>このページは生成物です。</b> Wikimedia Commons 由来の写真と合成図のサムネイルを埋め込んでいるため、ローカル専用です（<code>*.html</code> は git 管理外）。公開・コミットしないでください。再生成: <code>uv run python -m report.v1_report</code></div>
 <div id="warn"></div>
 
+<section id="env"><h2>実行環境</h2><div id="envBody"></div></section>
+
 <section id="summary"><h2>モデル比較表</h2>
 <div class="kpis" id="kpis"></div>
 <div class="card" style="margin-top:14px"><h3>全 run の比較（見出しを押すと並べ替え）</h3>
   <p class="sub" style="margin:0 0 8px">1 行 = 1 run（モデル × デバイス）。正答数 ÷ 出題数、未回答は不正解。色が濃い緑ほど高い正答率。時間は 1 問あたりの中央値で、<b>較正が外れた CPU 時間は載せません</b>（「—」）。</p>
+  <div class="tabs" id="envFilter" style="display:none"></div>
   <div class="scroll"><table class="cmp" id="cmp"></table></div>
   <p class="sub" id="cmpNote" style="margin:8px 0 0;font-size:12px"></p></div>
 <div class="card" style="margin-top:14px"><h3>全体正答率（高い順）</h3><div id="rank"></div></div>
@@ -212,7 +220,16 @@ const rcol = k => R[k].device === "cuda" ? "color-mix(in srgb," + R[k].color + "
 const dot = k => '<i class="dot" style="background:' + rcol(k) + '"></i>';
 const ORDER = RK.slice().sort((a, b) => OV.c[b] - OV.c[a] || RK.indexOf(a) - RK.indexOf(b));
 const GROUPS = ["photo", "biz", "rsn", "txt"];
-const S = {A: RK[0], B: "", lang: "all", sort: "overall", dir: -1, dim: "group", heat: "A", cmpLang: "all"};
+const HOSTS = D.hosts || [], HIDX = {};
+HOSTS.forEach((h, i) => { HIDX[h.host_id] = i; });
+const hostOf = k => R[k].host || {};
+const envCls = k => { const i = HIDX[hostOf(k).host_id]; return i == null ? "ehn" : "eh" + Math.min(i, 4); };
+const envName = k => { const h = hostOf(k); return h.host_id ? h.label : "環境不明"; };
+const envTag = k => { const h = hostOf(k), t = []; if (h.host_id && h.source === "backfilled") t.push("補記"); if (h.remote) t.push("API クライアント側"); if (h.mixed) t.push("再開で環境が混在"); return t; };
+const envChip = k => '<span class="env ' + envCls(k) + '" title="' + esc(envName(k) + (envTag(k).length ? "（" + envTag(k).join(" / ") + "）" : "")) + '"><i></i>' + esc(envName(k)) + "</span>" + envTag(k).map(t => ' <span class="chip' + (t === "再開で環境が混在" ? " warn" : "") + '">' + esc(t) + "</span>").join("");
+const ENVIDS = [...new Set(RK.map(k => hostOf(k).host_id || ""))];
+const multiEnv = ENVIDS.length > 1 || RK.some(k => hostOf(k).mixed);
+const S = {env: "all", A: RK[0], B: "", lang: "all", sort: "overall", dir: -1, dim: "group", heat: "A", cmpLang: "all"};
 (function () {
   const others = ORDER.filter(k => R[k].model !== R[S.A].model);
   S.B = others[0] || ORDER.find(k => k !== S.A) || "";
@@ -281,6 +298,31 @@ const kindOf = r => r.nok === 0 ? "allwrong" : r.nok === NR ? "allright" : "spli
   $("#warn").innerHTML = w.join("");
 })();
 
+/* ---- 0. execution environments ---- */
+(function () {
+  const e = $("#envBody");
+  const row = h => {
+    const c = h.cpu || {}, g = h.gpu, o = h.os || {}, runs = RK.filter(k => hostOf(k).host_id === h.host_id);
+    const rl = runs.map(k => {
+      const ort = (R[k].ort && Object.keys(R[k].ort).length) ? Object.entries(R[k].ort).map(([a, b]) => a + " " + b).join(", ") : "";
+      return "<div>" + dot(k) + esc(rlabel(k)) + ' <span class="chip">' + (hostOf(k).remote ? "API クライアント側・時間は API 往復" : (hostOf(k).threads != null ? hostOf(k).threads + " スレッド" : "スレッド不明")) + "</span>" + (ort ? ' <span class="chip">' + esc(ort) + "</span>" : "") + "</div>";
+    }).join("");
+    const gpu = g ? esc(g.name) + "<br>VRAM " + (g.vram_mb ? fx(g.vram_mb / 1024, 1) + " GB" : "—") + "<br>ドライバ " + esc(g.driver || "—") + "<br>CUDA " + esc(g.cuda_version || "—") + " (ドライバ対応)" + (g.cuda_runtime ? "<br>CUDA ランタイム " + esc(g.cuda_runtime) : "") + (g.cudnn ? "<br>cuDNN " + esc(g.cudnn) : "") : "なし / 取得不可";
+    const src = h.source === "backfilled" ? '<span class="chip warn">補記</span> 測定後に同じ PC で収集。' + ((h.reported_fields || []).length ? "報告済みの値: " + esc(h.reported_fields.join(", ")) : "") : '<span class="chip good">実測</span>';
+    return '<tr><td class="l"><span class="env eh' + Math.min(HIDX[h.host_id], 4) + '"><i></i><b>' + esc(h.label) + '</b></span><br><span class="mono" style="font-size:11px;color:var(--mute)">' + esc(h.host_id) + "</span></td><td>" + esc(c.name || "—") + "<br>" + (c.physical_cores || "—") + " コア / " + (c.logical_cores || "—") + " 論理</td><td>" + (h.ram_gb != null ? fx(h.ram_gb, 1) + " GB" : "—") +
+      "</td><td>" + gpu + "</td><td>" + esc((o.name || "—") + (o.version ? " (" + o.version + ")" : "")) + "</td><td>" + src + "</td><td>" + rl + "</td></tr>";
+  };
+  let h = '<p class="sub">結果ファイルの <code>host</code> から。時間（ms）は<b>この機械の速さ</b>で、環境が違う run の時間は比べられません。ホスト名・ユーザー名・パス・IP は記録していません。</p>';
+  if (HOSTS.length) h += '<div class="card"><div class="scroll"><table class="envt"><tr><th>環境</th><th>CPU</th><th>RAM</th><th>GPU</th><th>OS</th><th>由来</th><th>この環境の run</th></tr>' + HOSTS.map(row).join("") + "</table></div></div>";
+  const unk = RK.filter(k => !hostOf(k).host_id);
+  if (unk.length) h += '<div class="note"><b>環境不明</b>: ' + unk.map(k => esc(rlabel(k))).join(", ") + " の結果ファイルには <code>host</code> がありません。時間は他の run と比べないでください。</div>";
+  if (!HOSTS.length && !unk.length) h += '<div class="note">環境の記録がありません。</div>';
+  const mx = RK.filter(k => hostOf(k).mixed);
+  if (mx.length) h += '<div class="note"><b>再開で環境が混在</b>: ' + mx.map(k => esc(rlabel(k))).join(", ") + " は、途中から別の機械で再開されたブロックを含みます。時間は 2 つの機械の混在です（結果ファイルの <code>host.also_resumed_on</code>）。</div>";
+  if (multiEnv) h += '<div class="note"><b>環境が複数あります（' + ENVIDS.length + "）</b>: 時間の列を環境をまたいで比べると不公平です（CPU・GPU・スレッド数が違えば速さが変わります）。比較表では環境で絞り込めます。正答率は環境に依りません。</div>";
+  e.innerHTML = h;
+})();
+
 /* ---- 1. comparison table ---- */
 const lgAcc = (k, l) => acc(D.aggs.all.lang.find(x => x.label === l), k);
 const grAcc = (k, g) => acc(D.aggs.all.group.find(x => x.label === g), k);
@@ -303,18 +345,18 @@ function sortVal(k) {
   const c = COLS.find(x => x.id === S.sort); return c ? c.get(k) : null;
 }
 function drawTable() {
-  const keys = RK.slice().sort((a, b) => {
+  const keys = RK.filter(k => S.env === "all" || (hostOf(k).host_id || "none") === S.env).sort((a, b) => {
     const x = sortVal(a), y = sortVal(b);
     if (x == null && y == null) return RK.indexOf(a) - RK.indexOf(b);
     if (x == null) return 1; if (y == null) return -1;
     return (x - y) * (S.sort === "name" ? 1 : S.dir) || RK.indexOf(a) - RK.indexOf(b);
   });
   const arrow = id => S.sort === id ? (S.dir < 0 ? " ▼" : " ▲") : "";
-  let h = '<tr><th class="l st"><button type="button" data-s="name" class="' + (S.sort === "name" ? "on" : "") + '">run（モデル × デバイス）' + (S.sort === "name" ? " ▲" : "") + "</button></th>" +
+  let h = '<tr><th class="l st"><button type="button" data-s="name" class="' + (S.sort === "name" ? "on" : "") + '">run（モデル × デバイス）' + (S.sort === "name" ? " ▲" : "") + '</button></th><th class="l">環境</th>' +
     COLS.map(c => '<th class="' + (c.sep ? "sep" : "") + '"><button type="button" data-s="' + c.id + '" class="' + (S.sort === c.id ? "on" : "") + '">' + esc(c.l) + arrow(c.id) + "</button></th>").join("") + "</tr>";
   keys.forEach(k => {
     const r = R[k];
-    h += '<tr class="' + (k === S.A ? "selA" : k === S.B ? "selB" : "") + '"><td class="st">' + dot(k) + esc(r.label) + ' <span class="chip">' + (r.kind === "api" ? "api" : "local") + '</span><span class="ab"><button type="button" data-a="' + k + '" title="A にする" class="' + (k === S.A ? "on" : "") + '">A</button><button type="button" data-b="' + k + '" title="B にする" class="' + (k === S.B ? "on" : "") + '">B</button></span></td>';
+    h += '<tr class="' + (k === S.A ? "selA" : k === S.B ? "selB" : "") + '"><td class="st">' + dot(k) + esc(r.label) + ' <span class="chip">' + (r.kind === "api" ? "api" : "local") + '</span><span class="ab"><button type="button" data-a="' + k + '" title="A にする" class="' + (k === S.A ? "on" : "") + '">A</button><button type="button" data-b="' + k + '" title="B にする" class="' + (k === S.B ? "on" : "") + '">B</button></span></td><td class="envc">' + envChip(k) + "</td>";
     COLS.forEach(c => {
       const v = c.get(k), cls = "v" + (c.sep ? " sep" : "");
       if (v == null) {
@@ -332,14 +374,18 @@ function drawTable() {
     h += "</tr>";
   });
   $("#cmp").innerHTML = h;
+  const fe = $("#envFilter");
+  if (fe) { fe.innerHTML = '<span class="hint" style="font-size:12px;color:var(--mute)">環境で絞り込み</span>' + [["all", "すべて"]].concat(ENVIDS.map(i => [i || "none", i ? (HOSTS.find(x => x.host_id === i) || {}).label : "環境不明"])).map(([v, t]) => '<button type="button" data-env="' + esc(v) + '" class="' + (S.env === v ? "on" : "") + '">' + esc(t) + "</button>").join(""); }
 }
 (function () {
   const dev = {cpu: "CPU", cuda: "GPU", remote: "API 往復"};
   const note = [];
   if (RUNS.some(r => r.timing === "invalid")) note.push("較正が外れた run の時間は載せていません（「較正値と有効性」参照）。");
   if (RUNS.some(r => r.timing === "uncal" && r.device === "cpu")) note.push("※ CPU 時間に較正の記録がない run は、静かな機械で測ったか未確認です。");
+  if (multiEnv) note.push("実行環境が複数あります。時間の列は環境をまたぐと不公平です（環境の列の色と上の「実行環境」を参照）。環境不明の run は時間を比べないでください。");
   note.push("GPU 時間は参考値、API 往復はネットワーク込みで機械に依存しません。重み (GB) はリポジトリの記述にある配布サイズの概算で、空欄は記述なし（実行に要するメモリではありません）。");
   $("#cmpNote").textContent = note.join(" ");
+  if (multiEnv) { $("#envFilter").style.display = ""; $("#envFilter").onclick = e => { const b = e.target.closest("button[data-env]"); if (b) { S.env = b.dataset.env; drawTable(); } }; }
   $("#cmp").onclick = e => {
     const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.a) { S.A = b.dataset.a; if (S.B === S.A) S.B = ""; syncPick(); renderPicked(); drawTable(); return; }
@@ -620,6 +666,7 @@ function drawSpeed() {
     "<li><b>文章のみ（txt）は易しい対照</b>: 画像を読まないため正答率が高め。画像付きとの差は目安であり、問題内容が異なる比較です。</li>" +
     "<li><b>v1 は新規、legacy は旧版</b>: origin が <code>polished</code> の問は旧データセット（legacy）から磨き直したもの、<code>new</code> は v1 で新規作成した問です。v1 と旧版の数値は問題が異なるため直接比べられません。new は難しめで正答率が低くなります。</li>" +
     "<li><b>費用は概算</b>: Decisions API の料金は未公表。GPT-6 Luna の入力単価を仮に当てはめた値で、実際の請求とは異なる可能性があります。</li>" +
+    "<li><b>実行環境</b>: 各 run の機種は結果ファイルの <code>host</code>（CPU・コア数・RAM・GPU・ドライバ・onnxruntime・OS）から。「補記」は記録機能の追加前に測った結果へ、同じ PC で後から収集して付けたものです。ホスト名・ユーザー名・パス・IP は書きません。</li>" +
     "<li><b>時間比較</b>: 較正が外れた CPU 時間は載せません。較正記録がない run（※）と GPU 時間は参考値。API の時間は往復時間。run どうしで機械が違うと時間は比べられません。</li>" +
     "<li><b>重みのサイズ</b>: リポジトリの記述にある配布サイズの概算で、実行に必要なメモリではありません。</li>" +
     "<li><b>入力画像</b>: 224 px（長辺）で入力。ページ内のサムネイルは表示用の縮小（長辺 120 px）で、モデルが見た画像そのものではありません。</li>" +
@@ -715,8 +762,17 @@ function openModal(i) {
 function closeModal() { $("#modal").classList.remove("open"); }
 
 /* ---- everything that depends on A / B ---- */
+function envWarn() {
+  if (!hasB()) return "";
+  const a = hostOf(S.A), b = hostOf(S.B);
+  if ((a.host_id || "") === (b.host_id || "") && a.host_id) return "";
+  return '<div class="note"><b>A と B は実行環境が違います</b>（A: ' + esc(envName(S.A)) + " / B: " + esc(envName(S.B)) + "）。速度（時間）は機械の差を含むため比べられません。正答率の比較には影響しません。</div>";
+}
 function renderPicked() {
   drawBreakdown(); drawHeat(); drawCompare(); drawSpeed();
+  const w = envWarn();
+  if (w) { $("#cmpAB").insertAdjacentHTML("afterbegin", w); $("#speedBody").insertAdjacentHTML("afterbegin", w); }
+  $("#envPick").innerHTML = w ? '<span class="chip warn" title="A と B の実行環境が違うため、速度は比べられません">環境が違う</span>' : "";
   const cur = F.out; $("#f_out").innerHTML = outs().map(([v, t]) => '<option value="' + esc(v) + '">' + esc(t) + "</option>").join("");
   if (!outs().some(([v]) => v === cur)) F.out = ""; $("#f_out").value = F.out;
   render();

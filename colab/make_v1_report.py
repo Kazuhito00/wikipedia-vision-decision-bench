@@ -70,6 +70,10 @@ def merge_meta(blocks) -> dict:
     us = [x["usage"] for x in metas if x.get("usage")]
     if us:
         m["usage"] = {k: sum(u.get(k) or 0 for u in us) for k in us[0]}
+    hosts = {x["host"]["host_id"]: x["host"] for x in metas if x.get("host") and x["host"].get("host_id")}
+    if len(hosts) > 1 and m.get("host"):                      # blocks of one run measured on different machines: say so (the report warns)
+        m["host"] = dict(m["host"], also_resumed_on=[{k: h.get(k) for k in ("host_id", "label", "threads", "source")}
+                                                     for i, h in hosts.items() if i != m["host"].get("host_id")])
     return m
 
 
