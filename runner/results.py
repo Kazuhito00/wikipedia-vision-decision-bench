@@ -9,6 +9,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import os
 import pathlib
 import platform
 import statistics
@@ -20,6 +21,8 @@ COLUMNS = ["dataset_version", "id", "model", "lang", "kind", "expected", "got", 
 
 
 def results_dir(version: str) -> pathlib.Path:
+    if os.environ.get("BENCH_RESULTS_RUNS"):          # e.g. results/runs/v1_localpc: results of another machine kept apart
+        return pathlib.Path(os.environ["BENCH_RESULTS_RUNS"])
     return config.ROOT / "results" / "runs" / version
 
 

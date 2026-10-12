@@ -137,6 +137,10 @@ zip に `ATTRIBUTION.md`（ファイルごとの題名・作者・ライセン�
 
 Colab も `runner.run` 経由なので、結果 json に `host`（CPU・コア数・RAM・OS・GPU 名/VRAM/ドライバ/CUDA・onnxruntime・スレッド数、`source: "measured"`）が自動で入り、`v1_report.html` の「実行環境」と比較表の環境列に出ます（ホスト名・ユーザー名・パスは書きません）。自分の PC と Colab の結果が混ざるときは、時間の列を環境をまたいで比べないでください（ページに注記が出ます）。
 
+## clef の CUDA 診断（任意）
+
+スモークで clef が CUDA だけ全問失敗したとき（例: `MemcpyToHost ... CUDA failure 1: invalid argument`。スモークの失敗文には各問の最初のエラー文が入ります。OOM とは限りません）は、`python colab/diagnose_clef_cuda.py [--download] [--quick]` で切り分けます（ノートブックの「(任意) clef の CUDA 診断」セルからも呼べます）。環境情報（onnxruntime / -gpu、プロバイダ、GPU・ドライバ・CUDA / cuDNN）を出したあと、1 問だけ `CUDA_LAUNCH_BLOCKING=1` と ORT の詳細ログで実行して最初のエラーと失敗ノード周辺を要約し、続けて条件を変えた再試行（テキストのみ、`require_gpu`、アリーナ / cuDNN / `gpu_mem_limit` / TF32 / コピーストリームの CUDA オプション、最適化レベル低下、メモリパターン無効。`--heavy` で `keep_bf16=False`）を 1 条件 1 プロセスで行い、成功 / 失敗 / 最初のエラーを 1 行ずつの表にします（1 試行 240 秒・全体 20 分が上限。生ログは `work/colab/diag_clef/NN_<条件>.log`、要約は `summary.json`）。読み方: 全条件が失敗なら「この Colab（A100）の CUDA では clef は非対応（CPU のみ）」とみなし、最初のエラーと `01_blocking_verbose.log` を作者に渡す材料にします。特定の条件だけ成功したら、その設定が回避策の候補です（ベンチへ反映するには clef アダプタの変更が必要）。ベースラインが成功した場合は未再現（ベンチ側の状態の違いを疑い、スモークを `--recheck` で再実行）、成功した CUDA 条件は CPU の出力との差も表示します。ローカル（GPU なし・重みなし）では構文・`--dry-run`・1 試行の配管までの確認で、Colab での実行結果は未確認です。
+
 ## 秘密の扱い
 
 `GITHUB_TOKEN` / `OPENAI_API_KEY` は環境変数だけ（ノートブックが Colab Secrets から入れる）。出力・ファイル・URL には出しません（子プロセスの出力は、値が含まれていたら `***` に置き換えます）。ノートブックは出力を消した状態で保存してあります。コミット前に `python tools/scan_secrets.py` を実行してください。

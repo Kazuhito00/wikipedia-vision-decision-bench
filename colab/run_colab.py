@@ -194,20 +194,54 @@ def scrub(text: str) -> str:
     return text
 
 
-def stream(cmd, env=None, cwd=None, quiet_pred=None, tail=60):
-    """Run a command, print its output live (the notebook shows it), return (returncode, last lines). quiet_pred(line) -> True: not printed."""
+def stream(cmd, env=None, cwd=None, quiet_pred=None, tail=60, raw_path=None, on_end=None):
+    """Run a command, print its output live (the notebook shows it), return (returncode, last lines). quiet_pred(line) -> True: not printed.
+    raw_path: every line (also the hidden ones) is appended to this file. on_end(): called after the process ended (e.g. to print a summary)."""
     p = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", bufsize=1)
     last = collections.deque(maxlen=tail)
-    for ln in p.stdout:
-        ln = scrub(ln.rstrip("\n"))
-        last.append(ln)
-        if not (quiet_pred and quiet_pred(ln)):
-            say(ln)
-    p.wait()
+    raw = open(raw_path, "a", encoding="utf-8", newline="\n") if raw_path else None
+    try:
+        for ln in p.stdout:
+            ln = scrub(ln.rstrip("\n"))
+            last.append(ln)
+            if raw:
+                raw.write(ln + "\n")
+            if not (quiet_pred and quiet_pred(ln)):
+                say(ln)
+        p.wait()
+    finally:
+        if raw:
+            raw.close()
+    if on_end:
+        on_end()
     return p.returncode, list(last)
 
 
 _PROGRESS = re.compile(r"^\s*\S.*\s+\d+(\.\d+)?%\s+[\d.]+\s*[KMG]?B/s\s*$")
+
+
+_ORT_ERR = re.compile(r"\[E:onnxruntime.*")
+
+
+def err_key(ln: str):
+    """Key of an error line (without the timestamp prefix), None for any other line. Used to show each distinct error once."""
+    m = _ORT_ERR.search(ln)
+    if m:
+        return m.group(0)
+    if ln.startswith("   error:"):
+        return ln.strip()
+    return None
+
+
+def first_error(log_path: pathlib.Path, n: int = 600) -> str:
+    """The first per-question error text a runner log has (`   error: ...`), '' when none."""
+    try:
+        for ln in open(log_path, encoding="utf-8", errors="replace"):
+            if ln.startswith("   error:"):
+                return ln[len("   error:"):].strip()[:n]
+    except OSError:
+        pass
+    return ""
 
 
 def quiet_download(ln: str) -> bool:
@@ -972,6 +1006,8 @@ def run_one(args, key, set_name, lang, dev, info, suffix, ids_file, log_dir, cfg
         cmd.append("--force")
     cmd += list(extra)
     count = {"n": 0, "bad": 0, "t": time.time()}
+    seen: dict[str, int] = {}                                # error key -> number of hidden repeats (the log files keep everything)
+    key_ = key
 
     def quiet(ln):
         if ln.startswith(("ok ", "XX ")):
@@ -980,12 +1016,23 @@ def run_one(args, key, set_name, lang, dev, info, suffix, ids_file, log_dir, cfg
             if count["n"] % 100 == 0:
                 say("    ... %d questions, %d wrong so far, %.0f s" % (count["n"], count["bad"], time.time() - count["t"]))
             return True
-        if ln.startswith("   error:"):
-            count.setdefault("err", 0)
-            count["err"] += 1
-            return count["err"] > 5
+        key = err_key(ln)
+        if key is not None:                                # the same error text again and again (ORT's [E:onnxruntime lines, "   error:" lines): the first one in full
+            if key in seen:
+                seen[key] += 1
+                return True
+            if len(seen) >= 5:                             # as before: at most 5 different errors are shown
+                seen[key] = 1
+                return True
+            seen[key] = 0
         return False
-    code, tail = stream(cmd, cwd=ROOT, env=env, quiet_pred=quiet)
+
+    def summary():
+        for k, n in seen.items():
+            if n:
+                say("    (同じエラー %d 件: %s)" % (n, k[:100]))
+    code, tail = stream(cmd, cwd=ROOT, env=env, quiet_pred=quiet, raw_path=log_dir / ("%s_%s_%s_%d%s.raw.txt" % (key_, cfg_blocks[set_name], lang, args.px, suffix)),
+                        on_end=summary)
     block = "%s_%s_%s_%d%s" % (key, cfg_blocks[set_name], lang, args.px, suffix)
     return code, block, tail
 
@@ -1029,7 +1076,11 @@ def smoke_check(args, key, dev, info, env, log_dir, cfg_blocks, gpu) -> tuple[bo
             elif any(p != "CUDAExecutionProvider" for p in used):
                 ok, why = False, "CPU fallback: providers_used=%s" % used
         if ok and rows and na > len(rows) / 2:
-            ok, why = False, "%d of %d smoke questions failed (got=NA): out of memory or a limit of the model; see the log" % (na, len(rows))
+            fe = first_error(log_dir / (block + ".log")) or "(no error text in the log %s.log)" % block
+            oom = bool(re.search(r"out of memory|cudaErrorMemoryAllocation|bad_alloc", fe, re.I))
+            why = ("%d of %d smoke questions failed (got=NA). First error: %s. " % (na, len(rows), fe)
+                   + ("Possibly out of memory." if oom else "The cause is in the error text (not necessarily out of memory)."))
+            ok = False
         if ok:
             why = "ok providers_used=%s acc=%s/%s median %s ms" % (used, rec["counts"]["overall"]["correct"], rec["counts"]["overall"]["n"], rec["counts"].get("ms_median"))
     for ext in (".json", ".csv"):                          # smoke records stay out of results/runs/v1
