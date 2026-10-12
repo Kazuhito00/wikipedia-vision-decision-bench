@@ -345,6 +345,30 @@ def main(argv=None):
                                   n=len(pr), gpu_slower=sum(1 for q in ratios if q < 1))
         speed["models"][m["key"]] = e
 
+    # ---- CPU speed reference (timing-only blocks, speed_cpu_v1.json: a few questions on the CPU in a GPU-only session). NOT an accuracy run.
+    cpu_speed = []
+    sp_path = runs_dir / "speed_cpu_v1.json"
+    sp_in = json.loads(sp_path.read_text(encoding="utf-8")).get("models", {}) if sp_path.exists() else {}
+    name_of = {m["key"]: m["short"] for m in MODELS}
+    for mk, e in sorted(sp_in.items()):
+        good = [r for r in e["rows"] if r["ms"] and not r.get("na")]
+        ms = sorted(r["ms"] for r in good)
+        if not ms:
+            continue
+        gk = mk + "_cuda"
+        pr = [(r["ms"], ans[gk][(r["id"], r["lang"])]) for r in good if gk in ans and (r["id"], r["lang"]) in ans[gk]]
+        pr = [(a, int(float(b["ms"]))) for a, b in pr if b.get("ms") and float(b["ms"]) > 0]
+        ent = dict(model=mk, name=name_of.get(mk, mk), n=len(ms), planned=e.get("planned"), stopped_early=bool(e.get("stopped_early")),
+                   max_seconds=e.get("max_seconds"), median=statistics.median(ms), mean=statistics.fmean(ms), p90=ms[int(0.9 * (len(ms) - 1))], max=ms[-1],
+                   threads=e.get("threads"), host=e.get("host"), timing_valid=e.get("timing_valid"), blocks=e.get("blocks"),
+                   na=sum(1 for r in e["rows"] if r.get("na")), gpu_key=gk if gk in ans else None)
+        if pr:
+            ent["gpu_same_median"] = statistics.median(b for _, b in pr)
+            ent["cpu_same_median"] = statistics.median(a for a, _ in pr)
+            ent["ratio_median"] = statistics.median(a / b for a, b in pr)
+            ent["pairs_n"] = len(pr)
+        cpu_speed.append(ent)
+
     # ---- cost (API runs)
     cost = []
     for r in runs:
@@ -474,7 +498,7 @@ def main(argv=None):
                    variant=next((meta_json[(r["key"], lg)].get("variant") for lg in LANGS if (r["key"], lg) in meta_json), None),
                    langs=sorted(r["files"]), host=run_host[r["key"]],
                    ort=next(((meta_json[(r["key"], lg)].get("host") or {}).get("onnxruntime") for lg in LANGS if (r["key"], lg) in meta_json), None)) for r in runs],
-        aggs=aggs, speed=speed, blocks=blocks, cal_limit=CAL_LIMIT, cost=cost, pricing=PRICING,
+        aggs=aggs, speed=speed, cpu_speed=cpu_speed, blocks=blocks, cal_limit=CAL_LIMIT, cost=cost, pricing=PRICING,
         ds=dsstat, label_check=label_check, lc_ids=sorted(lc_ids), checks=checks,
         items=items, thumbs=uris, has_images=not no_images, dropped=dropped, placeholder=placeholder,
         run_meta=[dict(run=r["key"], lang=lg, providers=meta_json[(r["key"], lg)].get("providers_used"), threads=meta_json[(r["key"], lg)].get("threads"),
@@ -490,6 +514,8 @@ def main(argv=None):
     out.write_text(html, encoding="utf-8", newline="\n")
     print("wrote %s  (%.1f MB, %d models, %d runs, %d questions, %d compared, %d pictures)" %
           (out, len(html.encode("utf-8")) / 1e6, len(MODELS), len(runs), len(items), len(asked), len(uris)))
+    for e in cpu_speed:
+        print("  %-16s CPU speed reference: median %d ms over %d q (timing only, not in the accuracy tables)" % (e["model"], e["median"], e["n"]))
     for k in rkeys:
         print("  %-16s %d/%d = %.2f%%   timing: %s" % (k, OV["c"][k], OV["n"], 100 * OV["c"][k] / OV["n"], next(r["timing"] for r in runs if r["key"] == k)))
     bad = [c for c in checks if not c["ok"]]

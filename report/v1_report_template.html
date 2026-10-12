@@ -599,6 +599,15 @@ function drawSpeed() {
   }
   h += '<div class="card" style="margin-top:14px"><h3>群別の中央値（ms）</h3><div class="scroll"><table><tr><th>run</th>' + GROUPS.map(g => "<th>" + g + "</th>").join("") + "</tr>" +
     ORDER.map(k => "<tr><td>" + dot(k) + esc(rlabel(k)) + "</td>" + GROUPS.map(g => { const x = sp.by_group.find(b => b.run === k && b.group === g); return "<td>" + (x && x.median != null ? fmt(Math.round(x.median)) : "—") + "</td>"; }).join("") + "</tr>").join("") + "</table></div></div>";
+  /* CPU speed reference: a few questions on the CPU in a GPU-only session (timing only; not in any accuracy table) */
+  const cs = D.cpu_speed || [];
+  if (cs.length) {
+    h += '<div class="card" style="margin-top:14px"><h3>CPU 速度の参考値（少数問、精度の集計には入れない）</h3><div class="scroll"><table><tr><th class="l">model</th><th>CPU 問数</th><th>CPU 中央値 (ms)</th><th>CPU 平均</th><th>CPU 90%</th><th>同じ問の GPU 中央値 (ms)</th><th>CPU / GPU（問ごとの中央値）</th><th class="l">測定環境</th><th class="l">状態</th></tr>' +
+      cs.map(x => { const hs = x.host || {}, env = hs.cpu ? esc(hs.cpu) + "（" + (hs.physical_cores || "?") + " コア / " + (hs.logical_cores || "?") + " スレッド、使用 " + (hs.threads || x.threads || "?") + "）" : "環境不明";
+        const st = (x.timing_valid === true ? '<span class="chip good">較正 OK</span>' : x.timing_valid === false ? '<span class="chip bad">較正外れ</span>' : '<span class="chip warn">較正なし（参考値）</span>') + (x.stopped_early ? ' <span class="chip warn" title="上限時間（' + esc(String(x.max_seconds)) + ' 秒）で打ち切り">上限で打ち切り（' + x.n + " / " + (x.planned || "?") + " 問）</span>" : "") + (x.na ? ' <span class="chip warn">失敗 ' + x.na + " 問を除く</span>" : "");
+        return "<tr><td>" + esc(x.name) + "</td><td>" + x.n + "</td><td>" + fmt(Math.round(x.median)) + "</td><td>" + fmt(Math.round(x.mean)) + "</td><td>" + fmt(Math.round(x.p90)) + "</td><td>" + (x.gpu_same_median != null ? fmt(Math.round(x.gpu_same_median)) : "—") + "</td><td>" + (x.ratio_median != null ? fx(x.ratio_median) + "×（" + x.pairs_n + " 問）" : "—") + '</td><td class="l">' + env + '</td><td class="l">' + st + "</td></tr>"; }).join("") +
+      '</table></div><p class="sub" style="margin:6px 0 0">GPU だけで実行したときに、速度の目安として少数の問だけを CPU でも解いた値です（問は全モデルで同じ。精度は GPU の結果）。中央値は逐次実行の 1 問あたりで、先頭の問にはモデル読み込み直後の初回実行が含まれます。Colab の CPU は少数コアなので、手元の PC の CPU 時間とは比べないでください。CPU / GPU の列は、同じ問の CPU 時間を GPU 時間で割った値です。</p></div>';
+  }
   h += '<div class="note">ローカル実行の時間は、較正値が静かな機械と確認できた run のみ載せます（「較正値と有効性」）。較正記録がない run の時間（※）と GPU 時間は参考値です。</div>';
   e.innerHTML = h;
 }

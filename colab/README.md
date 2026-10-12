@@ -33,6 +33,8 @@ python colab/run_colab.py --dry-run --steps plan --models all        # 計画だ
 | `SAMPLE_N` / `--sample N` | セット × 言語ごとに N 問を `--seed` で選ぶ（全モデル同じ問）。0 で全問。ブロック名に `_n<N>` が付き、全問のブロックと混ざらない |
 | `SETS` | 既定 `photo,biz,rsn`。`txt` / `all` は Wikipedia 本文（配布しない `passages.json`）が要る。無いときは `--skip-missing-passages`（本文の無い記事問 87 を除く。ブロックの問数が減る） |
 | `WEIGHTS` / `--weights` | `purge`: 1 モデルずつ「取得 → 測定 → 重み削除」。`auto`: 選んだモデルの重みの合計が空きディスクに入らないときだけ purge。取得時に空きが足りなければ、測定済みの重みを消して続行。Drive キャッシュは残る |
+| `CPU_SPEED_N` / `--cpu-speed-n N` | 既定 25（0 = 無効）。`DEVICES` に cuda があり cpu が**無い**ときだけ、各モデルの cuda ブロックの後に、**同じ N 問**（先頭の set × 先頭の言語から固定 seed で選ぶ。全モデル共通）を CPU でも解き、1 問あたりの時間（中央値）の参考値を出す。cpu デバイスを回すときは不要なので何もしない。下の「CPU 速度の参考値」 |
+| `CPU_SPEED_MAX_S` / `--cpu-speed-max-s S` | 既定 600。1 モデルの CPU 速度測定の問の処理時間の上限（秒。モデルの読み込みは数えない）。超えたら、そこまでの問数で打ち切り（最低 3 問は解く）。結果に `speed_stopped_early: true` |
 | `--time-budget-h` | 既定 11。超えたら新しいブロックを始めない（無料枠は 12 時間で切れる。同じコマンドで続きから） |
 | `MODEL_DIRS` / `--model-dir KEY=PATH` | 取得済みの重みの場所（Drive でよい）。通常は不要（各 `download_model.py` が取る）。使うと取得は行わず、重みも消さない |
 | `RELEASE_TAG` / `--release-tag` | 各 `download_model.py` に渡す `--tag`。既定 `v0.0.0`（全リポジトリの最初の Release。`latest` が使えない場合に備えて固定）。`""` で各スクリプトの既定（最新の Release） |
@@ -76,6 +78,19 @@ GPU 1 問あたりの時間は、作者の PC（RTX 3050 Ti Laptop 4 GB）の値
 - `run_colab.py` は CPU ブロックの前後に較正を測って `results/runs/v1/<ブロック>.json` の `calibration` と `blocks.log` に書きます（GLiNER2.5-Decide を取得できたとき）。**CPU の時間は参考値**として扱います。GPU の時間は bench でも較正の対象外です。
 - `runner.batch` は使いません（較正が 600 ms を超えると 300 秒 × 12 回待つため）。`runner.run` を直接呼びます。
 - スレッド数は既定で `min(8, CPU 数)`（Colab 無料枠は少ない）で、実際の値が結果に記録されます。CPU の測定は onnxruntime-gpu の CPU プロバイダ（GPU があるとき）で行うため、CPU 専用ビルドとは差が出る可能性があります（未確認）。
+
+## CPU 速度の参考値（GPU だけで実行するとき）
+
+`--devices cuda`（ノートブックの `DEVICES = "cuda"`）では本番ブロックは GPU だけです。精度は GPU の結果で足りるので、CPU は**少数問だけ**解いて、1 問あたりの時間の参考値を出します。
+
+- **対象**: `cuda` を含み `cpu` を含まないとき（`--cpu-speed-n 0` で無効）。ローカルモデルだけ（OpenAI は対象外）。cpu デバイスも回す設定のときは、本番ブロックの CPU 時間があるので何もしません。
+- **問**: 先頭の set × 先頭の言語（既定 photo / en）から、固定 seed（20261012）で N 問を選び、**全モデルで同じ問**（`work/colab/samples/cpuspeed_*.txt`）。
+- **ブロック名**: `<model>_v1photo_en_224_cpu_speed<N>`（結果 `results/runs/v1/` の json / csv、ログ `work/logs/v1/`）。json に `speed_only: true`・`speed_questions`・`speed_max_seconds`・`speed_stopped_early` が入ります。再実行は既存の再開に乗り（終わったブロックは飛ばす）、Drive 同期の対象でもあります。
+- **精度の集計には入りません**: `report/v1_models.py` は suffix に `_speed` を含む結果を run として拾わないので、正答率の表・「全 run が答えた質問」の共通集合・ヒートマップ・ベン図には混ざりません（`colab_summary.md` でも別の節）。`v1_report.html` の「速度」セクションにだけ、「CPU 速度の参考値」の表（CPU の問数・中央値・平均・90%、**同じ問の GPU 中央値**、問ごとの CPU / GPU の比、測定環境の CPU 名・コア数、較正の状態）として出ます。`colab/make_v1_report.py` が `speed_cpu_v1.json` を一時フォルダに作って `report/v1_report.py` に渡します。
+- **時間の有効性**: CPU ブロックの前後の GLiNER 較正は、GLiNER2.5-Decide を取得できたときだけ記録します（記録が無ければ表に「較正なし（参考値）」）。Colab の CPU は少数コアで、手元の PC とは別の機械です。**手元 PC の CPU 時間と並べて比べないでください**（ページにも注記があります）。
+- **上限と失敗**: 1 モデルあたり `--cpu-speed-max-s`（既定 600 秒）。重い CPU モデルは上限で打ち切って、そこまでの問数の中央値を出します（最低 3 問）。モデルの読み込み時間と、1 問の途中は上限に数えません（1 問がとても長いと上限を超えます）。メモリ不足・読み込み失敗・半数超が NA のときは、他のモデルを止めずに、最後の一覧（`cpu-speed` 行）に理由を出します。文書化された RAM の下限に届かないモデルは、重みを取得せずにスキップします。
+- **メモリ**: モデルごとに「cuda ブロック → CPU 速度ブロック」の順で、どれも**別の子プロセス**なので、GPU 用のセッションは CPU の測定の前に解放済みです（VRAM / RAM を圧迫しません）。
+- 先頭の問には、モデル読み込み直後の初回実行の時間が入ります（中央値なので影響は小さい）。
 
 ## Colab 固有の落とし穴
 

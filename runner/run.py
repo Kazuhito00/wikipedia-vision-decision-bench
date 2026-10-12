@@ -11,6 +11,7 @@
         --ids-file  only the question ids listed there (one per line: a sample)
         --skip-log  skip the ids an earlier log already has (fill-in run; comma separated)
         --suffix    appended to the block name (e.g. _exp)
+        --speed-only  mark the record speed_only (a timing-only block); --max-seconds S / --min-questions K cap the question time
 
 Conditions (threads, px, rev, gpu) come from runner/config.toml, overridden by THREADS / PX / REV / GPU or by the options.
 Output: one line per question in the old log format (stdout and the log file), then a summary line `WIKI[model,lang,224px] n/m ...`;
@@ -55,6 +56,11 @@ def parse_args(argv=None):
     ap.add_argument("--dataset-version", default=cfg["dataset"]["version"])
     ap.add_argument("--force", action="store_true", help="run even when the block's log already has its summary line")
     ap.add_argument("--no-results", action="store_true", help="do not write results/runs/...")
+    ap.add_argument("--speed-only", action="store_true",
+                    help="a timing-only block (a few questions on another device than the real run): the record says speed_only=true and the report keeps it out of every accuracy table")
+    ap.add_argument("--max-seconds", type=float, default=0,
+                    help="stop starting new questions after this many seconds of question time (model loading not counted), but never before --min-questions (0 = no limit)")
+    ap.add_argument("--min-questions", type=int, default=3, help="with --max-seconds: the least number of questions answered before the limit applies")
     args = ap.parse_args(argv)
     args.cfg = cfg
     return args
@@ -142,6 +148,7 @@ def main(argv=None) -> int:
     small = config.work_dir() / ("px%d" % args.px + ("" if args.dataset_version == "legacy" else "_" + args.dataset_version))
     small.mkdir(parents=True, exist_ok=True)
     started = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
+    stopped_early = False
     t0 = time.perf_counter()
     logf = open(log_path, "a", encoding="utf-8", newline="\n")
 
@@ -164,7 +171,7 @@ def main(argv=None) -> int:
                 rev_ok = (len(ro) - 1 - got_r) == c["expected"]
             return c, got, ok, rev_ok, ms, None
         except Exception as e:                                     # noqa: BLE001  (a limit of the model -> got=NA, counted wrong)
-            return c, "NA", False, None, 0, str(e)[:100].replace("\n", " ")
+            return c, "NA", False, None, 0, str(e)[:600].replace("\n", " ")
 
     def finish_line(res):
         c, got, ok, rev_ok, ms, err = res
@@ -178,8 +185,14 @@ def main(argv=None) -> int:
             for res in pool.map(one, todo):                       # results come back in order
                 finish_line(res)
     else:
+        done_n = 0
         for c in todo:
+            if args.max_seconds and done_n >= args.min_questions and time.perf_counter() - t0 > args.max_seconds:
+                stopped_early = True
+                emit("time limit: stopped after %d of %d questions (%.0f s > --max-seconds %.0f)" % (done_n, len(todo), time.perf_counter() - t0, args.max_seconds))
+                break
             finish_line(one(c))
+            done_n += 1
 
     log = logfmt.parse(log_path)                                  # the tally covers the whole block, earlier session included
     mine = [c for c in cases if c["id"] in log]
@@ -198,6 +211,10 @@ def main(argv=None) -> int:
             rows.append(dict(id=c["id"], kind=c["kind"], difficulty=c.get("difficulty"), expected=c["expected"], got=r["got"], ok=r["ok"],
                              rev_ok=None if r["rev"] == "None" else r["rev"] == "True", ms=r["ms"]))
         import PIL
+        if not remote and not info.get("providers_used") and getattr(base, "decider", None) is not None:
+            # sessions created lazily (on the first question) are not visible when the adapter is built: look again now
+            from adapters import _common as _C
+            info = dict(info, providers_used=_C.used_providers(base.decider))
         meta = dict(dataset_version=args.dataset_version, block=block, model=args.model, model_repo=REPOS[args.model],
                     model_tag=os.environ.get("MODEL_TAG") or "local", variant=info.get("variant"),
                     providers_requested=["remote"] if remote else (providers or ["CPUExecutionProvider"]), providers_used=info.get("providers_used"),
@@ -208,6 +225,8 @@ def main(argv=None) -> int:
                     usage=dict(info["usage"]) if info.get("usage") else None,     # this session's requests / tokens (remote adapters)
                     started=started, finished=datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
                     resumed=bool(earlier), host=hostinfo.collect(threads=args.threads, remote=remote))
+        if args.speed_only:                                        # timing-only block: never an accuracy result
+            meta.update(speed_only=True, speed_questions=n, speed_max_seconds=args.max_seconds or None, speed_stopped_early=stopped_early)
         print("results:", results.write(block, meta, rows), flush=True)
     return 0
 

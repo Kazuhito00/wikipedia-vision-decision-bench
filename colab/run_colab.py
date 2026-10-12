@@ -12,8 +12,9 @@ Steps (--steps, comma separated; default setup,images,bench,report):
            <owner>/wikipedia-vision-decision-bench, tag v0.0.0, like the models' download_model.py); SHA256SUMS or --images-sha256 is checked,
            split parts are joined, an interrupted download resumes; extract, check every question's picture exists
   bench    per model, in order: clone the model repository -> download the weights -> for each device (cpu, cuda): smoke -> full blocks
-           -> (optionally) delete the weights.  A model that cannot be fetched / does not fit / falls back to the CPU is SKIPPED and
-           listed at the end; the others continue.  Resumable: finished blocks are skipped, an interrupted block continues from its log.
+           -> (cuda without cpu only, --cpu-speed-n N > 0) CPU SPEED REFERENCE: the same N questions for every model on the CPU, after the cuda
+           blocks of that model -> (optionally) delete the weights.  A model that cannot be fetched / does not fit / falls back to the CPU is
+           SKIPPED and listed at the end; the others continue.  Resumable: finished blocks are skipped, an interrupted block continues from its log.
   report   summary of every result (markdown / csv / html), the v1 report page when its inputs exist, a zip bundle for download
   sync     copy logs + results to / from Google Drive (only with --use-drive; also done every --sync-min minutes while a block runs)
   plan     print the plan only (no network, no install, no GPU needed).  --dry-run does the same for any steps.
@@ -25,6 +26,8 @@ download_model.py; with --weights auto they are deleted after each model only wh
 Secrets: GITHUB_TOKEN (private repositories) and OPENAI_API_KEY (the openai model) are read from the environment ONLY; the notebook fills
 them from Colab Secrets. They are never printed, never written to a file, never put in a URL.
 Block names / results are the bench's own (runner/run.py): results/runs/v1/<model>_<set code>_<lang>_224_<cpu|cuda>.json.
+CPU speed reference (a GPU-only run, --devices cuda): a few questions per model are also solved on the CPU, only to give a time per question
+(results/runs/v1/<model>_<set code>_<lang>_224_cpu_speed<N>.json, speed_only: true; never part of an accuracy table, see report/v1_models.py).
 CPU times on Colab are REFERENCE values: the machine is not the one the calibration gate (runner/calibrate.py) was set up on.
 """
 from __future__ import annotations
@@ -43,6 +46,7 @@ import platform
 import random
 import re
 import shutil
+import statistics
 import subprocess
 import sys
 import threading
@@ -286,6 +290,11 @@ def parse_args(argv=None):
     ap.add_argument("--skip-missing-passages", action="store_true", help="drop the questions whose Wikipedia passage is not on this machine (txt / all)")
     ap.add_argument("--sample", type=int, default=0, help="N questions per (set, lang) chosen with --seed (the same ids for every model); 0 = every question")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--cpu-speed-n", type=int, default=25,
+                    help="GPU-only runs (cuda without cpu in --devices): also solve the SAME N questions per model on the CPU, only for a time-per-question reference "
+                         "(speed_only block, not in any accuracy table). 0 = off. Not used when the cpu device runs anyway")
+    ap.add_argument("--cpu-speed-max-s", type=float, default=600.0,
+                    help="upper limit of the question time of one model's CPU speed block (seconds, model loading not counted; at least 3 questions are answered first)")
     ap.add_argument("--smoke", type=int, default=25, help="questions of the smoke run (device check + quick accuracy); 0 = no smoke (not recommended)")
     ap.add_argument("--threads", type=int, default=0, help="onnxruntime threads (0: min(8, CPU count)); the value used is recorded in every result")
     ap.add_argument("--px", type=int, default=224)
@@ -341,6 +350,11 @@ def resolve_devices(args, gpu: dict) -> list[str]:
     if args.devices == "auto" and not gpu:
         ds = ["cpu"]
     return sorted(set(ds), key=lambda d: d != "cuda")          # cuda first: GPU results arrive before the CPU hours use the time budget
+
+
+def cpu_speed_on(args, devices: list[str]) -> bool:
+    """The CPU speed reference runs only when the real run is GPU-only (a cpu device in the run already gives CPU times)."""
+    return args.cpu_speed_n > 0 and "cuda" in devices and "cpu" not in devices
 
 
 def kv(items: list[str]) -> dict:
@@ -402,6 +416,17 @@ def smoke_file(args, set_name: str, lang: str) -> pathlib.Path:
     if not p.exists():
         ids = sorted(c["id"] for c in block_cases(args, set_name, lang))
         pick = sorted(random.Random(12345).sample(ids, min(args.smoke, len(ids))))
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text("\n".join(pick) + "\n", encoding="utf-8")
+    return p
+
+
+def cpu_speed_file(args, set_name: str, lang: str) -> pathlib.Path:
+    """The same N random ids for every model (fixed seed): work/colab/samples/cpuspeed_<set>_<lang>_<mod>_n<N>.txt"""
+    p = colab_dir() / "samples" / ("cpuspeed_%s_%s_%s_n%d.txt" % (set_name, lang, args.mod, args.cpu_speed_n))
+    if not p.exists():
+        ids = sorted(c["id"] for c in block_cases(args, set_name, lang))
+        pick = sorted(random.Random(20261012).sample(ids, min(args.cpu_speed_n, len(ids))))
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text("\n".join(pick) + "\n", encoding="utf-8")
     return p
@@ -924,7 +949,7 @@ def read_json(p: pathlib.Path):
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
 
 
-def run_one(args, key, set_name, lang, dev, info, suffix, ids_file, log_dir, cfg_blocks, env, force=False) -> tuple[int, str, list[str]]:
+def run_one(args, key, set_name, lang, dev, info, suffix, ids_file, log_dir, cfg_blocks, env, force=False, extra=()) -> tuple[int, str, list[str]]:
     cmd = [sys.executable, "-m", "runner.run", "--model", key, "--set", set_name, "--lang", lang, "--mod", args.mod, "--dataset-version", "v1",
            "--threads", str(threads_of(args)), "--px", str(args.px), "--log-dir", str(log_dir), "--device", dev, "--suffix", suffix]
     if dev == "cuda":
@@ -937,6 +962,7 @@ def run_one(args, key, set_name, lang, dev, info, suffix, ids_file, log_dir, cfg
         cmd += ["--ids-file", str(ids_file)]
     if force:
         cmd.append("--force")
+    cmd += list(extra)
     count = {"n": 0, "bad": 0, "t": time.time()}
 
     def quiet(ln):
@@ -1019,6 +1045,60 @@ def na_fraction(rj: pathlib.Path) -> float:
     return (sum(1 for r in rows if r["got"] == "NA") / len(rows)) if rows else 0.0
 
 
+def run_cpu_speed(args, key, info, gpu, sets, langs, cfg_blocks, cfg, log_dir, gl, results, logfmt, envinfo, status, t_start) -> None:
+    """CPU speed reference of one model in a GPU-only run: the same N questions (first set, first language) on the CPU, in a CHILD process (so the GPU
+    session of the model's cuda blocks is already gone: VRAM / RAM are free again), as a speed_only block. Never stops the other models."""
+    skey = (key, "cpu-speed")
+    if time.time() - t_start > args.time_budget_h * 3600:
+        status[skey] = "skipped: time budget (%.1f h) used; run again to continue" % args.time_budget_h
+        return
+    why = check_fit(args, key, "cpu", gpu)
+    if why:
+        status[skey] = "skipped: " + why
+        say("  CPU speed: SKIP: %s" % why)
+        return
+    s, lang = sets[0], langs[0]
+    suffix = "_cpu_speed%d" % args.cpu_speed_n
+    block = "%s_%s_%s_%d%s" % (key, cfg_blocks[s], lang, args.px, suffix)
+    lp, rj = log_dir / (block + ".log"), ROOT / "results" / "runs" / "v1" / (block + ".json")
+    finished = logfmt.is_finished(lp)
+    if finished and rj.exists():
+        say("  %s: finished earlier" % block)
+        status[skey] = "ok: %s (earlier)" % block
+        return
+    try:
+        ids = cpu_speed_file(args, s, lang)
+    except SystemExit as e:
+        status[skey] = "skipped: questions not available (%s)" % str(e).splitlines()[0]
+        return
+    env = child_env([str(info["checkout"]), str(HERE)], MODEL_TAG=info["tag"],
+                    **({"BENCH_LOADER": "colab_loader:load"} if args.skip_missing_passages else {}))
+    cal_before = calibrate_ms(gl) if (gl and not finished) else ""
+    say("  -> %s  (CPU speed reference: %d questions, at most %.0f s)" % (block, args.cpu_speed_n, args.cpu_speed_max_s))
+    code, _, tail = run_one(args, key, s, lang, "cpu", info, suffix, ids, log_dir, cfg_blocks, env, force=finished,
+                            extra=["--speed-only", "--max-seconds", str(args.cpu_speed_max_s), "--min-questions", "3"])
+    if code != 0 or not rj.exists():
+        status[skey] = "skipped: the CPU run failed (exit %s; out of memory / load error?): %s" % (code, " | ".join(tail[-2:]))
+        say("  CPU speed: " + status[skey])
+        return
+    if na_fraction(rj) > 0.5:
+        status[skey] = "failed: more than half of the CPU questions failed (out of memory / a limit of the model: see the log %s)" % lp.name
+        say("  CPU speed: " + status[skey])
+        return
+    if gl and not finished:
+        after = calibrate_ms(gl)
+        with open(log_dir / "blocks.log", "a", encoding="utf-8", newline="\n") as f:
+            f.write("%s before=%s after=%s %s\n" % (block, cal_before, after, time.strftime("%H:%M:%S")))
+        results.annotate_calibration(block, "v1", cal_before, after, cfg["gate"]["cal_limit_ms"])
+    side = colab_dir() / "blocks"
+    side.mkdir(exist_ok=True)
+    (side / (block + ".env.json")).write_text(json.dumps(dict(env=envinfo, threads=threads_of(args), device="cpu", tag=info.get("tag"), speed_only=True,
+                                                              note="Colab machine: CPU speed REFERENCE (few cores; do not compare with a desktop PC)"), ensure_ascii=False, indent=1) + "\n")
+    rec = read_json(rj) or {}
+    n = (rec.get("counts") or {}).get("overall", {}).get("n")
+    status[skey] = "ok: %s questions, median %s ms%s" % (n, (rec.get("counts") or {}).get("ms_median"), " (stopped at the time limit)" if rec.get("speed_stopped_early") else "")
+
+
 def calibrate_ms(gl: dict | None) -> str:
     if not gl:
         return ""
@@ -1094,7 +1174,11 @@ def run_models(args, models, devices, gpu, sets, langs, sync, status) -> None:
     total_gb = sum((SPECS[m].get("disk_gb") or 0) for m in local)
     purge = args.weights == "purge" or (args.weights == "auto" and total_gb > max(0.0, free_gb(ROOT) - args.disk_reserve_gb))
     say("weights policy: %s (selected models need ~%.0f GB known; %.0f GB free)" % ("sequential, delete after each model" if purge else "keep", total_gb, free_gb(ROOT)))
-    gl = setup_gliner(args, sync) if ("cpu" in devices and args.calibrate in ("auto", "on") and local) else None
+    speed_on = cpu_speed_on(args, devices)
+    if speed_on:
+        say("CPU speed reference: %d questions per model on the CPU after its cuda blocks (at most %.0f s each; speed_only, not in any accuracy table)"
+            % (args.cpu_speed_n, args.cpu_speed_max_s))
+    gl = setup_gliner(args, sync) if (("cpu" in devices or speed_on) and args.calibrate in ("auto", "on") and local) else None
     kept = {}                                            # models whose weights are still on the disk (policy keep)
     todo_after = {}                                      # shared repositories: delete the weights after the LAST model that uses them
     for i, m in enumerate(models):
@@ -1112,6 +1196,8 @@ def run_models(args, models, devices, gpu, sets, langs, sync, status) -> None:
         if not remote:
             fits = {d: check_fit(args, key, d, gpu) for d in devices}
             fits = {d: (("no working CUDA session" if (d == "cuda" and not cuda_ok) else "") or w) for d, w in fits.items()}
+            if speed_on:
+                fits["cpu-speed"] = check_fit(args, key, "cpu", gpu)
             if all(fits.values()):                                           # nothing would run: do not download gigabytes for it
                 for d, w in fits.items():
                     status[(key, d)] = "skipped: " + w
@@ -1129,7 +1215,7 @@ def run_models(args, models, devices, gpu, sets, langs, sync, status) -> None:
                     else:
                         raise
             except RuntimeError as e:
-                for d in devices:
+                for d in list(devices) + (["cpu-speed"] if speed_on else []):
                     status[(key, d)] = "skipped: " + str(e)
                 say("  SKIP: %s" % e)
                 continue
@@ -1192,6 +1278,9 @@ def run_models(args, models, devices, gpu, sets, langs, sync, status) -> None:
                                                                           note="Colab machine: timings are reference values"), ensure_ascii=False, indent=1) + "\n")
                 sync.push()
             status.setdefault((key, dev), "ok: %d blocks%s" % (done, ", %d failed" % fails if fails else ""))
+        if speed_on and info and not remote:
+            run_cpu_speed(args, key, info, gpu, sets, langs, cfg_blocks, cfg, log_dir, gl, results, logfmt, envinfo, status, t_start)
+            sync.push()
         if info and purge and todo_after.get(SPECS[key].get("shared", key)) == i:
             purge_model(args, key, info)
         elif info:
@@ -1215,12 +1304,18 @@ def collect_results() -> list[dict]:
     return out
 
 
+def is_speed(r: dict) -> bool:
+    return bool(r["rec"].get("speed_only"))
+
+
 def pct(c, n):
     return "%.1f" % (100.0 * c / n) if n else "-"
 
 
 def build_summary(status: dict, out_dir: pathlib.Path) -> list[pathlib.Path]:
-    res = collect_results()
+    allres = collect_results()
+    res = [r for r in allres if not is_speed(r)]               # timing-only blocks are never in an accuracy table
+    speed_res = [r for r in allres if is_speed(r)]
     out_dir.mkdir(parents=True, exist_ok=True)
     lines = ["# wikipedia-vision-decision-bench on Colab: summary", "",
              "Generated %s. CPU times were measured on a Colab machine: reference values (the calibration gate was set up on another machine)." %
@@ -1251,6 +1346,18 @@ def build_summary(status: dict, out_dir: pathlib.Path) -> list[pathlib.Path]:
     lines += ["", "## Accuracy % by group and by format", "", "| model | device | lang | " + " | ".join("%s:%s" % k for k in cols) + " |", "|---|---|---|" + "---|" * len(cols)]
     for (mo, dv, lg), v in sorted(groups.items()):
         lines.append("| %s | %s | %s | " % (mo, dv, lg) + " | ".join(pct(*v[k]) if k in v else "-" for k in cols) + " |")
+    if speed_res:
+        lines += ["", "## CPU speed reference (timing only, not in any accuracy table)", "",
+                  "Few questions per model, solved on the CPU in a GPU-only run. Colab's CPU has few cores: do not compare these times with a desktop PC.", "",
+                  "| block | model | questions | median ms | stopped at time limit | threads | CPU | calibration ms (before/after) |", "|---|---|---|---|---|---|---|---|"]
+        for r in speed_res:
+            m = r["rec"]
+            ms = sorted(int(float(x["ms"])) for x in r["rows"] if x.get("ms") and float(x["ms"]) > 0 and x.get("got") != "NA")
+            cal = m.get("calibration") or {}
+            cpu = ((m.get("host") or {}).get("cpu") or {})
+            lines.append("| %s | %s | %d | %s | %s | %s | %s | %s/%s |" % (
+                m["block"], m["model"], len(ms), int(statistics.median(ms)) if ms else "-", "yes" if m.get("speed_stopped_early") else "no", m.get("threads"),
+                "%s (%s cores)" % (cpu.get("name"), cpu.get("logical_cores")) if cpu else "-", cal.get("before_ms", "-"), cal.get("after_ms", "-")))
     lines += ["", "## Status of every model / device", "", "| model | device | status |", "|---|---|---|"]
     for (k, d), v in sorted(status.items()):
         lines.append("| %s | %s | %s |" % (k, d, v.replace("|", "/")))
@@ -1375,6 +1482,15 @@ def step_plan(args, models, devices, gpu, sets, langs) -> None:
         if h > args.time_budget_h:
             say("!! estimated CPU time of the models that have a number is %.0f h > the %.0f h budget: use --sample N (e.g. 300 per set and language), fewer models, or several sessions "
                 "(the run resumes)." % (h, args.time_budget_h))
+    if cpu_speed_on(args, devices):
+        loc = [k for k in models if not SPECS[k].get("remote")]
+        est_s = sum(min(args.cpu_speed_n * SPECS[k]["cpu_s"], args.cpu_speed_max_s) if SPECS[k].get("cpu_s") else args.cpu_speed_max_s for k in loc)
+        unk = [k for k in loc if not SPECS[k].get("cpu_s")]
+        say("CPU speed reference: %d questions per model (%s/%s, the same ids for every model, speed_only), at most %.0f s per model, extra time about %.0f min at most%s"
+            % (args.cpu_speed_n, sets[0], langs[0], args.cpu_speed_max_s, est_s / 60, " (models without an author's CPU time counted at the limit: %s)" % ",".join(unk) if unk else ""))
+        say("  blocks: " + ", ".join("%s_%s_%s_%d_cpu_speed%d" % (k, rcfg.load()["blocks"][sets[0]], langs[0], args.px, args.cpu_speed_n) for k in loc[:2]) + (", ..." if len(loc) > 2 else ""))
+    elif args.cpu_speed_n > 0 and "cuda" in devices:
+        say("CPU speed reference: not needed (the cpu device runs anyway)")
     say("time estimate = the author's PC CPU median per question x questions (bench README); a Colab CPU differs (2 vCPU on the free tier: expect it to be slower).")
     say("GPU time per question on the author's 4 GB GPU: jevision 75 ms, onejev 87 ms; T4 is not measured.")
     known = sum((SPECS[k].get("disk_gb") or 0) for k in models if not SPECS[k].get("remote"))
@@ -1425,6 +1541,9 @@ def main(argv=None) -> int:
         if args.dry_run:
             say("[dry-run] bench: first clone EVERY repository of %s (shared ones once); then for each model: weights (download_model.py) -> devices %s -> smoke -> blocks -> "
                 "weights deleted afterwards only when they do not all fit (--weights %s)" % (models, devices, args.weights))
+            if cpu_speed_on(args, devices):
+                say("[dry-run] CPU speed: after the cuda blocks of each model (the GPU session is gone: the blocks run in child processes), the same %d questions on the CPU "
+                    "(speed_only block <model>_<set code>_<lang>_%d_cpu_speed%d, at most %.0f s per model, >= 3 questions; a failure is skipped and listed)" % (args.cpu_speed_n, args.px, args.cpu_speed_n, args.cpu_speed_max_s))
             say("[dry-run] Drive: %s" % ("ON (%s)" % sync.root if sync.enabled else "OFF (default; --use-drive to use it): results stay local, zip at the end"))
         else:
             lock = acquire_lock()

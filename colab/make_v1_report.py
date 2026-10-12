@@ -14,6 +14,8 @@ folder (the real dist/ and results/ are never written):
     A text-only question whose Wikipedia passage is not on the machine gets a placeholder text (the page says so; the right/wrong counts do not
     depend on it). --strict-passages makes a missing passage an error instead (use it where passages.json exists and the text matters);
   * display names come from adapters.REGISTRY; colours and the local/api kind from the defaults of report/v1_models.py (unknown models: automatic).
+  * timing-only blocks (``..._cpu_speed<N>``, `speed_only: true`) never become a run: they are written as speed_cpu_v1.json and shown only in the
+    speed section (CPU reference next to the GPU time of the same questions);
 Only blocks that a Colab run made (a sidecar in work/colab/blocks) are used, unless --include-all-blocks.
 Pictures are not embedded (--no-images): images-224px.zip is not part of dist/ on a fresh clone.
 """
@@ -49,6 +51,42 @@ def collect(runs_dir: pathlib.Path, blocks_dir: pathlib.Path, include_all: bool)
         rows = list(csv.DictReader(open(p.with_suffix(".csv"), encoding="utf-8", newline=""))) if p.with_suffix(".csv").exists() else []
         out.setdefault((m["model"], m["suffix"]), {}).setdefault(m["lang"], []).append((p.stem, m["code"], rec, rows))
     return out
+
+
+def collect_speed(runs_dir: pathlib.Path, blocks_dir: pathlib.Path, include_all: bool) -> dict:
+    """Timing-only blocks (``<model>_<code>_<lang>_224_cpu_speed<N>``, record speed_only=true) -> {"models": {model: {...}}} for speed_cpu_v1.json.
+    They are NOT runs: the accuracy tables, the common question set, the heat maps and the Venn diagrams never see them (report/v1_models.py
+    ignores the ``_speed`` suffix); report/v1_report.py shows them only in the speed section, next to the same model's GPU time."""
+    from report import v1_models as vm
+    out: dict = {}
+    for p in sorted(runs_dir.glob("*.json")):
+        m = vm.parse_speed_stem(p.stem)
+        if not m:
+            continue
+        if not include_all and not (blocks_dir / (p.stem + ".env.json")).exists():
+            continue
+        rec = json.loads(p.read_text(encoding="utf-8"))
+        if rec.get("dataset_version") != "v1" or not rec.get("speed_only"):
+            continue
+        rows = list(csv.DictReader(open(p.with_suffix(".csv"), encoding="utf-8", newline=""))) if p.with_suffix(".csv").exists() else []
+        e = out.setdefault(m["model"], dict(model=m["model"], device=rec.get("device"), blocks=[], rows=[], planned=0, stopped_early=False, max_seconds=None,
+                                            threads=rec.get("threads"), host=None, calibration=[], providers=rec.get("providers_used")))
+        e["blocks"].append(p.stem)
+        e["planned"] += rec.get("questions_in_block") or rec.get("speed_questions") or len(rows)
+        e["stopped_early"] = e["stopped_early"] or bool(rec.get("speed_stopped_early"))
+        e["max_seconds"] = rec.get("speed_max_seconds") or e["max_seconds"]
+        e["rows"] += [dict(id=r["id"], lang=r["lang"], ms=int(float(r["ms"] or 0)), na=r["got"] == "NA") for r in rows]
+        h = rec.get("host") or {}
+        if h and not e["host"]:
+            cpu = h.get("cpu") or {}
+            e["host"] = dict(label=h.get("label"), host_id=h.get("host_id"), cpu=cpu.get("name"), physical_cores=cpu.get("physical_cores"),
+                             logical_cores=cpu.get("logical_cores"), ram_gb=h.get("ram_gb"), threads=h.get("threads"), source=h.get("source"))
+        c = rec.get("calibration")
+        e["calibration"].append(c.get("timing_valid") if c else None)
+    for e in out.values():                       # valid: every block calibrated and within the limit; None: no calibration record
+        flags = e.pop("calibration")
+        e["timing_valid"] = None if (not flags or any(f is None for f in flags)) else all(flags)
+    return dict(models=out)
 
 
 def merge_rows(blocks) -> list:
@@ -146,6 +184,11 @@ def main(argv=None) -> int:
                 w.writeheader()
                 w.writerows(rows)
             (runs_tmp / (stem + ".json")).write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
+    speed = collect_speed(pathlib.Path(a.runs_dir), pathlib.Path(a.blocks_dir), a.include_all_blocks)
+    if speed["models"]:
+        (runs_tmp / "speed_cpu_v1.json").write_text(json.dumps(speed, ensure_ascii=False), encoding="utf-8")
+        print("CPU speed reference (timing only, not in the accuracy tables): %s" % ", ".join(
+            "%s %d q" % (k, len(v["rows"])) for k, v in sorted(speed["models"].items())))
     found = vm.discover_runs(runs_tmp)
     print("v1 report: %d runs (%s), %d (question, language) pairs answered by every run, %d questions" %
           (len(found), ", ".join(sorted(found)), len(pairs), n_cases))

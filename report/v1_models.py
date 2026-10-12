@@ -7,7 +7,9 @@
 
 A result file is ``<model>_v1all_<lang>_224<suffix>.json`` (+ the same stem with .csv), ``<lang>`` en|ja, ``<suffix>`` ``_cpu`` / ``_cuda`` /
 nothing (a remote API). The run key is ``<model><suffix>`` (``jevision_cpu``, ``jevision_cuda``, ``openai``). Anything that is not an `all`
-block, a smoke run (``_smoke`` in the suffix) or another pixel size than the first one found is ignored.
+block, a smoke run (``_smoke`` in the suffix), a timing-only block (``_speed`` in the suffix: ``<model>_v1photo_en_224_cpu_speed25``, record
+has ``speed_only: true``; colab/make_v1_report.py collects them into speed_cpu_v1.json) or another pixel size than the first one found is
+ignored. Speed-only blocks therefore never become a run of the accuracy tables.
 
 Display name, colour and kind (local / api) come from the default tables below; a model that is not in them gets its key as the name and the
 next free colour, so a new model needs no configuration. ``set_names()`` lets a caller (colab/make_v1_report.py) pass the adapters' registry.
@@ -62,11 +64,19 @@ def device_of(suffix: str) -> str:
 def parse_stem(stem: str):
     """-> dict(model, code, lang, px, suffix, device) or None. ``code`` is the block (v1all, v1photo, v1biz, v1rsn, v1txt, v1new)."""
     m = STEM.match(stem)
-    if not m or "_smoke" in m["suffix"]:
+    if not m or "_smoke" in m["suffix"] or "_speed" in m["suffix"]:
         return None
     d = m.groupdict()
     d["device"] = device_of(d["suffix"])
     return d
+
+
+def parse_speed_stem(stem: str):
+    """-> dict(model, code, lang, px, suffix) for a timing-only block ``<model>_<code>_<lang>_<px>_<device>_speed<N>``, else None."""
+    m = STEM.match(stem)
+    if not m or "_speed" not in m["suffix"] or "_smoke" in m["suffix"]:
+        return None
+    return m.groupdict()
 
 
 def discover_runs(runs_dir, code: str = "v1all") -> dict:

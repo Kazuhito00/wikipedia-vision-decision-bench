@@ -53,9 +53,17 @@ def used_providers(decider) -> list[str]:
             except Exception:      # noqa: BLE001
                 pass
             return
-        for v in list(getattr(obj, "__dict__", {}).values()):
-            if hasattr(v, "get_providers") or hasattr(v, "__dict__"):
-                visit(v, depth + 1)
+        if isinstance(obj, dict):          # e.g. Strands keeps its ORT sessions in a dict[int, InferenceSession]
+            children = list(obj.values())
+        elif isinstance(obj, (list, tuple)):
+            children = list(obj)
+        else:
+            children = list(getattr(obj, "__dict__", {}).values())
+        # a container is not a level of its own: the sessions inside count as the container's owner's children
+        step = 0 if isinstance(obj, (dict, list, tuple)) else 1
+        for v in children:
+            if hasattr(v, "get_providers") or hasattr(v, "__dict__") or isinstance(v, (dict, list, tuple)):
+                visit(v, depth + step)
     visit(decider)
     return found
 
