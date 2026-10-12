@@ -39,7 +39,7 @@ python colab/run_colab.py --dry-run --steps plan --models all        # 計画だ
 | `MODEL_DIRS` / `--model-dir KEY=PATH` | 取得済みの重みの場所（Drive でよい）。通常は不要（各 `download_model.py` が取る）。使うと取得は行わず、重みも消さない |
 | `RELEASE_TAG` / `--release-tag` | 各 `download_model.py` に渡す `--tag`。既定 `v0.0.0`（全リポジトリの最初の Release。`latest` が使えない場合に備えて固定）。`""` で各スクリプトの既定（最新の Release） |
 | `IMAGES_TAG` / `IMAGES_URL` / `IMAGES_ZIP` / `IMAGES_SHA256` | 画像 zip: 既定は bench の Release（`--images-tag`、既定 `v0.0.0`）。別の URL / 手元・Drive のパス（URL より優先）/ sha256 で上書き |
-| `USE_DRIVE` / `--use-drive` | **既定オフ**（マウント・同期・キャッシュ・復元をしない）。`True` / 指定したときだけ Drive を使う（`DRIVE_DIR` / `--drive`） |
+| `USE_DRIVE` / `--use-drive` | **CLI の既定はオフ**（ノートブックの設定セルは `USE_DRIVE = True`、`DEVICES = "cuda"`、`RUN_SIZE = "全問"` が既定）（マウント・同期・キャッシュ・復元をしない）。`True` / 指定したときだけ Drive を使う（`DRIVE_DIR` / `--drive`） |
 | `MODELS` / `--models` の既定 | 全モデル。**全リポジトリを最初に clone**（共有は 1 回）し、重みは `download_model.py` で取得。重みの削除は `WEIGHTS=auto`（全部は入らないときだけ、測定後に削除）|
 
 ## 再開と保存（/content は揮発する）
@@ -139,7 +139,7 @@ Colab も `runner.run` 経由なので、結果 json に `host`（CPU・コア�
 
 ## clef の CUDA 診断（任意）
 
-スモークで clef が CUDA だけ全問失敗したとき（例: `MemcpyToHost ... CUDA failure 1: invalid argument`。スモークの失敗文には各問の最初のエラー文が入ります。OOM とは限りません）は、`python colab/diagnose_clef_cuda.py [--download] [--quick]` で切り分けます（ノートブックの「(任意) clef の CUDA 診断」セルからも呼べます）。環境情報（onnxruntime / -gpu、プロバイダ、GPU・ドライバ・CUDA / cuDNN）を出したあと、1 問だけ `CUDA_LAUNCH_BLOCKING=1` と ORT の詳細ログで実行して最初のエラーと失敗ノード周辺を要約し、続けて条件を変えた再試行（テキストのみ、`require_gpu`、アリーナ / cuDNN / `gpu_mem_limit` / TF32 / コピーストリームの CUDA オプション、最適化レベル低下、メモリパターン無効。`--heavy` で `keep_bf16=False`）を 1 条件 1 プロセスで行い、成功 / 失敗 / 最初のエラーを 1 行ずつの表にします（1 試行 240 秒・全体 20 分が上限。生ログは `work/colab/diag_clef/NN_<条件>.log`、要約は `summary.json`）。読み方: 全条件が失敗なら「この Colab（A100）の CUDA では clef は非対応（CPU のみ）」とみなし、最初のエラーと `01_blocking_verbose.log` を作者に渡す材料にします。特定の条件だけ成功したら、その設定が回避策の候補です（ベンチへ反映するには clef アダプタの変更が必要）。ベースラインが成功した場合は未再現（ベンチ側の状態の違いを疑い、スモークを `--recheck` で再実行）、成功した CUDA 条件は CPU の出力との差も表示します。ローカル（GPU なし・重みなし）では構文・`--dry-run`・1 試行の配管までの確認で、Colab での実行結果は未確認です。
+スモークで clef が CUDA だけ全問失敗したとき（例: `MemcpyToHost ... CUDA failure 1: invalid argument`。スモークの失敗文には各問の最初のエラー文が入ります。OOM とは限りません）は、`python colab/diagnose_clef_cuda.py [--download] [--quick]` で切り分けます（ノートブックからは削除済み。Colab のセルで `!python colab/diagnose_clef_cuda.py --download` として呼べます。clef の CUDA は Clef リポジトリの修正後に A100 で動作確認済み）。環境情報（onnxruntime / -gpu、プロバイダ、GPU・ドライバ・CUDA / cuDNN）を出したあと、1 問だけ `CUDA_LAUNCH_BLOCKING=1` と ORT の詳細ログで実行して最初のエラーと失敗ノード周辺を要約し、続けて条件を変えた再試行（テキストのみ、`require_gpu`、アリーナ / cuDNN / `gpu_mem_limit` / TF32 / コピーストリームの CUDA オプション、最適化レベル低下、メモリパターン無効。`--heavy` で `keep_bf16=False`）を 1 条件 1 プロセスで行い、成功 / 失敗 / 最初のエラーを 1 行ずつの表にします（1 試行 240 秒・全体 20 分が上限。生ログは `work/colab/diag_clef/NN_<条件>.log`、要約は `summary.json`）。読み方: 全条件が失敗なら「この Colab（A100）の CUDA では clef は非対応（CPU のみ）」とみなし、最初のエラーと `01_blocking_verbose.log` を作者に渡す材料にします。特定の条件だけ成功したら、その設定が回避策の候補です（ベンチへ反映するには clef アダプタの変更が必要）。ベースラインが成功した場合は未再現（ベンチ側の状態の違いを疑い、スモークを `--recheck` で再実行）、成功した CUDA 条件は CPU の出力との差も表示します。ローカル（GPU なし・重みなし）では構文・`--dry-run`・1 試行の配管までの確認で、Colab での実行結果は未確認です。
 
 ## 秘密の扱い
 
