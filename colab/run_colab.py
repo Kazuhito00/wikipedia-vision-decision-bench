@@ -207,6 +207,14 @@ def stream(cmd, env=None, cwd=None, quiet_pred=None, tail=60):
     return p.returncode, list(last)
 
 
+_PROGRESS = re.compile(r"^\s*\S.*\s+\d+(\.\d+)?%\s+[\d.]+\s*[KMG]?B/s\s*$")
+
+
+def quiet_download(ln: str) -> bool:
+    """Hide the per-file progress lines (hundreds per model) and the blank lines of download_model.py; the `got ...` / sha256 / summary lines stay."""
+    return not ln.strip() or bool(_PROGRESS.match(ln))
+
+
 # ----------------------------------------------------------------------------------------------------------- Drive sync
 def _copy_if_newer(src: pathlib.Path, dst: pathlib.Path, only_newer: bool = False, skip=()) -> int:
     """Copy files that are missing / differ. only_newer (a PULL from Drive): never replace a local file that is as new or newer."""
@@ -890,7 +898,7 @@ def prepare_model(args, key: str, sync: DriveSync) -> dict:
                 cmd += ["--tag", args.release_tag]
             cmd += extra
             say("  downloading weights: %s (cwd %s)" % (" ".join(cmd), co.name))
-            rc_, tail = stream(cmd, cwd=co, env=child_env())
+            rc_, tail = stream(cmd, cwd=co, env=child_env(), quiet_pred=quiet_download)
             if rc_ != 0:
                 raise RuntimeError("download_model.py failed (private / unpublished release? it has no authentication): " + " | ".join(tail[-3:]))
             if not populated(mdir):
