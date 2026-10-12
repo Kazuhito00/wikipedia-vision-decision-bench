@@ -8,17 +8,17 @@
 1. `nvidia-smi` でランタイム確認（GPU は「ランタイムのタイプを変更」で T4 を選ぶ）
 2. bench を clone（非公開なら Colab Secrets の `GITHUB_TOKEN`）。モデルのリポジトリ（`Kazuhito00/<Model>-ONNX-CPU`）は、実行時にモデルごと clone
 3. uv で依存（pillow / numpy、GPU があれば onnxruntime-gpu、無ければ onnxruntime）。CUDA が本当に使えるか、手書きの小さな ONNX で確認
-4. 画像 `images-224px.zip`（sha256 照合 → 展開 → 全問の画像の存在確認）
+4. 画像 `images-224px.zip`（既定: bench の GitHub Release `v0.0.0` からダウンロード → `SHA256SUMS` で照合 → 展開 → 全問の画像の存在確認）
 5. モデルごとに「clone → 重み取得（`download_model.py`）→ デバイス（cpu / cuda）ごとに スモーク → 本番ブロック →（必要なら）重み削除」。取得できない・載らない・CPU に落ちるモデルは**そのデバイスだけスキップ**して次へ、最後に一覧で表示
 6. OpenAI Decisions API は、Colab Secrets に `OPENAI_API_KEY` があるときだけ（有料。未設定なら理由を表示してスキップ）
-7. 集計（markdown / csv / html）と結果 zip。Drive を使えばログ・結果・画像 zip・重みを保存
+7. 集計（markdown / csv / html）と結果 zip。**Drive は既定でオフ**（結果は `/content` のローカルだけ。zip をダウンロードして持ち帰る）。`--use-drive` のときだけログ・結果・画像 zip・重みを Drive に保存
 
 CLI だけで回すとき:
 
 ```bash
 git clone <bench の URL> && cd wikipedia-vision-decision-bench
 python colab/run_colab.py --steps setup,images,bench,report --models jevision,intern --devices auto --sample 300 \
-    --images-zip /content/drive/MyDrive/images-224px.zip --drive /content/drive/MyDrive/wikipedia-vision-decision-bench-colab
+    --images-tag v0.0.0          # 画像は既定で bench の Release から取得。Drive を使うときだけ: --use-drive --drive /content/drive/MyDrive/wikipedia-vision-decision-bench-colab
 python colab/run_colab.py --dry-run --steps plan --models all        # 計画だけ（ネットワーク・GPU 不要）
 ```
 
@@ -36,9 +36,15 @@ python colab/run_colab.py --dry-run --steps plan --models all        # 計画だ
 | `--time-budget-h` | 既定 11。超えたら新しいブロックを始めない（無料枠は 12 時間で切れる。同じコマンドで続きから） |
 | `MODEL_DIRS` / `--model-dir KEY=PATH` | 取得済みの重みの場所（Drive でよい）。通常は不要（各 `download_model.py` が取る）。使うと取得は行わず、重みも消さない |
 | `RELEASE_TAG` / `--release-tag` | 各 `download_model.py` に渡す `--tag`。既定 `v0.0.0`（全リポジトリの最初の Release。`latest` が使えない場合に備えて固定）。`""` で各スクリプトの既定（最新の Release） |
-| `IMAGES_URL` / `IMAGES_ZIP` | 画像 zip の Release URL / Drive 等のパス |
+| `IMAGES_TAG` / `IMAGES_URL` / `IMAGES_ZIP` / `IMAGES_SHA256` | 画像 zip: 既定は bench の Release（`--images-tag`、既定 `v0.0.0`）。別の URL / 手元・Drive のパス（URL より優先）/ sha256 で上書き |
+| `USE_DRIVE` / `--use-drive` | **既定オフ**（マウント・同期・キャッシュ・復元をしない）。`True` / 指定したときだけ Drive を使う（`DRIVE_DIR` / `--drive`） |
+| `MODELS` / `--models` の既定 | 全モデル。**全リポジトリを最初に clone**（共有は 1 回）し、重みは `download_model.py` で取得。重みの削除は `WEIGHTS=auto`（全部は入らないときだけ、測定後に削除）|
 
 ## 再開と保存（/content は揮発する）
+
+**Drive オフ（既定）のとき**: 結果・ログは `/content`（`results/runs/v1`、`work/logs/v1`）に置かれ、**セッションが切れると消えます**。持ち帰り: ① bench の最中も 1 モデルごとに `work/colab/out/colab_results_partial.zip` を作り直す、② `report` ステップ（ノートブックの `cli("report")`）が最終の `colab_results_<日時>.zip` を作る、③ ノートブックの「結果のダウンロード」セルが `files.download` で zip を落とす（左のファイルパネルからも取れる）。止めたあとでも `report` を実行すればその時点までの zip になります。ログまで消えた新しいセッションでは最初からやり直しです（Drive を使えば続きから）。
+
+**Drive オン**（`--use-drive`）のとき:
 
 - 再開の仕組みは bench の既存動作です: `runner.run` は問ごとのログ（`work/logs/v1/<ブロック>.log`）を見て、終わったブロックは飛ばし、途中のブロックは続きから回します（`--force` 無し）。**結果 json はブロックの最後にしか書かれません**ので、ログも一緒に保存・復元します（`--drive` で 10 分ごと＋ブロックごと＋終了時に `logs_v1/`・`runs_v1/`・`colab_*` を Drive にコピーし、起動時に戻します）。
 - Drive からの復元は「ローカルより新しいファイルだけ」で、ローカルの長いログを古い Drive のログで上書きしません。重みの取得・Drive キャッシュは完了マーカー（`.colab_complete`、最後に書く）で判定します。途中で切れた取得は、次回 `download_model.py` をもう一度流して続きを取ります。
@@ -84,7 +90,19 @@ GPU 1 問あたりの時間は、作者の PC（RTX 3050 Ti Laptop 4 GB）の値
 
 ## 画像について
 
-Wikimedia Commons の写真を含むため、画像はリポジトリにも入っていません。データセット v1 の Release（`images-224px.zip`、約 20 MB）を公開したら `--images-url`（`IMAGES_URL`）に URL を入れます。公開前は、手元の `dist/v1/images-224px.zip` を Drive に置いて `--images-zip` で指します。sha256 の既定値は 2026-10-11 のビルド（`c079de92...`、2128 ファイル）で、Release を作り直したら `--images-sha256` で更新します。展開は zip の外に出る名前を拒否します。
+画像（`images-224px.zip`、約 20 MB、2127 枚 + `ATTRIBUTION.md`）は Wikimedia Commons の CC0 / パブリックドメインの写真と、bench のスクリプトが描いた画像で、リポジトリには入っていません。モデルの重みと同じく **bench リポジトリの GitHub Release からダウンロード**します（既定: `https://github.com/<owner>/wikipedia-vision-decision-bench/releases/download/v0.0.0/images-224px.zip`）。優先順は `--images-zip`（`IMAGES_ZIP`）→ Drive キャッシュ（`--use-drive` のとき）→ `--images-url`（空なら上の既定の Release）。sha256 は Release の `SHA256SUMS` と照合（無ければ `--images-sha256`、それも無ければ 2026-10-11 のビルドの値 `c079de92...`）。途中で切れたダウンロードは `.part` から再開し、Release が `images-224px.zip.partNN`（2 GiB 超）に分かれていれば `SHA256SUMS` を見て結合します。展開は zip の外に出る名前を拒否します。
+
+失敗の原因は終了コードで区別し、ノートブックが案内を出します: 3 = Release 未公開 / タグ違い（404）または `--images-zip` が無い、4 = ネットワーク、5 = sha256 不一致、6 = 展開後に問の画像が足りない。Release が取れないときの最後の手段は、Commons からの自前取得（`python -m datasets.fetch fetch`）の**案内のみ**です（Commons の写真しか取れず、biz / rsn の描画画像は含まれない。連絡先は環境変数 `WIKIQA_CONTACT` で渡す: Colab では Secrets に自分の連絡先を設定し、ファイル・ログ・出力には書かない）。
+
+### Release を作る（作者側。アップロードはしていない）
+
+```bash
+uv run python -m datasets.build_v1                 # dist/v1/images-224px.zip（画像が手元にあるとき）
+uv run python tools/make_images_release.py         # 検査（問が使う 2127 枚が全部入っているか・sha256_224・ATTRIBUTION.md）→ dist/v1/release/{images-224px.zip,SHA256SUMS}
+gh release create v0.0.0 --repo <owner>/wikipedia-vision-decision-bench --title "v1 images (224 px)" --notes "..." dist/v1/release/images-224px.zip dist/v1/release/SHA256SUMS
+```
+
+zip に `ATTRIBUTION.md`（ファイルごとの題名・作者・ライセンス・元 URL。Commons 由来の画像は CC0 / パブリックドメインのみ）を同梱します。Wikipedia の本文は含みません。zip が 2 GiB を超えるときは `make_images_release.py` が `images-224px.zip.partNN` に分割します（今回は約 20 MB で 1 ファイル）。`.zip` と `dist/` は git に入りません。
 
 ## 集計と HTML
 
@@ -114,5 +132,5 @@ Colab も `runner.run` 経由なので、結果 json に `host`（CPU・コア�
 - onnxruntime-gpu の版（CUDA 12 系 / 13 系の選び方）と CUDA ライブラリの検索、T4 での各モデルの動作・速度・VRAM
 - Drive のマウント・保存・復元の実動作、`google.colab.userdata` と `files.download`
 - 各モデルのリポジトリ・Release の公開状況、`download_model.py` の実動作（非公開は取得不可）
-- 画像 Release の URL（未公開）
+- 画像 Release（`v0.0.0` の `images-224px.zip` + `SHA256SUMS`）が公開されていること・GitHub からのダウンロードの実動作（ローカルでは、同じ形式の Release をローカルの HTTP サーバに置いて、単一 / 分割 / 404 / sha256 不一致の 4 通りの取得を確認した）
 - `providers_used` が各モデルの実装で読めるか（読めないモデルは cuda がスキップされる）

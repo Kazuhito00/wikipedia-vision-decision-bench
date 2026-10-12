@@ -680,7 +680,7 @@ def download_images_zip(args, dest_dir: pathlib.Path) -> tuple[pathlib.Path, str
     base, name = images_release_base(args), images_asset_name(args)
     sums = fetch_sums(base)
     say("Release %s : SHA256SUMS %s" % (base, ("found (%d entries)" % len(sums)) if sums else "not found"))
-    want = args.images_sha256 or sums.get(name) or IMAGES_SHA256
+    want = args.images_sha256 or sums.get(name) or sums.get(name + ".joined") or IMAGES_SHA256
     zp = dest_dir / name
     if zp.exists() and sha256_file(zp) == want:
         say("already downloaded: %s" % zp)
@@ -1087,6 +1087,10 @@ def run_models(args, models, devices, gpu, sets, langs, sync, status) -> None:
         if not cuda_ok:
             say("the CUDA session check failed: the cuda device is skipped for every model")
     local = [m for m in models if not SPECS[m].get("remote")]
+    hdr("clone every model repository (shallow, no weights; a shared repository once)")
+    for rk in dict.fromkeys(SPECS[m].get("shared", m) for m in local):
+        why = git_clone(args, SPECS[rk]["repo"], checkout_of(args, rk))
+        say("  %-34s %s" % (SPECS[rk]["repo"], ("NOT cloned: " + why) if why else "ok"))
     total_gb = sum((SPECS[m].get("disk_gb") or 0) for m in local)
     purge = args.weights == "purge" or (args.weights == "auto" and total_gb > max(0.0, free_gb(ROOT) - args.disk_reserve_gb))
     say("weights policy: %s (selected models need ~%.0f GB known; %.0f GB free)" % ("sequential, delete after each model" if purge else "keep", total_gb, free_gb(ROOT)))
@@ -1193,6 +1197,8 @@ def run_models(args, models, devices, gpu, sets, langs, sync, status) -> None:
         elif info:
             kept[key] = info
         sync.push()
+        if not sync.enabled:
+            partial_bundle(args)
 
 
 # ----------------------------------------------------------------------------------------------------------- report
@@ -1295,6 +1301,17 @@ def try_v1_report(args) -> str:
     return "v1_report.py: %s" % (out if code == 0 and out.exists() else "NOT built (exit %s): %s" % (code, " | ".join(tail[-2:])))
 
 
+def partial_bundle(args) -> None:
+    """Drive off: a zip of whatever exists so far (also rewritten after every model), so an interrupted session can still be downloaded."""
+    try:
+        z = colab_dir() / "out" / "colab_results_partial.zip"
+        write_bundle(args, z, [])
+        (colab_dir() / "last_bundle.txt").write_text(str(z), encoding="utf-8")
+        say("  partial bundle (download it from the file browser or with the notebook's download cell): %s (%.1f MB)" % (z, z.stat().st_size / 1e6))
+    except OSError as e:
+        say("  partial bundle failed: %s" % e)
+
+
 def step_report(args, status, sync) -> None:
     hdr("report")
     out = colab_dir() / "out"
@@ -1307,6 +1324,15 @@ def step_report(args, status, sync) -> None:
         v1 = out / "v1_report.html"
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     z = out / ("colab_results_%s.zip" % ts)
+    write_bundle(args, z, files + ([v1] if v1 and v1.exists() else []))
+    say("  bundle: %s (%.1f MB)" % (z, z.stat().st_size / 1e6))
+    (colab_dir() / "last_bundle.txt").write_text(str(z), encoding="utf-8")
+    sync.push()
+
+
+def write_bundle(args, z: pathlib.Path, summary_files) -> None:
+    """The zip to download: results json/csv, logs, device checks (+ the summary files when there are any)."""
+    z.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(z, "w", zipfile.ZIP_DEFLATED) as zf:
         for base, arc in ((ROOT / "results" / "runs" / "v1", "results/runs/v1"), (work_dir() / "logs" / "v1", "logs/v1"), (colab_dir() / "checks", "colab/checks"),
                           (colab_dir() / "blocks", "colab/blocks")):
@@ -1314,11 +1340,8 @@ def step_report(args, status, sync) -> None:
                 for f in base.rglob("*"):
                     if f.is_file() and "smoke_records" not in f.parts and (arc != "results/runs/v1" or (colab_dir() / "blocks" / (f.stem + ".env.json")).exists() or args.include_all_blocks):
                         zf.write(f, arc + "/" + str(f.relative_to(base)).replace(os.sep, "/"))
-        for f in files + ([v1] if v1 and v1.exists() else []):
+        for f in summary_files:
             zf.write(f, "summary/" + f.name)
-    say("  bundle: %s (%.1f MB)" % (z, z.stat().st_size / 1e6))
-    (colab_dir() / "last_bundle.txt").write_text(str(z), encoding="utf-8")
-    sync.push()
 
 
 # ----------------------------------------------------------------------------------------------------------- plan
@@ -1400,15 +1423,22 @@ def main(argv=None) -> int:
         step_images(args, sets, sync)
     if "bench" in steps:
         if args.dry_run:
-            say("[dry-run] bench: for each of %s: clone -> weights -> devices %s -> smoke -> blocks -> purge" % (models, devices))
+            say("[dry-run] bench: first clone EVERY repository of %s (shared ones once); then for each model: weights (download_model.py) -> devices %s -> smoke -> blocks -> "
+                "weights deleted afterwards only when they do not all fit (--weights %s)" % (models, devices, args.weights))
+            say("[dry-run] Drive: %s" % ("ON (%s)" % sync.root if sync.enabled else "OFF (default; --use-drive to use it): results stay local, zip at the end"))
         else:
             lock = acquire_lock()
+            if not sync.enabled:
+                say("Drive is OFF: results and logs are kept on this machine only (it is erased when the session ends). A partial zip is rewritten after "
+                    "every model, and the `report` step builds the final zip to download.")
             sync.start(args.sync_min)
             try:
                 run_models(args, models, devices, gpu, sets, langs, sync, status)
             finally:
                 sync.stop()
                 sync.push()
+                if not sync.enabled:
+                    partial_bundle(args)
                 release_lock(lock)
             (colab_dir() / "status.json").write_text(json.dumps({"%s|%s" % k: v for k, v in status.items()}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
             hdr("status of every model / device")
@@ -1420,7 +1450,7 @@ def main(argv=None) -> int:
             status.setdefault(tuple(k.split("|")), v)
         step_report(args, status, sync)
     if "sync" in steps and not args.dry_run:
-        say("pushed %d files to Drive" % sync.push() if sync.enabled else "no Drive")
+        say("pushed %d files to Drive" % sync.push() if sync.enabled else "Drive is OFF (--use-drive not given): nothing to sync")
     return 0
 
 
