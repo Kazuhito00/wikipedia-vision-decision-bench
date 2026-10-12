@@ -162,6 +162,24 @@ def parse_label_check(runs_dir):
     return res
 
 
+def _vram(run, meta_json):
+    """Peak GPU memory (MiB, the largest over the run's blocks) and a tooltip text; (None, "") when no block recorded it (older results / CPU / API)."""
+    g = [(meta_json[(run["key"], lg)] or {}).get("gpu_memory") for lg in LANGS if (run["key"], lg) in meta_json]
+    g = [x for x in g if x]
+    if not g:
+        return None, ""
+    own = [x["process_peak"] for x in g if x.get("process_peak") is not None]
+    if own:
+        v, how = max(own), "このプロセスのピーク"
+    else:
+        dl = [x["gpu_delta"] for x in g if x.get("gpu_delta") is not None]
+        if not dl:
+            return None, ""
+        v, how = max(dl), "GPU 全体のピーク − 開始前（他のプログラムの増減を含む）"
+    tot = next((x["gpu_total"] for x in g if x.get("gpu_total")), None)
+    return v, "%s: %d MiB%s。CUDA アロケータが確保した量で、モデルが必要とする最小量ではありません" % (how, v, (" / GPU %d MiB" % tot) if tot else "")
+
+
 def timing_status(run, metas, blocks):
     """How far the time of a run can be trusted: ok (CPU, calibration within the limit) / uncal (CPU, no calibration record) /
     invalid (CPU or GPU, calibration out of range: the time is NOT shown) / ref (GPU, no calibration: reference only) / api (round trip)."""
@@ -496,6 +514,7 @@ def main(argv=None):
                    weights_gb=next((meta_json[(r["key"], lg)].get("weights_gb") for lg in LANGS if (r["key"], lg) in meta_json
                                     and meta_json[(r["key"], lg)].get("weights_gb") is not None), mdl_of[r["key"]].get("weights_gb")),
                    variant=next((meta_json[(r["key"], lg)].get("variant") for lg in LANGS if (r["key"], lg) in meta_json), None),
+                   vram_mib=_vram(r, meta_json)[0], vram_note=_vram(r, meta_json)[1],
                    langs=sorted(r["files"]), host=run_host[r["key"]],
                    ort=next(((meta_json[(r["key"], lg)].get("host") or {}).get("onnxruntime") for lg in LANGS if (r["key"], lg) in meta_json), None)) for r in runs],
         aggs=aggs, speed=speed, cpu_speed=cpu_speed, blocks=blocks, cal_limit=CAL_LIMIT, cost=cost, pricing=PRICING,

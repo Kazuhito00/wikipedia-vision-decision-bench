@@ -131,6 +131,10 @@ def main(argv=None) -> int:
         print("%s: already finished (%s)" % (block, log_path))
         return 0
 
+    gpumem = None
+    if (args.device == "cuda" or (args.device is None and args.gpu)) and args.model != "openai":
+        from . import gpumem as _gm                               # peak GPU memory of this block (model load included)
+        gpumem = _gm.Sampler().start()
     cases = select_cases(args)
     earlier = logfmt.parse(log_path)                              # resume: what this block's log already has
     todo = [c for c in cases if c["id"] not in earlier]
@@ -216,6 +220,7 @@ def main(argv=None) -> int:
             rows.append(dict(id=c["id"], kind=c["kind"], difficulty=c.get("difficulty"), expected=c["expected"], got=r["got"], ok=r["ok"],
                              rev_ok=None if r["rev"] == "None" else r["rev"] == "True", ms=r["ms"]))
         import PIL
+        gpu_memory = gpumem.stop() if gpumem else None
         if not remote and not info.get("providers_used") and getattr(base, "decider", None) is not None:
             # sessions created lazily (on the first question) are not visible when the adapter is built: look again now
             from adapters import _common as _C
@@ -229,7 +234,7 @@ def main(argv=None) -> int:
                     endpoint=info.get("endpoint"), model_name=info.get("model_name"),
                     usage=dict(info["usage"]) if info.get("usage") else None,     # this session's requests / tokens (remote adapters)
                     started=started, finished=datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
-                    resumed=bool(earlier), host=hostinfo.collect(threads=args.threads, remote=remote))
+                    resumed=bool(earlier), gpu_memory=gpu_memory, host=hostinfo.collect(threads=args.threads, remote=remote))
         if args.speed_only:                                        # timing-only block: never an accuracy result
             meta.update(speed_only=True, speed_questions=n, speed_max_seconds=args.max_seconds or None, speed_stopped_early=stopped_early)
         print("results:", results.write(block, meta, rows), flush=True)

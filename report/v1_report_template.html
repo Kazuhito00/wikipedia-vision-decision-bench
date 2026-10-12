@@ -334,7 +334,7 @@ const COLS = [
   {id: "en", l: "en", get: k => lgAcc(k, "en"), t: "acc", sep: 1}, {id: "ja", l: "ja", get: k => lgAcc(k, "ja"), t: "acc"},
 ].concat(GROUPS.map((g, i) => ({id: g, l: g, get: k => grAcc(k, g), t: "acc", sep: i === 0 ? 1 : 0}))).concat([
   {id: "cpu", l: "CPU 時間 (ms)", get: k => tOf(k, "cpu"), t: "time", sep: 1}, {id: "gpu", l: "GPU 時間 (ms)", get: k => tOf(k, "cuda"), t: "time"},
-  {id: "api", l: "API 往復 (ms)", get: k => tOf(k, "remote"), t: "time"}, {id: "w", l: "重み (GB)", get: k => R[k].weights_gb, t: "gb", sep: 1}]);
+  {id: "api", l: "API 往復 (ms)", get: k => tOf(k, "remote"), t: "time"}, {id: "vram", l: "ピーク VRAM (GB)", get: k => R[k].vram_mib != null ? R[k].vram_mib / 1024 : null, t: "vram", sep: 1}, {id: "w", l: "重み (GB)", get: k => R[k].weights_gb, t: "gb"}]);
 const colRange = {};
 COLS.filter(c => c.t === "time").forEach(c => { const v = RK.map(c.get).filter(x => x != null); colRange[c.id] = [Math.min(...v), Math.max(...v)]; });
 function timeBg(c, v) {
@@ -371,6 +371,8 @@ function drawTable() {
       } else if (c.t === "time") {
         const mark = (c.id === "cpu" && r.timing === "uncal") ? '<sup title="較正の記録がありません（静かな機械か未確認）">※</sup>' : c.id === "gpu" ? '<sup title="GPU 実行は較正記録なし（参考値）">参考</sup>' : "";
         h += '<td class="' + cls + '" style="' + timeBg(c, v) + '">' + fmt(Math.round(v)) + mark + "</td>";
+      } else if (c.t === "vram") {
+        h += '<td class="' + cls + '" title="' + (R[k].vram_note || "") + '">' + fx(v, 1) + "</td>";
       } else h += '<td class="' + cls + '" title="配布サイズの概算（リポジトリの記述）">' + fx(v, v < 10 ? 1 : 0) + "</td>";
     });
     h += "</tr>";

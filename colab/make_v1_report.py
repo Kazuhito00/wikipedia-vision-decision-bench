@@ -106,6 +106,9 @@ def merge_meta(blocks) -> dict:
     m["questions_in_block"] = sum(x.get("questions_in_block") or 0 for x in metas)
     m["started"] = min(x.get("started") or "" for x in metas) or None
     m["finished"] = max(x.get("finished") or "" for x in metas) or None
+    gm = [x["gpu_memory"] for x in metas if x.get("gpu_memory")]
+    if gm:                                                    # peak GPU memory of the run: the largest over its blocks
+        m["gpu_memory"] = {k: max((g[k] for g in gm if g.get(k) is not None), default=None) for k in ("process_peak", "gpu_peak", "gpu_baseline", "gpu_delta", "gpu_total")}
     us = [x["usage"] for x in metas if x.get("usage")]
     if us:
         m["usage"] = {k: sum(u.get(k) or 0 for u in us) for k in us[0]}
