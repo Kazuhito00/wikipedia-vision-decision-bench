@@ -112,17 +112,17 @@ def make_thumbs(cases, enabled, dist):
                 seen[p] = len(paths)
                 paths.append(p)
     if not enabled:
-        return seen, []
+        return seen, [], paths
     from PIL import Image
     uris = []
     z = zipfile.ZipFile(dist / "images-224px.zip")
     for p in paths:
         im = Image.open(io.BytesIO(z.read(p))).convert("RGB")
-        im.thumbnail((120, 120))
+        im.thumbnail((160, 160))
         buf = io.BytesIO()
-        im.save(buf, "JPEG", quality=58, optimize=True)
+        im.save(buf, "JPEG", quality=72, optimize=True)
         uris.append("data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode())
-    return seen, uris
+    return seen, uris, paths
 
 
 def parse_blocks(runs_dir):
@@ -203,6 +203,7 @@ def main(argv=None):
     ap.add_argument("--runs-dir", default=str(RUNS), help="folder with the <model>_v1all_<lang>_224[_cpu|_cuda].csv|json results")
     ap.add_argument("--dist-dir", default=str(DIST), help="folder with cases_v1.jsonl, questions_v1.jsonl (and images-224px.zip)")
     ap.add_argument("--no-images", action="store_true", help="no thumbnails (the page then has no pictures)")
+    ap.add_argument("--images-base", default="", help="folder (relative to the page) holding <base>/224/<path> and <base>/original/<path>: the picture dialog then offers the 224 px and the original files (local use only; never publish)")
     ap.add_argument("--all-pairs", action="store_true", help="compare every asked (question, language), not only those every run answered")
     ap.add_argument("--only", default="", help="comma separated run keys (e.g. jevision_cpu,openai): leave the others out")
     args = ap.parse_args(argv)
@@ -427,7 +428,7 @@ def main(argv=None):
     )
 
     # ---- explorer items and thumbnails
-    seen, uris = make_thumbs(cases, not no_images, dist)
+    seen, uris, img_paths = make_thumbs(cases, not no_images, dist)
     label_check = parse_label_check(runs_dir)
     lc_ids = set(summary.get("label_check_candidates", []))
     items, placeholder = [], 0
@@ -519,7 +520,7 @@ def main(argv=None):
                    ort=next(((meta_json[(r["key"], lg)].get("host") or {}).get("onnxruntime") for lg in LANGS if (r["key"], lg) in meta_json), None)) for r in runs],
         aggs=aggs, speed=speed, cpu_speed=cpu_speed, blocks=blocks, cal_limit=CAL_LIMIT, cost=cost, pricing=PRICING,
         ds=dsstat, label_check=label_check, lc_ids=sorted(lc_ids), checks=checks,
-        items=items, thumbs=uris, has_images=not no_images, dropped=dropped, placeholder=placeholder,
+        items=items, thumbs=uris, img_paths=img_paths, img_base=args.images_base or None, has_images=not no_images, dropped=dropped, placeholder=placeholder,
         run_meta=[dict(run=r["key"], lang=lg, providers=meta_json[(r["key"], lg)].get("providers_used"), threads=meta_json[(r["key"], lg)].get("threads"),
                        started=meta_json[(r["key"], lg)].get("started"), finished=meta_json[(r["key"], lg)].get("finished"),
                        variant=meta_json[(r["key"], lg)].get("variant"), workers=meta_json[(r["key"], lg)].get("workers"),

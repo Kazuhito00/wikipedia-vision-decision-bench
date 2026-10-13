@@ -39,3 +39,24 @@ results/**/*.log
 # local dataset overview (holds pictures and question cards); the --public page is dataset_summary_public.html
 dataset_summary.html
 dataset_summary_files/
+
+# ---- measurement results (results/runs): only the published v1 baseline is tracked ---------------
+# Everything a run writes (per-model block results of Colab / a local PC, CPU speed references, n300 samples, smoke checks, whole
+# result folders such as v1_localpc/) stays local. The files below are the tracked baseline and must be named explicitly.
+results/runs/*
+!results/runs/.gitkeep
+!results/runs/v1/
+results/runs/v1/*
+!results/runs/v1/*_v1all_*
+!results/runs/v1/summary_v1.json
+!results/runs/v1/summary_v1.md
+!results/runs/v1/per_question_v1.csv
+!results/runs/v1/label_check_v1.md
+!results/runs/v1/blocks_v1_cpu.txt
+results/checks/*
+!results/checks/.gitkeep
+
+# ---- generated reports and their picture folders (224 px / original files next to a page): local only ----
+results/*.html
+results/*_images/
+colab_results_*.zip

@@ -28,6 +28,7 @@ import os
 import pathlib
 import sys
 import shutil
+import zipfile
 import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -90,6 +91,27 @@ def collect_speed(runs_dir: pathlib.Path, blocks_dir: pathlib.Path, include_all:
     return dict(models=out)
 
 
+def extract_images(zpath: pathlib.Path, dest: pathlib.Path) -> int:
+    """Extract the picture files (data/..., generated/...; not ATTRIBUTION.md) of a dataset zip into dest, keeping the zip's relative paths.
+    Entries that would leave `dest` are skipped; a file that already has the right size is left alone. -> number of pictures available."""
+    n = 0
+    root = dest.resolve()
+    with zipfile.ZipFile(zpath) as z:
+        for info in z.infolist():
+            if info.is_dir() or not info.filename.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
+                continue
+            target = (dest / info.filename).resolve()
+            if root not in target.parents:
+                continue
+            n += 1
+            if target.exists() and target.stat().st_size == info.file_size:
+                continue
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with z.open(info) as src, open(target, "wb") as out:
+                shutil.copyfileobj(src, out)
+    return n
+
+
 def merge_rows(blocks) -> list:
     seen, rows = set(), []
     for _, code, _, rs in sorted(blocks, key=lambda b: b[1] != "v1all"):      # an `all` block first: it covers the others
@@ -145,6 +167,8 @@ def main(argv=None) -> int:
     ap.add_argument("--runs-dir", default=str(ROOT / "results" / "runs" / "v1"))
     ap.add_argument("--images-zip", default="", help="images-224px.zip to embed thumbnails from (default: dist/v1/images-224px.zip when it exists)")
     ap.add_argument("--no-images", action="store_true", help="build the page without pictures")
+    ap.add_argument("--images-original-zip", default="", help="images-original.zip (default: dist/v1/images-original.zip when it exists): with it the picture dialog also offers the originals")
+    ap.add_argument("--no-image-files", action="store_true", help="do not write the <page>_images folder (224 px / original files next to the page); the dialog then shows the embedded thumbnail only")
     ap.add_argument("--blocks-dir", default=str(work / "colab" / "blocks"))
     ap.add_argument("--include-all-blocks", action="store_true", help="also use blocks that this machine did not run (no Colab sidecar)")
     ap.add_argument("--strict-passages", action="store_true",
@@ -205,6 +229,14 @@ def main(argv=None) -> int:
         args.append("--no-images")
     else:
         shutil.copyfile(zp, dist / "images-224px.zip")          # thumbnails are embedded in the page (the zip itself is not kept)
+        if not a.no_image_files:
+            op = pathlib.Path(a.images_original_zip) if a.images_original_zip else ROOT / "dist" / "v1" / "images-original.zip"
+            folder = pathlib.Path(a.out).with_name(pathlib.Path(a.out).stem + "_images")
+            n224 = extract_images(zp, folder / "224")
+            nor = extract_images(op, folder / "original") if op.exists() else 0
+            print("picture files next to the page: %s (224 px: %d, original: %d)  -- local use only, never publish or commit them" % (folder, n224, nor))
+            if n224:
+                args += ["--images-base", folder.name]
     return v1_report.main(args)
 
 

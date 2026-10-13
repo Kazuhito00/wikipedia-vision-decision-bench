@@ -117,6 +117,12 @@ svg .ax{stroke:var(--mute);stroke-width:1}
 .modal .box{max-width:760px;margin:20px auto;background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--line)}
 .modal .pic{float:right;margin:0 0 8px 12px}
 .modal .pic img{width:224px;max-width:42vw;border-radius:8px;image-rendering:auto;background:var(--soft)}
+.modal .pic .pm{display:flex;gap:4px;margin:0 0 4px;font-size:12px}
+.modal .pic .pm button{padding:1px 8px;font-size:12px}
+.modal .pic .pm button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.modal .pic.orig{float:none;margin:0 0 8px}
+.modal .pic.orig img{width:auto;max-width:100%;max-height:70vh}
+.modal .pic .pn{font-size:11px;color:var(--mute);margin-top:2px}
 .opt{padding:5px 8px;border:1px solid var(--line);border-radius:7px;margin:4px 0;font-size:14px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .opt.exp{border-color:var(--good);background:color-mix(in srgb,var(--good) 10%,transparent)}
 .opt .who{margin-left:auto}
@@ -231,7 +237,7 @@ const envTag = k => { const h = hostOf(k), t = []; if (h.host_id && h.source ===
 const envChip = k => '<span class="env ' + envCls(k) + '" title="' + esc(envName(k) + (envTag(k).length ? "（" + envTag(k).join(" / ") + "）" : "")) + '"><i></i>' + esc(envName(k)) + "</span>" + envTag(k).map(t => ' <span class="chip' + (t === "再開で環境が混在" ? " warn" : "") + '">' + esc(t) + "</span>").join("");
 const ENVIDS = [...new Set(RK.map(k => hostOf(k).host_id || ""))];
 const multiEnv = ENVIDS.length > 1 || RK.some(k => hostOf(k).mixed);
-const S = {env: "all", A: RK[0], B: "", lang: "all", sort: "overall", dir: -1, dim: "group", heat: "A", cmpLang: "all"};
+const S = {imgMode: "224", env: "all", A: RK[0], B: "", lang: "all", sort: "overall", dir: -1, dim: "group", heat: "A", cmpLang: "all"};
 (function () {
   const others = ORDER.filter(k => R[k].model !== R[S.A].model);
   S.B = others[0] || ORDER.find(k => k !== S.A) || "";
@@ -698,8 +704,6 @@ function outs() {
   const o = [["", "すべて"], ["allwrong", "全 run が外した"]];
   if (NR > 1) o.push(["split", "run 間で分かれた"]);
   o.push(["allright", "全 run が正解"]);
-  const a = rlabel(S.A), b = rlabel(S.B);
-  o.push(["Awrong", a + " が外した"]);
   if (hasB()) o.push(["bothwrong", "A・B とも外した"], ["Aonly", "A だけ外した（B は正解）"], ["Bonly", "B だけ外した（A は正解）"], ["bothright", "A・B とも正解"], ["anywrong", "A か B が外した"]);
   const m = mdl(S.A); if (m) o.push(["diff", "A の CPU と GPU で答えが違う"]);
   if (D.lc_ids.length) o.push(["lc", "ラベル検査候補"]);
@@ -725,7 +729,6 @@ function pass(r) {
     case "allwrong": if (r.nok !== 0) return false; break;
     case "allright": if (r.nok !== NR) return false; break;
     case "split": if (r.nok === 0 || r.nok === NR) return false; break;
-    case "Awrong": if (okA) return false; break;
     case "bothwrong": if (okA || okB) return false; break;
     case "Aonly": if (okA || !okB) return false; break;
     case "Bonly": if (!okA || okB) return false; break;
@@ -765,14 +768,26 @@ function openModal(i) {
   }).join("");
   const times = ORDER.filter(k => L.a[k][2]).map(k => esc(rlabel(k)) + " " + fmt(L.a[k][2]) + " ms").join(" · ");
   $("#modalBox").innerHTML = '<div style="display:flex;justify-content:space-between;gap:8px"><div class="mono">' + esc(it.id) + " · " + r.lg + '</div><div><button type="button" id="mPrev">‹</button> <button type="button" id="mNext">›</button> <button type="button" id="mClose">閉じる</button></div></div>' +
-    (it.im >= 0 && D.has_images ? '<div class="pic"><img alt="" src="' + D.thumbs[it.im] + '"></div>' : "") +
+    (it.im >= 0 && D.has_images ? picHtml(it) : "") +
     '<h3 style="margin-top:10px">' + esc(L.q) + "</h3>" + (L.s ? '<p class="sub" style="margin:0 0 6px">' + esc(L.s) + "</p>" : "") + opts +
     '<p style="clear:both;margin:10px 0 4px"><span class="chip">' + esc(it.g) + '</span><span class="chip">' + esc(it.k) + '</span><span class="chip">' + esc(it.d) + '</span><span class="chip">' + esc(it.it) + '</span><span class="chip">' + esc(it.sk) + '</span><span class="chip">' + esc(it.o) + "</span>" + (it.lc ? '<span class="chip warn">ラベル検査候補</span>' : "") + "</p>" +
     '<div class="m" style="font-size:12px;color:var(--mute)">' + times + "</div>" +
     (other ? "<details><summary>もう一方の言語 (" + (r.lg === "en" ? "ja" : "en") + ")</summary><p>" + esc(other.q) + "</p><p>" + other.o.map(esc).join(" / ") + "</p><p>正解: " + esc(other.e) + "</p></details>" : "") +
     (lcRow ? '<div class="note" style="margin-top:10px"><b>ラベル検査</b>: ' + esc(lcRow.finding) + "</div>" : "");
   $("#modal").classList.add("open"); $("#modal").dataset.i = i;
+  const pimg = document.querySelector("#modalBox .pic img");
+  if (pimg && D.img_base) pimg.onerror = () => { pimg.onerror = null; pimg.src = D.thumbs[it.im]; const n = document.querySelector("#modalBox .pn"); if (n) n.hidden = false; };
+  document.querySelectorAll("#modalBox .pm button").forEach(b => { b.onclick = () => { S.imgMode = b.dataset.m; openModal(i); }; });
   $("#mClose").onclick = closeModal; $("#mPrev").onclick = () => openModal(Math.max(0, i - 1)); $("#mNext").onclick = () => openModal(Math.min(CUR.length - 1, i + 1));
+}
+// the dialog's picture: the 224 px file or the original, from the folder next to this page (D.img_base); the embedded thumbnail is the fallback
+function picHtml(it) {
+  const th = D.thumbs[it.im];
+  if (!D.img_base) return '<div class="pic"><img alt="" src="' + th + '"></div>';
+  const url = m => encodeURI(D.img_base + "/" + m + "/" + D.img_paths[it.im]);
+  const mode = S.imgMode === "original" ? "original" : "224";
+  return '<div class="pic' + (mode === "original" ? " orig" : "") + '"><div class="pm"><button type="button" data-m="224" class="' + (mode === "224" ? "on" : "") + '">224px</button><button type="button" data-m="original" class="' + (mode === "original" ? "on" : "") + '">オリジナル</button></div>' +
+    '<img alt="" src="' + url(mode) + '"><div class="pn" hidden>画像フォルダが見つからないため、縮小版を表示しています（' + esc(D.img_base) + "）</div></div>";
 }
 function closeModal() { $("#modal").classList.remove("open"); }
 
