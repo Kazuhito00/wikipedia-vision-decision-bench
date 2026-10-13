@@ -134,6 +134,16 @@ footer{max-width:1200px;margin:0 auto;padding:0 16px 40px;color:var(--mute);font
 table.envt{min-width:820px}table.envt td,table.envt th{white-space:normal;text-align:left;vertical-align:top}
 table.cmp td.envc{text-align:left;font-size:12px}
 ul.n{margin:6px 0;padding-left:20px} ul.n li{margin:3px 0}
+#cond>details{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin:8px 0}
+#cond>details>summary{font-weight:600;color:var(--ink);font-size:14px}
+#cond>details>div{margin-top:10px}
+.recs{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));margin-top:12px}
+.rec{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:3px}
+.rec .why{font-size:12px;color:var(--mute)} .rec .nm{font-size:18px;font-weight:700;line-height:1.25}
+.rec .big{font-size:26px;font-weight:700;letter-spacing:-.5px} .rec .big small{font-size:12px;font-weight:400;color:var(--mute)}
+.rec dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:4px 0 0;font-size:13px} .rec dt{color:var(--mute)} .rec dd{margin:0;text-align:right}
+.rec button{margin-top:8px;align-self:flex-start;font-size:12px}
+small.ci{font-size:10px;color:var(--mute);margin-left:2px}
 @media (max-width:600px){main{padding:12px}.kpi .v{font-size:23px}.rows .lab{max-width:96px;font-size:12px}.rows.wide .lab{max-width:130px}.modal .pic{float:none;margin:0 0 8px}.modal .pic img{max-width:60vw}
   .pick{position:static}.pick select{max-width:calc(100vw - 80px)}html{scroll-padding-top:56px}.pick .hint{display:none}}
 </style>
@@ -141,73 +151,77 @@ ul.n{margin:6px 0;padding-left:20px} ul.n li{margin:3px 0}
 <body>
 <header class="top"><div class="in">
   <strong>v1 まとめ</strong>
-  <a href="#env">実行環境</a><a href="#summary">比較表</a><a href="#all">全モデル</a><a href="#detail">詳細</a><a href="#compare">A/B 比較</a>
-  <a href="#speed">速度</a><a href="#cost">費用</a><a href="#calib">較正</a><a href="#label">ラベル検査</a><a href="#dataset">データセット</a><a href="#explorer">質問探索</a><a href="#notes">注意</a>
+  <a href="#top">結論</a><a href="#summary">比較表</a><a href="#speed">速度</a><a href="#cost">費用</a><a href="#all">間違い方</a><a href="#compare">2 つを比べる</a>
+  <a href="#cond">測定条件</a><a href="#explorer">質問探索</a>
   <button id="theme" type="button" title="ライト/ダーク切替">◐</button>
 </div></header>
 <div class="pick" id="pickbar"><div class="in">
-  <b style="font-size:13px">比較対象</b>
+  <b style="font-size:13px">比べる 2 つの run</b>
   <label>A <select id="selA"></select></label>
   <label>B <select id="selB"></select></label>
   <button type="button" id="swap" title="A と B を入れ替え">⇄</button>
-  <span id="envPick"></span><span class="hint">「詳細」「A/B 比較」「速度」「質問探索」はここで選んだ A / B だけを描きます</span>
+  <span id="envPick"></span><span class="hint">run = モデル × 実行デバイス。「切り口別」「2 つを比べる」「速度」「質問探索」はここで選んだ A / B だけを描きます（結論・比較表は全 run）</span>
 </div></div>
 <main id="app">
 <h1>Wikipedia 画像セット v1 まとめ</h1>
 <p class="lead" id="lead"></p>
-<div class="note"><b>このページは生成物です。</b> Wikimedia Commons 由来の写真と合成図のサムネイルを埋め込んでいるため、ローカル専用です（<code>*.html</code> は git 管理外）。公開・コミットしないでください。再生成: <code>uv run python -m report.v1_report</code></div>
 <div id="warn"></div>
 
-<section id="env"><h2>実行環境</h2><div id="envBody"></div></section>
+<section id="top"><h2>① 結論：どのモデルを選ぶか</h2>
+<div id="topBody"></div></section>
 
-<section id="summary"><h2>モデル比較表</h2>
+<section id="summary"><h2>② 比較：精度・速度・メモリ</h2>
 <div class="kpis" id="kpis"></div>
 <div class="card" style="margin-top:14px"><h3>全 run の比較（見出しを押すと並べ替え）</h3>
-  <p class="sub" style="margin:0 0 8px">1 行 = 1 run（モデル × デバイス）。正答数 ÷ 出題数、未回答は不正解。色が濃い緑ほど高い正答率。時間は 1 問あたりの中央値で、<b>較正が外れた CPU 時間は載せません</b>（「—」）。</p>
+  <p class="sub" style="margin:0 0 8px">1 行 = 1 run（モデル × デバイス）。正答数 ÷ 出題数、未回答は不正解。色が濃い緑ほど高い正答率で、全体の ± は 95% 信頼区間（Wilson）。時間は 1 問あたりの中央値。<b>「—」は測っていない（その run のデバイスではない）、「未」は記録なし・無効</b>（押さずにマウスを乗せると理由を表示）。</p>
   <div class="tabs" id="envFilter" style="display:none"></div>
+  <div class="tabs"><button type="button" id="moreCols">詳細な列（群別・重み）を表示</button></div>
   <div class="scroll"><table class="cmp" id="cmp"></table></div>
   <p class="sub" id="cmpNote" style="margin:8px 0 0;font-size:12px"></p></div>
 <div class="card" style="margin-top:14px"><h3>全体正答率（高い順）</h3><div id="rank"></div></div>
 </section>
 
-<section id="all"><h2>全モデル一覧</h2>
+<section id="speed"><h2>② 比較：速度（1 問あたりの時間）</h2><div id="speedBody"></div></section>
+
+<section id="cost"><h2>② 比較：API の費用概算</h2><div id="costBody"></div></section>
+
+<section id="all"><h2>③ どこで間違えるか</h2>
+<h3 style="margin-top:6px">全 run のヒートマップ</h3>
 <p class="sub">全 run を行に並べたヒートマップ（セル = 正答率）。n が 8 未満のセルは薄く表示。</p>
 <div class="card"><div class="tabs" id="dimTabs"></div><div class="tabs" id="langTabsAll"></div><div id="allHeat"></div></div>
 <div class="grid g2" style="margin-top:14px">
   <div class="card"><h3>全 run が外した問題 / run 間で分かれた問題</h3><div id="splitBody"></div></div>
   <div class="card"><h3>群別の内訳（質問 × 言語）</h3><div id="splitGroup"></div></div>
-</div></section>
-
-<section id="detail"><h2>詳細：切り口別の正答率（A / B）</h2>
-<p class="sub">正答数 ÷ 出題数（未回答は不正解）。上の「比較対象」で選んだ A / B だけを描きます。</p>
+</div>
+<div id="detail">
+<h3 style="margin-top:22px">切り口別の正答率（選んだ A / B）</h3>
+<p class="sub">正答数 ÷ 出題数（未回答は不正解）。上の「比べる 2 つの run」で選んだ A / B だけを描きます。</p>
 <div class="tabs" id="langTabs"></div><div class="legend" id="legend1"></div>
 <div class="grid g2" id="bd"></div>
-<h2>詳細：ヒートマップ（A / B）</h2>
+<h3 style="margin-top:22px">ヒートマップ（選んだ A / B）</h3>
 <p class="sub">セルは正答率と出題数。n が 8 未満のセルは参考値（薄く表示）。言語は上のタブに連動。</p>
-<div class="tabs" id="heatTabs"></div><div class="grid g2" id="heatGrid"></div></section>
+<div class="tabs" id="heatTabs"></div><div class="grid g2" id="heatGrid"></div></div></section>
 
-<section id="compare"><h2>A / B の比較</h2>
+<section id="compare"><h2>④ 選んだ 2 つの run を比べる（A / B）</h2>
 <div id="cmpAB"></div></section>
 
-<section id="speed"><h2>速度</h2><div id="speedBody"></div></section>
+<section id="cond"><h2>⑤ 測定条件と信頼性</h2>
+<p class="sub">数字の読み方の前提と、確認用の資料です。必要なときだけ開いてください。</p>
+<details id="basis" open><summary>比較の母数と集計方式</summary><div id="basisBody"></div></details>
+<details id="env"><summary>実行環境</summary><div id="envBody"></div></details>
+<details id="calib"><summary>測定時の負荷確認（CPU の時間が比べられるか）</summary><div id="calibBody"></div></details>
+<details id="notes"><summary>注意事項</summary><div class="card" id="notesBody"></div></details>
+<details id="dataset"><summary>データセット概要</summary><div id="dsBody"></div></details>
+<details id="label"><summary>ラベル検査（解析時の候補）</summary><div id="labelBody"></div></details>
+<details id="selfcheck"><summary>数値の突き合わせ</summary><div class="card" id="checks"></div></details>
+<details id="gloss"><summary>用語</summary><div id="glossBody"></div></details>
+</section>
 
-<section id="cost"><h2>API の費用概算</h2><div id="costBody"></div></section>
-
-<section id="calib"><h2>較正値と有効性</h2><div id="calibBody"></div></section>
-
-<section id="label"><h2>ラベル検査（解析時の候補）</h2><div id="labelBody"></div></section>
-
-<section id="dataset"><h2>データセット概要</h2><div id="dsBody"></div></section>
-
-<section id="explorer"><h2>質問エクスプローラ</h2>
+<section id="explorer"><h2>⑥ 質問エクスプローラ</h2>
 <p class="sub">質問文・選択肢・正解・答えを見られます。カードに全 run の答えを横に並べます（A / B に選んだ run は太字＋枠）。押すと選択肢ごとの内訳を出します。</p>
 <div class="filters" id="filters"></div><div class="pager" id="pagerTop"></div><div class="list" id="list"></div><div class="pager" id="pagerBot"></div></section>
-
-<section id="notes"><h2>注意事項</h2><div class="card" id="notesBody"></div></section>
-
-<section id="selfcheck"><h2>数値の突き合わせ</h2><div class="card" id="checks"></div></section>
 </main>
-<footer>生成物（ローカル専用）。数値はすべて結果ファイル（results/runs/v1）と問題セット（dist/v1）から計算。</footer>
+<footer>生成物（ローカル専用。Wikimedia Commons 由来の画像サムネイルを含むため、<code>*.html</code> は git 管理外で公開しないでください。再生成: <code>uv run python -m report.v1_report</code>）。数値はすべて結果ファイル（results/runs/v1）と問題セット（dist/v1）から計算。</footer>
 
 <div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
 
@@ -237,7 +251,7 @@ const envTag = k => { const h = hostOf(k), t = []; if (h.host_id && h.source ===
 const envChip = k => '<span class="env ' + envCls(k) + '" title="' + esc(envName(k) + (envTag(k).length ? "（" + envTag(k).join(" / ") + "）" : "")) + '"><i></i>' + esc(envName(k)) + "</span>" + envTag(k).map(t => ' <span class="chip' + (t === "再開で環境が混在" ? " warn" : "") + '">' + esc(t) + "</span>").join("");
 const ENVIDS = [...new Set(RK.map(k => hostOf(k).host_id || ""))];
 const multiEnv = ENVIDS.length > 1 || RK.some(k => hostOf(k).mixed);
-const S = {imgMode: "224", env: "all", A: RK[0], B: "", lang: "all", sort: "overall", dir: -1, dim: "group", heat: "A", cmpLang: "all"};
+const S = {more: false, imgMode: "224", env: "all", A: RK[0], B: "", lang: "all", sort: "overall", dir: -1, dim: "group", heat: "A", cmpLang: "all"};
 (function () {
   const others = ORDER.filter(k => R[k].model !== R[S.A].model);
   S.B = others[0] || ORDER.find(k => k !== S.A) || "";
@@ -285,6 +299,12 @@ function tabs(el, items, cur, on) {
   el.onclick = e => { const b = e.target.closest("button"); if (!b) return; [...el.querySelectorAll("button")].forEach(x => x.classList.toggle("on", x === b)); on(b.dataset.k); };
 }
 const timeStat = (k, lg) => D.speed.runs.find(r => r.run === k && r.lang === (lg || "all")) || {};
+/* 95% Wilson interval of a proportion c / n, in percent: [low, high] */
+function wilson(c, n) {
+  if (!n) return [0, 0]; const z = 1.96, p = c / n, d = 1 + z * z / n, m = (p + z * z / (2 * n)) / d, h = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d;
+  return [100 * Math.max(0, m - h), 100 * Math.min(1, m + h)];
+}
+const ciHalf = (c, n) => { const w = wilson(c, n); return (w[1] - w[0]) / 2; };
 
 /* ---- explorer records (shared by the overview counts and the explorer) ---- */
 const RECS = [];
@@ -338,9 +358,9 @@ const tOf = (k, dev) => R[k].device === dev ? (timeStat(k).median != null ? time
 const COLS = [
   {id: "overall", l: "全体", get: k => acc(OV, k), t: "acc"},
   {id: "en", l: "en", get: k => lgAcc(k, "en"), t: "acc", sep: 1}, {id: "ja", l: "ja", get: k => lgAcc(k, "ja"), t: "acc"},
-].concat(GROUPS.map((g, i) => ({id: g, l: g, get: k => grAcc(k, g), t: "acc", sep: i === 0 ? 1 : 0}))).concat([
+].concat(GROUPS.map((g, i) => ({id: g, l: g, get: k => grAcc(k, g), t: "acc", sep: i === 0 ? 1 : 0, more: 1}))).concat([
   {id: "cpu", l: "CPU 時間 (ms)", get: k => tOf(k, "cpu"), t: "time", sep: 1}, {id: "gpu", l: "GPU 時間 (ms)", get: k => tOf(k, "cuda"), t: "time"},
-  {id: "api", l: "API 往復 (ms)", get: k => tOf(k, "remote"), t: "time"}, {id: "vram", l: "ピーク VRAM (GB)", get: k => R[k].vram_mib != null ? R[k].vram_mib / 1024 : null, t: "vram", sep: 1}, {id: "w", l: "重み (GB)", get: k => R[k].weights_gb, t: "gb"}]);
+  {id: "api", l: "API 往復 (ms)", get: k => tOf(k, "remote"), t: "time"}, {id: "vram", l: "ピーク VRAM (GB)", get: k => R[k].vram_mib != null ? R[k].vram_mib / 1024 : null, t: "vram", sep: 1}, {id: "w", l: "重み (GB)", get: k => R[k].weights_gb, t: "gb", more: 1}]);
 const colRange = {};
 COLS.filter(c => c.t === "time").forEach(c => { const v = RK.map(c.get).filter(x => x != null); colRange[c.id] = [Math.min(...v), Math.max(...v)]; });
 function timeBg(c, v) {
@@ -352,6 +372,14 @@ function sortVal(k) {
   if (S.sort === "name") return RK.indexOf(k);
   const c = COLS.find(x => x.id === S.sort); return c ? c.get(k) : null;
 }
+const VISCOLS = () => COLS.filter(c => S.more || !c.more);
+function naCell(c, r, cls) {
+  // "—" = not measured on purpose (the run is not on that device); "未" = no record / not valid (the title says why)
+  const dev = {cpu: "cpu", gpu: "cuda", api: "remote"}[c.id];
+  if (dev && r.device !== dev) return '<td class="' + cls + ' na" title="この run は ' + (dev === "cpu" ? "CPU" : dev === "cuda" ? "GPU" : "API") + ' 実行ではないので、測っていません">—</td>';
+  const why = c.id === "cpu" && r.timing === "invalid" ? "較正が外れた測定のため時間は載せません" : c.id === "vram" ? "VRAM を記録していません（記録機能の追加前の測定）" : c.id === "w" ? "リポジトリに配布サイズの記述がありません" : "記録がありません";
+  return '<td class="' + cls + ' na" title="' + why + '">未</td>';
+}
 function drawTable() {
   const keys = RK.filter(k => S.env === "all" || (hostOf(k).host_id || "none") === S.env).sort((a, b) => {
     const x = sortVal(a), y = sortVal(b);
@@ -361,19 +389,16 @@ function drawTable() {
   });
   const arrow = id => S.sort === id ? (S.dir < 0 ? " ▼" : " ▲") : "";
   let h = '<tr><th class="l st"><button type="button" data-s="name" class="' + (S.sort === "name" ? "on" : "") + '">run（モデル × デバイス）' + (S.sort === "name" ? " ▲" : "") + '</button></th><th class="l">環境</th>' +
-    COLS.map(c => '<th class="' + (c.sep ? "sep" : "") + '"><button type="button" data-s="' + c.id + '" class="' + (S.sort === c.id ? "on" : "") + '">' + esc(c.l) + arrow(c.id) + "</button></th>").join("") + "</tr>";
+    VISCOLS().map(c => '<th class="' + (c.sep ? "sep" : "") + '"><button type="button" data-s="' + c.id + '" class="' + (S.sort === c.id ? "on" : "") + '">' + esc(c.l) + arrow(c.id) + "</button></th>").join("") + "</tr>";
   keys.forEach(k => {
     const r = R[k];
     h += '<tr class="' + (k === S.A ? "selA" : k === S.B ? "selB" : "") + '"><td class="st">' + dot(k) + esc(r.label) + ' <span class="chip">' + (r.kind === "api" ? "api" : "local") + '</span><span class="ab"><button type="button" data-a="' + k + '" title="A にする" class="' + (k === S.A ? "on" : "") + '">A</button><button type="button" data-b="' + k + '" title="B にする" class="' + (k === S.B ? "on" : "") + '">B</button></span></td><td class="envc">' + envChip(k) + "</td>";
-    COLS.forEach(c => {
+    VISCOLS().forEach(c => {
       const v = c.get(k), cls = "v" + (c.sep ? " sep" : "");
-      if (v == null) {
-        const why = (c.id === "cpu" && r.device === "cpu" && r.timing === "invalid") ? ' title="較正が外れた測定のため時間は載せません"' : "";
-        h += '<td class="' + cls + ' na"' + why + ">—</td>"; return;
-      }
+      if (v == null) { h += naCell(c, r, cls); return; }
       if (c.t === "acc") {
         const grp = c.id === "overall" ? OV : c.id === "en" || c.id === "ja" ? D.aggs.all.lang.find(x => x.label === c.id) : D.aggs.all.group.find(x => x.label === c.id);
-        h += '<td class="' + cls + '" style="background:' + accBg(100 * v) + '" title="' + grp.c[k] + " / " + grp.n + '">' + (100 * v).toFixed(1) + "</td>";
+        h += '<td class="' + cls + '" style="background:' + accBg(100 * v) + '" title="' + grp.c[k] + " / " + grp.n + '">' + (100 * v).toFixed(1) + (c.id === "overall" ? '<small class="ci">±' + ciHalf(grp.c[k], grp.n).toFixed(1) + "</small>" : "") + "</td>";
       } else if (c.t === "time") {
         const mark = (c.id === "cpu" && r.timing === "uncal") ? '<sup title="較正の記録がありません（静かな機械か未確認）">※</sup>' : c.id === "gpu" ? '<sup title="GPU 実行は較正記録なし（参考値）">参考</sup>' : "";
         h += '<td class="' + cls + '" style="' + timeBg(c, v) + '">' + fmt(Math.round(v)) + mark + "</td>";
@@ -390,11 +415,12 @@ function drawTable() {
 (function () {
   const dev = {cpu: "CPU", cuda: "GPU", remote: "API 往復"};
   const note = [];
-  if (RUNS.some(r => r.timing === "invalid")) note.push("較正が外れた run の時間は載せていません（「較正値と有効性」参照）。");
+  if (RUNS.some(r => r.timing === "invalid")) note.push("較正が外れた run の時間は載せていません（「測定時の負荷確認」参照）。");
   if (RUNS.some(r => r.timing === "uncal" && r.device === "cpu")) note.push("※ CPU 時間に較正の記録がない run は、静かな機械で測ったか未確認です。");
   if (multiEnv) note.push("実行環境が複数あります。時間の列は環境をまたぐと不公平です（環境の列の色と上の「実行環境」を参照）。環境不明の run は時間を比べないでください。");
-  note.push("GPU 時間は参考値、API 往復はネットワーク込みで機械に依存しません。重み (GB) はリポジトリの記述にある配布サイズの概算で、空欄は記述なし（実行に要するメモリではありません）。");
-  $("#cmpNote").textContent = note.join(" ");
+  note.push("環境の絞り込みは<b>この表だけ</b>に効きます（結論・順位・KPI は全 run）。GPU 時間は参考値、API 往復はネットワーク・並列数・再試行を含む時間で、機械の速さとは別の条件です。重み (GB) はリポジトリの記述にある配布サイズの概算で、空欄は記述なし（実行に要するメモリではありません）。");
+  $("#cmpNote").innerHTML = note.join(" ");
+  $("#moreCols").onclick = () => { S.more = !S.more; $("#moreCols").textContent = S.more ? "詳細な列（群別・重み）を隠す" : "詳細な列（群別・重み）を表示"; drawTable(); };
   if (multiEnv) { $("#envFilter").style.display = ""; $("#envFilter").onclick = e => { const b = e.target.closest("button[data-env]"); if (b) { S.env = b.dataset.env; drawTable(); } }; }
   $("#cmp").onclick = e => {
     const b = e.target.closest("button"); if (!b) return;
@@ -417,8 +443,93 @@ function drawTable() {
   $("#rank").innerHTML = '<div class="rows wide">' + ORDER.map(k => '<div class="lab" title="' + esc(R[k].name + " / " + R[k].label) + '">' + dot(k) + esc(R[k].label) + '</div><div class="bars"><div class="b" title="' + OV.c[k] + " / " + OV.n + '"><i style="width:' + (100 * OV.c[k] / OV.n).toFixed(2) + "%;background:" + rcol(k) + '"></i><span>' + pc(OV.c[k], OV.n) + "</span></div></div>").join("") + "</div>";
 })();
 
+/* ---- 0. conclusion: recommendation cards ---- */
+const CHANCE = (() => { let s = 0, n = 0; RECS.forEach(r => { const m = r.L.o.length || (r.it.k === "yes/no" ? 2 : 0); if (m >= 2) { s += 1 / m; n++; } }); return n ? {rate: 100 * s / n, n} : null; })();
+S.gap = 10;
+const accPct = k => 100 * OV.c[k] / OV.n;
+const apiPrice = () => D.pricing ? D.pricing.usd_per_m_input : 0;
+function costPer1000(k) {
+  const c = (D.cost || []).find(x => x.run === k); if (!c) return null;
+  const sum = o => Object.values(o).reduce((a, b) => a + (b || 0), 0), req = sum(c.requests);
+  return req ? sum(c.input_tokens) / req * 1000 / 1e6 * apiPrice() : null;
+}
+function cpuMs(k) {                                  // CPU time of the model of run k: its own CPU run if valid, else the small CPU reference measurement
+  const own = RK.find(x => R[x].model === R[k].model && R[x].device === "cpu" && tOf(x, "cpu") != null);
+  if (own) return {ms: tOf(own, "cpu"), ref: false};
+  const e = (D.cpu_speed || []).find(x => x.model === R[k].model);
+  return e && e.timing_valid !== false ? {ms: e.median, ref: true} : null;
+}
+function recCard(title, why, k, rows, note) {
+  const ci = ciHalf(OV.c[k], OV.n);
+  return '<div class="rec" style="border-top-color:' + R[k].color + '"><div class="why">' + esc(title) + '</div><div class="nm">' + dot(k) + esc(R[k].name) + '</div><div class="why">' + esc(why) + "</div>" +
+    '<div class="big">' + accPct(k).toFixed(1) + '%<small> ±' + ci.toFixed(1) + " · n=" + fmt(OV.n) + "</small></div><dl>" + rows.map(([a, b]) => "<dt>" + a + "</dt><dd>" + b + "</dd>").join("") + "</dl>" +
+    (note ? '<div class="why">' + esc(note) + "</div>" : "") + '<button type="button" data-a="' + esc(k) + '">この run を A にして詳細を見る</button></div>';
+}
+function drawTop() {
+  const X = S.gap, loc = RK.filter(k => R[k].kind === "local"), api = RK.filter(k => R[k].kind === "api"), by = (arr, f) => arr.reduce((b, k) => !b || f(k) > f(b) ? k : b, null);
+  const vr = k => R[k].vram_mib != null ? fx(R[k].vram_mib / 1024, 1) + " GB" : "未記録", wt = k => R[k].weights_gb != null ? fx(R[k].weights_gb, R[k].weights_gb < 10 ? 1 : 0) + " GB" : "—";
+  const cards = [];
+  const best = by(loc, accPct);
+  if (best) {
+    const g = RK.find(x => R[x].model === R[best].model && R[x].device === "cuda");
+    cards.push(recCard("精度優先（ローカル実行）", "ローカルで動くモデルのうち、正答率が最も高いもの", best, [["GPU の 1 問", g && tOf(g, "cuda") != null ? fmt(Math.round(tOf(g, "cuda"))) + " ms（" + esc(envName(g)) + "）" : "未測定"], ["ピーク VRAM", g ? vr(g) : "未記録"], ["重み", wt(best)]]));
+  }
+  const gl = loc.filter(k => R[k].device === "cuda" && tOf(k, "cuda") != null);
+  if (gl.length) {
+    const envs = {}; gl.forEach(k => { const e = hostOf(k).host_id || ""; envs[e] = (envs[e] || 0) + 1; });
+    const env = Object.keys(envs).sort((a, b) => envs[b] - envs[a])[0], pool = gl.filter(k => (hostOf(k).host_id || "") === env), tk = by(pool, accPct), top = accPct(tk);
+    const cand = pool.filter(k => accPct(k) >= top - X), k = cand.reduce((b, x) => !b || tOf(x, "cuda") < tOf(b, "cuda") ? x : b, null);
+    cards.push(recCard("速度優先（GPU）", "同じ環境（" + envName(k) + "）の GPU 実行で、最高精度との差が " + X + " pt 以内の最速", k, [["GPU の 1 問", fmt(Math.round(tOf(k, "cuda"))) + " ms"], ["ピーク VRAM", vr(k)], ["重み", wt(k)]],
+      k === tk ? "この環境では精度も速度も上位のモデルです。" : "この環境の最高精度より " + (top - accPct(k)).toFixed(1) + " pt 低く、" + fmt(Math.round(tOf(tk, "cuda"))) + " ms → " + fmt(Math.round(tOf(k, "cuda"))) + " ms。"));
+  }
+  const cl = loc.map(k => [k, cpuMs(k)]).filter(x => x[1]);
+  if (cl.length) {
+    const top = Math.max(...cl.map(x => accPct(x[0]))), cand = cl.filter(x => accPct(x[0]) >= top - X), w = cand.reduce((b, x) => !b || x[1].ms < b[1].ms ? x : b, null);
+    cards.push(recCard("GPU が無い（CPU だけ）", "CPU の時間を測ったモデルのうち、最高精度との差が " + X + " pt 以内の最速", w[0], [["CPU の 1 問", fmt(Math.round(w[1].ms)) + " ms" + (w[1].ref ? "（参考値）" : "")], ["重み", wt(w[0])]], w[1].ref ? "少数コアの CPU で少数問だけ測った参考値です。手元の CPU とは比べないでください。" : ""));
+  }
+  const ab = by(api, accPct);
+  if (ab) {
+    const c1 = costPer1000(ab);
+    cards.push(recCard("GPU を使わない（API）", "API の中で正答率が最も高いもの（画像は外部へ送ります）", ab, [["往復", tOf(ab, "remote") != null ? fmt(Math.round(tOf(ab, "remote"))) + " ms" : "—"], ["1,000 問の概算", c1 != null ? "$" + c1.toFixed(2) + "（仮定の単価）" : "—"]], "往復はネットワーク・並列数を含みます。費用は仮定の単価です。"));
+  }
+  const all = RK.slice().sort((a, b) => accPct(b) - accPct(a)), t0 = all[0], w0 = wilson(OV.c[t0], OV.n);
+  const tie = [...new Set(all.filter(k => k !== t0 && wilson(OV.c[k], OV.n)[1] >= w0[0] && R[k].model !== R[t0].model).map(k => R[k].short || R[k].model))];
+  $("#topBody").innerHTML = '<p class="sub" style="margin:0">' + fmt(OV.n) + " 件（質問 × 言語）の正答率。モデル " + [...new Set(RUNS.map(r => r.model))].length + " 種。± は 95% 信頼区間（Wilson）の幅" + (CHANCE ? "。偶然に当たる率は約 " + CHANCE.rate.toFixed(0) + "%（選択肢の数から計算）" : "") + "。</p>" +
+    '<div class="tabs" style="margin-top:8px"><span class="hint" style="font-size:12px;color:var(--mute)">最高精度との差を何 pt まで許すか</span>' + [3, 5, 10, 20].map(v => '<button type="button" data-gap="' + v + '" class="' + (v === X ? "on" : "") + '">' + v + " pt</button>").join("") + "</div>" +
+    '<div class="recs">' + cards.join("") + "</div>" +
+    (tie.length ? '<div class="note info"><b>差が誤差の範囲かもしれないモデル</b>: ' + esc(rlabel(t0)) + " の 95% 信頼区間（" + w0[0].toFixed(1) + "〜" + w0[1].toFixed(1) + "%）に、" + esc(tie.join(" / ")) + " の区間が重なります。この数 pt の差は順位が入れ替わりうる程度です。</div>" : "") +
+    '<div class="note">時間は実行環境ごとに違います（環境が違う run の時間は比べられません）。条件の詳細は「⑤ 測定条件と信頼性」、用語は同じ節の「用語」へ。</div>';
+}
+(function () {
+  $("#topBody").onclick = e => {
+    const g = e.target.closest("button[data-gap]"); if (g) { S.gap = parseInt(g.dataset.gap); drawTop(); return; }
+    const a = e.target.closest("button[data-a]"); if (a) { S.A = a.dataset.a; if (S.B === S.A) S.B = ""; syncPick(); renderPicked(); drawTable(); $("#detail").scrollIntoView(); }
+  };
+  drawTop();
+  /* the basis of the numbers */
+  const n = OV.n, asked = D.ds.asked, li = [
+    "<b>比較の母数</b>: " + fmt(n) + " 件（質問 × 言語）。出題 " + fmt(asked) + " 件のうち、<b>全 run が答えた組だけ</b>を数えます" + (D.dropped ? "（答えていない " + fmt(D.dropped) + " 件は外しています）" : "（外した組はありません）") + "。",
+    "<b>正答率</b> = 正答数 ÷ 出題数。記録された失敗（NA）や未回答は不正解として数えます。± は 95% 信頼区間（Wilson 法）で、別の問題の組で測ったときの揺れの目安です。" + (CHANCE ? "偶然に当たる率は約 " + CHANCE.rate.toFixed(1) + "%（" + fmt(CHANCE.n) + " 件の選択肢数から、1 ÷ 選択肢数の平均）。" : ""),
+    "<b>A と B の差</b>は同じ問題を解いた対応ありの差で、「④ 選んだ 2 つの run を比べる」に 95% 信頼区間を付けています。",
+    "<b>時間</b>は 1 問あたりの中央値（ms）です。CPU の時間は、実行前後の機械の負荷確認（GLiNER の ms が " + D.cal_limit + " 以下）に合格した run だけを載せます。GPU の時間は参考値、API は往復時間です。実行環境が違う run の時間は比べません。",
+    "<b>環境の絞り込み</b>は比較表だけに効きます。結論・順位・KPI は全 run を対象にします。"];
+  if (asked && n < 0.9 * asked) li.push("<b>注意</b>: 共通の問題が出題の " + (100 * n / asked).toFixed(0) + "% に縮んでいます。部分実行（問数を絞った run）を含むと、全モデルの母数がそれに揃います。");
+  $("#basisBody").innerHTML = '<ul class="n">' + li.map(x => "<li>" + x + "</li>").join("") + "</ul>";
+  /* glossary */
+  const gl = [["run", "1 つのモデルを 1 つのデバイス（CPU / GPU / API）で動かした結果の単位。モデルが同じなら CPU と GPU の答えはほぼ同じです。"],
+    ["A / B", "ページ上部の「比べる 2 つの run」で選んだ 2 つの run。データの群ではありません。"],
+    ["photo / biz / rsn / txt", "問題の群。photo = 実写、biz = 業務画像（描画・画面）、rsn = 推論、txt = 文章のみ（画像なしの対照）。"],
+    ["origin", "polished = 旧データセットを磨き直した問、new = v1 で新規に作った問（new のほうが難しめ）。"],
+    ["image_type / skill", "画像の種類と、その問いが測る力の分類。"],
+    ["測定時の負荷確認（較正）", "CPU の時間を測る前後に、基準の処理（GLiNER）を実行して機械が静かか確かめる確認。モデルの確信度の調整（キャリブレーション）とは別の意味です。"],
+    ["ピーク VRAM", "実行中の GPU メモリ使用量の最大値（nvidia-smi の標本。記録が無い run は「未記録」）。"],
+    ["重み", "リポジトリの記述にある配布サイズの概算。実行に必要なメモリではありません。"],
+    ["「—」と「未」", "表の「—」は測っていない（その run のデバイスではない）、「未」は記録が無い / 無効。"]];
+  $("#glossBody").innerHTML = '<table><tr><th class="l">用語</th><th class="l">意味</th></tr>' + gl.map(x => '<tr><td class="l" style="white-space:nowrap"><b>' + esc(x[0]) + '</b></td><td class="l">' + x[1] + "</td></tr>").join("") + "</table>";
+})();
+
 /* ---- 3. all-model overview ---- */
-const ALLDIMS = [["group", "群"], ["lang", "言語"], ["difficulty", "難度"], ["kind", "形式"], ["origin", "origin"], ["modality", "画像の有無"], ["nopt", "選択肢数"], ["image_type", "image_type"], ["skill", "skill"]];
+const ALLDIMS = [["group", "群"], ["lang", "言語"], ["difficulty", "難度"], ["kind", "形式"], ["origin", "origin（旧版 / 新規）"], ["modality", "画像の有無"], ["nopt", "選択肢数"], ["image_type", "画像の種類"], ["skill", "問われる力"]];
 function drawAllHeat() {
   const a = S.dim === "lang" ? D.aggs.all : D.aggs[S.lang], cols = [{label: "全体", n: a.overall.n, c: a.overall.c}].concat(a[S.dim]);
   const cell = (k, c) => {
@@ -459,8 +570,8 @@ function syncLangTabs() { [["#langTabs", S.lang], ["#langTabsAll", S.lang]].forE
 })();
 
 /* ---- detail: breakdown ---- */
-const DIMS = [["group", "群（photo / biz / rsn / txt）"], ["origin", "origin（polished = 旧版を磨き直し / new = v1 新規）"], ["kind", "形式"], ["nopt", "選択肢数"], ["difficulty", "難度"],
-  ["image_type", "image_type"], ["skill", "skill"], ["modality", "画像の有無"]];
+const DIMS = [["group", "群（photo=実写 / biz=業務画像 / rsn=推論 / txt=文章のみ）"], ["origin", "origin（polished = 旧版を磨き直し / new = v1 新規）"], ["kind", "形式"], ["nopt", "選択肢数"], ["difficulty", "難度"],
+  ["image_type", "image_type（画像の種類）"], ["skill", "skill（問われる力）"], ["modality", "画像の有無"]];
 function drawBreakdown() {
   const a = D.aggs[S.lang], ks = picked();
   $("#legend1").innerHTML = legend(ks);
@@ -545,7 +656,7 @@ function drawCompare() {
   const e = $("#cmpAB"), a = D.aggs.all, tx = a.modality.find(r => r.label === "text only"), pi = a.modality.find(r => r.label === "picture"), g = a.group.find(r => r.label === "txt"), ks = picked();
   let h = "";
   if (hasB()) {
-    h += '<div class="grid g2"><div class="card"><h3>カテゴリ別の正答率：A 対 B</h3><p class="sub" style="margin:0 0 6px">1 点 = 1 カテゴリ（群・origin・形式・難度・image_type・skill など、n ≥ 20）。点の大きさは出題数。対角線より上が B の優位。</p>' + scatterSvg() + "</div>" +
+    h += '<div class="grid g2"><div class="card"><h3>カテゴリ別の正答率：A 対 B（A / B は上で選んだ 2 つの run）</h3><p class="sub" style="margin:0 0 6px">1 点 = 1 カテゴリ（群・origin・形式・難度・image_type・skill など、n ≥ 20）。点の大きさは出題数。対角線より上が B の優位。</p>' + scatterSvg() + "</div>" +
       '<div class="card"><h3>正誤の重なり（円の面積は正答数に比例）</h3><div id="venn">' + vennSvg(vennOf(() => true)) + '</div><div class="tabs" id="vennTabs"></div><div id="vennStack"></div></div></div>';
   } else h += '<div class="note info">B が未選択（または A と同じ）です。上の「比較対象」で B を選ぶと、散布図とベン図（一致）を描きます。</div>';
   h += '<div class="card" style="margin-top:14px"><h3>文章のみの問題と画像付きの問題</h3><div class="grid g2"><div>' + barRows(a.modality, ks) + "</div><div>";
@@ -558,7 +669,9 @@ function drawCompare() {
     const stacks = lg => {
       const leg = '<div class="legend"><span><i style="background:var(--good)"></i>両方正解</span><span>' + dot(S.A) + esc(rlabel(S.A)) + ' のみ正解</span><span>' + dot(S.B) + esc(rlabel(S.B)) + ' のみ正解</span><span><i style="background:var(--bad)"></i>両方不正解</span></div>';
       const f = lg === "all" ? (() => true) : (r => r.lg === lg), v = vennOf(f);
-      let s = leg + stackRow(lg === "all" ? "全体" : lg, v);
+      const dd = v.n ? 100 * (v.b_only - v.a_only) / v.n : 0, se = v.n ? 100 * Math.sqrt(Math.max(0, v.a_only + v.b_only - (v.b_only - v.a_only) ** 2 / v.n)) / v.n : 0;
+      const pair = '<div class="note info" style="margin:6px 0"><b>B − A = ' + (dd >= 0 ? "+" : "") + dd.toFixed(1) + " pt</b>（95% 信頼区間 ±" + (1.96 * se).toFixed(1) + " pt、同じ問題どうしの対応あり）。" + (Math.abs(dd) <= 1.96 * se ? "区間が 0 を含むので、この差は誤差の範囲かもしれません。" : "区間が 0 を含まないので、この差は偶然とは言いにくいです。") + "</div>";
+      let s = pair + leg + stackRow(lg === "all" ? "全体" : lg, v);
       if (lg === "all") s += ["en", "ja"].map(l => stackRow(l, vennOf(r => r.lg === l))).join("") + GROUPS.map(x => stackRow("群 " + x, vennOf(r => r.it.g === x))).join("");
       return s + '<p class="sub" style="margin-top:8px">両方外した ' + fmt(v.none) + " 件のうち、同じ誤答を返したのは " + fmt(v.same_wrong) + " 件。</p>";
     };
@@ -573,7 +686,7 @@ function drawSpeed() {
   let h = '<div class="card"><h3>1 問あたりの時間（ms）</h3><div class="scroll"><table><tr><th>run</th><th class="l">状態</th><th>中央値</th><th>平均</th><th>90%</th><th>99%</th><th>最大</th><th>合計 (s)</th><th>en 中央値</th><th>ja 中央値</th></tr>' +
     ORDER.map(k => { const s = timeStat(k), ok = s.median != null, c = x => ok && x != null ? fmt(Math.round(x)) : "—";
       return "<tr><td>" + dot(k) + esc(rlabel(k)) + '</td><td class="l"><span class="chip ' + tcol[R[k].timing] + '">' + tlab[R[k].timing] + "</span></td><td>" + c(s.median) + "</td><td>" + c(s.mean) + "</td><td>" + c(s.p90) + "</td><td>" + c(s.p99) + "</td><td>" + c(s.max) + "</td><td>" + c(s.total_s) + "</td><td>" + c(timeStat(k, "en").median) + "</td><td>" + c(timeStat(k, "ja").median) + "</td></tr>"; }).join("") +
-    '</table></div><p class="sub" style="margin:6px 0 0">API は往復時間（並列実行）で、機械には依存しません。ローカル実行は逐次で、先頭の問にはモデル読み込み直後の初回実行の時間が含まれます。較正が外れた run の時間は載せません。</p></div>';
+    '</table></div><p class="sub" style="margin:6px 0 0">API は往復時間（並列実行）で、ネットワーク・並列数・再試行の影響を受けます（機械の速さとは別の条件です）。ローカル実行は逐次で、先頭の問にはモデル読み込み直後の初回実行の時間が含まれます。較正が外れた run の時間は載せません。</p></div>';
   /* the CPU / GPU panel of the model of A */
   if (m) {
     const ag = m, pairs = ag.pairs || [];
@@ -618,7 +731,7 @@ function drawSpeed() {
         return "<tr><td>" + esc(x.name) + "</td><td>" + x.n + "</td><td>" + fmt(Math.round(x.median)) + "</td><td>" + fmt(Math.round(x.mean)) + "</td><td>" + fmt(Math.round(x.p90)) + "</td><td>" + (x.gpu_same_median != null ? fmt(Math.round(x.gpu_same_median)) : "—") + "</td><td>" + (x.ratio_median != null ? fx(x.ratio_median) + "×（" + x.pairs_n + " 問）" : "—") + '</td><td class="l">' + env + '</td><td class="l">' + st + "</td></tr>"; }).join("") +
       '</table></div><p class="sub" style="margin:6px 0 0">GPU だけで実行したときに、速度の目安として少数の問だけを CPU でも解いた値です（問は全モデルで同じ。精度は GPU の結果）。中央値は逐次実行の 1 問あたりで、先頭の問にはモデル読み込み直後の初回実行が含まれます。Colab の CPU は少数コアなので、手元の PC の CPU 時間とは比べないでください。CPU / GPU の列は、同じ問の CPU 時間を GPU 時間で割った値です。</p></div>';
   }
-  h += '<div class="note">ローカル実行の時間は、較正値が静かな機械と確認できた run のみ載せます（「較正値と有効性」）。較正記録がない run の時間（※）と GPU 時間は参考値です。</div>';
+  h += '<div class="note">ローカル実行の時間は、較正値が静かな機械と確認できた run のみ載せます（「測定時の負荷確認」）。較正記録がない run の時間（※）と GPU 時間は参考値です。</div>';
   e.innerHTML = h;
 }
 
@@ -629,9 +742,9 @@ function drawSpeed() {
   const sum = o => Object.values(o).reduce((a, b) => a + (b || 0), 0);
   e.innerHTML = '<div class="note"><b>仮定の価格です。</b> ' + esc(D.pricing.basis) + " 下の欄で単価を変えると再計算します（出力トークンは 0 として入力分のみ）。</div>" +
     '<div class="card"><label>入力単価（USD / 100 万トークン）<br><input type="number" id="price" step="0.01" min="0" value="' + D.pricing.usd_per_m_input + '"></label>' +
-    '<div class="scroll" style="margin-top:10px"><table><tr><th>run</th><th>リクエスト</th><th>入力トークン</th><th>出力トークン</th><th>リトライ</th><th>往復合計 (s)</th><th>平均入力/req</th><th>費用 (USD)</th><th>1 問あたり</th><th>1,000 問あたり</th><th>正答 1 件あたり</th></tr>' +
+    '<div class="scroll" style="margin-top:10px"><table><tr><th>run</th><th>リクエスト</th><th>入力トークン</th><th>出力トークン</th><th>リトライ</th><th>往復合計 (s)</th><th>平均入力/req</th><th>費用 (USD)</th><th>1 問あたり</th><th>1,000 問あたり</th><th>正答 1 件あたり（目安）</th></tr>' +
     cs.map((c, i) => { const req = sum(c.requests), tok = sum(c.input_tokens);
-      return "<tr><td>" + dot(c.run) + esc(c.label) + (c.model_name ? " <span class='chip'>" + esc(c.model_name) + "</span>" : "") + "</td><td>" + fmt(req) + "</td><td>" + fmt(tok) + "</td><td>" + fmt(sum(c.output_tokens)) + "</td><td>" + fmt(sum(c.retries)) + "</td><td>" + fmt(Math.round(sum(c.round_trip_s))) + "</td><td>" + fmt(req ? Math.round(tok / req) : 0) + '</td><td id="cu' + i + '"></td><td id="cq' + i + '"></td><td id="ck' + i + '"></td><td id="cc' + i + '"></td></tr>'; }).join("") + "</table></div></div>";
+      return "<tr><td>" + dot(c.run) + esc(c.label) + (c.model_name ? " <span class='chip'>" + esc(c.model_name) + "</span>" : "") + "</td><td>" + fmt(req) + "</td><td>" + fmt(tok) + "</td><td>" + fmt(sum(c.output_tokens)) + "</td><td>" + fmt(sum(c.retries)) + "</td><td>" + fmt(Math.round(sum(c.round_trip_s))) + "</td><td>" + fmt(req ? Math.round(tok / req) : 0) + '</td><td id="cu' + i + '"></td><td id="cq' + i + '"></td><td id="ck' + i + '"></td><td id="cc' + i + '"></td></tr>'; }).join("") + "</table></div><p class=\"sub\" style=\"margin:8px 0 0\">費用は全リクエスト分の入力トークン、正答数は全 run が答えた共通の問題の分です。対象範囲が違うときは「正答 1 件あたり」を目安としてだけ見てください。</p></div>";
   const calc = () => {
     const p = parseFloat($("#price").value) || 0;
     cs.forEach((c, i) => { const req = sum(c.requests), usd = sum(c.input_tokens) / 1e6 * p, ok = OV.c[c.run] || 0;
@@ -647,7 +760,7 @@ function drawSpeed() {
     D.blocks.map(b => "<tr><td>" + esc(b.block) + "</td><td>" + fmt(b.before) + "</td><td>" + fmt(b.after) + "</td><td>" + esc(b.time) + '</td><td><span class="chip ' + (b.valid ? "good" : "bad") + '">' + (b.valid ? "有効" : "無効（参考値）") + "</span></td></tr>").join("") + "</table></div>";
   h += '<div class="scroll" style="margin-top:12px"><table><tr><th>run</th><th>言語</th><th>バックエンド</th><th>スレッド/並列</th><th>variant</th><th>開始</th><th>終了</th></tr>' +
     D.run_meta.map(r => "<tr><td>" + dot(r.run) + esc(rlabel(r.run)) + "</td><td>" + r.lang + "</td><td class='l'>" + esc((r.providers || []).join(", ")) + "</td><td>" + esc(r.threads) + " / " + esc(r.workers) + "</td><td>" + esc(r.variant || "") + "</td><td>" + esc((r.started || "").slice(5, 19)) + "</td><td>" + esc((r.finished || "").slice(5, 19)) + "</td></tr>").join("") + "</table></div>";
-  h += '<div class="note info">GPU（CUDA）実行と API には機械の較正記録がありません。API の時間は往復時間なので機械に依存せず、GPU の時間は参考値です。' + (D.blocks.length && D.blocks.every(b => b.valid) ? "記録のある CPU の全ブロックが有効でした。" : "") + "</div>";
+  h += '<div class="note info">GPU（CUDA）実行と API には機械の較正記録がありません。API の時間は往復時間（ネットワーク・並列数・再試行を含む）で、GPU の時間は参考値です。' + (D.blocks.length && D.blocks.every(b => b.valid) ? "記録のある CPU の全ブロックが有効でした。" : "") + "</div>";
   $("#calibBody").innerHTML = h;
 })();
 
@@ -686,7 +799,7 @@ function drawSpeed() {
     "<li><b>v1 は新規、legacy は旧版</b>: origin が <code>polished</code> の問は旧データセット（legacy）から磨き直したもの、<code>new</code> は v1 で新規作成した問です。v1 と旧版の数値は問題が異なるため直接比べられません。new は難しめで正答率が低くなります。</li>" +
     "<li><b>費用は概算</b>: Decisions API の料金は未公表。GPT-6 Luna の入力単価を仮に当てはめた値で、実際の請求とは異なる可能性があります。</li>" +
     "<li><b>実行環境</b>: 各 run の機種は結果ファイルの <code>host</code>（CPU・コア数・RAM・GPU・ドライバ・onnxruntime・OS）から。「補記」は記録機能の追加前に測った結果へ、同じ PC で後から収集して付けたものです。ホスト名・ユーザー名・パス・IP は書きません。</li>" +
-    "<li><b>時間比較</b>: 較正が外れた CPU 時間は載せません。較正記録がない run（※）と GPU 時間は参考値。API の時間は往復時間。run どうしで機械が違うと時間は比べられません。</li>" +
+    "<li><b>時間比較</b>: 較正が外れた CPU 時間は載せません。較正記録がない run（※）と GPU 時間は参考値。API の時間は往復時間（ネットワーク・並列数・再試行を含む）。run どうしで機械が違うと時間は比べられません。</li>" +
     "<li><b>重みのサイズ</b>: リポジトリの記述にある配布サイズの概算で、実行に必要なメモリではありません。</li>" +
     "<li><b>入力画像</b>: 224 px（長辺）で入力。ページ内のサムネイルは表示用の縮小（長辺 120 px）で、モデルが見た画像そのものではありません。</li>" +
     "<li><b>誤答の扱い</b>: 未回答（NA）は不正解として数えています。全 run が答えた（質問 × 言語）だけを比べます。件数が少ないカテゴリ（n が小さい）は正答率のばらつきが大きいので注意。</li>" +
