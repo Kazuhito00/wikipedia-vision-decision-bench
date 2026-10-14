@@ -47,7 +47,7 @@ def render(by_font: dict) -> str:
     for f, v in sorted(by_font.items()):
         L.append("| %s | %s | %d |" % (f, "日本語" if f == "Yu Gothic UI" else "英語（問は英日の両方）", len(v)))
     L += ["", "このほか、描画画像の一部（`datasets/synthetic/gen.py` の `font()`）は、その機械に Arial があれば Arial（Windows 同梱）、"
-          "なければ DejaVu Sans で文字を描きます。どちらが使われたかは画像からは分かりません（旧版で作った画像の再現記録なし）。", ""]
+          "なければ DejaVu Sans で文字を描きます。どちらが使われたかは画像からは分かりません（再現記録なし）。", ""]
     for f, v in sorted(by_font.items()):
         L += ["## %s（%d 問）" % (f, len(v)), "", "ID（画像の path は `generated/<ID>.png`）:", "", ", ".join(i for i, _ in sorted(v)), ""]
     return "\n".join(L)

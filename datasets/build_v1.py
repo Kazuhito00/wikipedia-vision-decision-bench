@@ -3,19 +3,18 @@
 
     python -m datasets.build_v1 [--out dist/v1] [--date 2026-10-11] [--root DIR ...] [--no-zip] [--no-runner-check]
 
-Reads the question files (datasets/questions/v1/*.jsonl, dropped rows left out), the id maps and the classification tables; READS ONLY:
-no question file is ever written. Needs the pictures on this machine: Commons pictures and the legacy-era drawn pictures under
-``<root>/data/...`` (the old wiki_qa tree, ``$WIKIQA_DATA_ROOT``), the new pictures under ``<root>/generated/`` (work/), and their 224 px
+Reads the question files (datasets/questions/v1/*.jsonl, dropped rows left out), the image list (manifests/images_v1.json) and the
+classification tables; READS ONLY: no question file is ever written. Needs the pictures on this machine: Commons pictures and the
+drawn pictures under ``<root>/data/...`` (``$WIKIQA_DATA_ROOT``), the other drawn pictures under ``<root>/generated/`` (work/), and their 224 px
 copies (``<root>/work/px224``, ``work/generated/px224``). Deterministic and idempotent (sorted, fixed zip timestamps, ``--date`` instead of
 a clock): two builds give byte-identical files.
 
 Outputs (dist/<version>/):
   questions_v1.jsonl        every evaluated question (dropped left out): text, answer, wrong answers, own state (text-only controls only; never
-                            Wikipedia text), classification, difficulty, review state, origin, derived_from, legacy_id, picture path
+                            Wikipedia text), classification, difficulty, review state, origin, derived_from, picture path
   cases_v1.jsonl            the evaluation cases as ``datasets.loader.load_v1_cases`` returns them (balanced option order and ``expected`` fixed);
                             en and ja side by side; pictures as logical paths; passage-based text-only questions carry ``state: null`` + article ref
   manifest_v1.json          version, date, counts (group / kind / origin / language / ...), sha256 of every other file (written last)
-  idmap_legacy_v1_full.csv      legacy (legacy id) -> v1 id, plus the new questions (status new / dropped)
   questions_v1_all.csv      classification table of the evaluated questions
   images_v1.json            every picture in use (Commons: licence / author / URL / sha; generated: script, seed scheme, sha, licence CC0-1.0)
   images-224px.zip / images-original.zip   the pictures (names = logical paths) + ATTRIBUTION.md.  NOTHING IS UPLOADED.
@@ -41,7 +40,6 @@ from datasets import loader, newq, options  # noqa: E402
 from datasets.tools import v1_io  # noqa: E402
 from datasets.version import DATASET_VERSION, DIST_SUBDIR  # noqa: E402
 
-JEV = ROOT.parents[1]
 DEFAULT_DATE = "2026-10-11"
 MAX_STATE = 600
 LICENSE_DECIDED = "CC0-1.0"            # decided by the repository owner (2026-10-11): pictures made by this repository's scripts are CC0-1.0
@@ -52,13 +50,13 @@ GENERATORS = {
     "rendered_b": ("datasets/synthetic/gen_v1_new_b.py", "random.Random seeded per pattern and number"),
     "tk_ui": ("datasets/synthetic/gen_v1_tk_ui.py", 'random.Random("<pattern>-<k>"); real Tkinter windows captured with ImageGrab'),
     "ja_specific": ("datasets/synthetic/gen_v1_ja.py", "random.Random(zlib.crc32(builder name))"),
-    "rewrite": ("datasets/synthetic/gen_v1_rewrite.py", "seeds of the legacy items (t_ba<i>, w_two<i>); geometry fixed"),
+    "rewrite": ("datasets/synthetic/gen_v1_rewrite.py", "seeds t_ba<i>, w_two<i>; geometry fixed"),
 }
 
 
 # ------------------------------------------------------------------------------------------------------------- finding pictures
 def image_roots(extra=()) -> list:
-    r = list(extra) + [os.environ.get("WIKIQA_IMAGES"), os.environ.get("WIKIQA_DATA_ROOT"), ROOT / "work", JEV / "wiki_qa"]
+    r = list(extra) + [os.environ.get("WIKIQA_IMAGES"), os.environ.get("WIKIQA_DATA_ROOT"), ROOT / "work"]
     return [pathlib.Path(x) for x in r if x]
 
 
@@ -118,11 +116,11 @@ def row_tag_map() -> dict:
 
 
 def build_catalog(rows: list, roots, date: str, problems: list) -> tuple:
-    """(catalog dict, {path: (original bytes, 224 bytes)}). Commons / legacy-era drawn pictures inherit their entry of
-    manifests/images_legacy.json; the pictures under generated/ are new: source "generated"."""
-    legacy = json.loads((loader.MANIFESTS / "images_legacy.json").read_text(encoding="utf-8"))
-    by_file = {e["file"]: e for e in legacy["images"]}
-    by_file.update({e["file"]: e for e in legacy.get("rendered", [])})
+    """(catalog dict, {path: (original bytes, 224 bytes)}). Commons and the earlier drawn pictures inherit their entry of
+    manifests/images_v1.json; the pictures under generated/ are made by the scripts: source "generated"."""
+    listed = json.loads((loader.MANIFESTS / "images_v1.json").read_text(encoding="utf-8"))
+    by_file = {e["file"]: e for e in listed["images"]}
+    by_file.update({e["file"]: e for e in listed.get("rendered", [])})
     tags = row_tag_map()
     users = collections.defaultdict(list)
     first_row = {}
@@ -154,11 +152,11 @@ def build_catalog(rows: list, roots, date: str, problems: list) -> tuple:
         else:
             old = by_file.get(name)
             if old is None:
-                problems.append("%s is not in images_legacy.json" % p)
+                problems.append("%s is not in images_v1.json" % p)
                 continue
             e = {k: v for k, v in old.items() if k != "question_ids"}
             if (so, s2) != (old["sha256_original"], old["sha256_224"]):
-                problems.append("%s differs from images_legacy.json (original %s, 224px %s)" % (
+                problems.append("%s differs from images_v1.json (original %s, 224px %s)" % (
                     p, so == old["sha256_original"], s2 == old["sha256_224"]))
             if e.get("author"):                                      # a Commons author line may carry a private e-mail address: drop it
                 e["author"] = re.sub(r"\s*\(?[\w.+-]+@[\w-]+\.[\w.-]+\)?", "", e["author"]).strip()
@@ -174,7 +172,7 @@ def build_catalog(rows: list, roots, date: str, problems: list) -> tuple:
     cat = dict(manifest_version=DATASET_VERSION, dataset_version=DATASET_VERSION, generator="datasets/build_v1.py", generated_at=date,
                note="The list only: no picture and no Wikipedia text. 'path' is the logical path used by the question rows and the zip member "
                     "name. Commons: sha256_original = the stored file (640 px thumbnail), sha1 = the full-size file on Commons. "
-                    "source 'rendered' = drawn by datasets/synthetic in the legacy build; 'generated' = made for this version.",
+                    "source 'rendered' = drawn by datasets/synthetic (earlier build); 'generated' = made for this version.",
                input_px=224, counts=dict(images=len(entries), **counts), images=entries)
     return cat, blobs
 
@@ -195,7 +193,7 @@ def csv_bytes(cols: list, rows: list) -> bytes:
 def question_record(r: dict) -> dict:
     out = {k: v for k, v in r.items() if k not in ("version",)}
     out["dataset_version"] = DATASET_VERSION
-    out["origin"] = r.get("origin") or "legacy-derived"
+    out["origin"] = r.get("origin") or "base"
     out.setdefault("derived_from", None)
     out["image"] = (r.get("local_images") or [None])[0]
     return out
@@ -220,8 +218,8 @@ def stats(rows: list) -> dict:
     def cnt(f):
         return dict(sorted(collections.Counter(f(r) for r in rows).items(), key=lambda kv: str(kv[0])))
     return dict(total=len(rows), by_group=cnt(lambda r: r["group"]), by_kind=cnt(lambda r: r["kind"]),
-                by_origin=cnt(lambda r: r.get("origin") or "legacy-derived"),
-                by_group_origin=cnt(lambda r: "%s/%s" % (r["group"], r.get("origin") or "legacy-derived")),
+                by_origin=cnt(lambda r: r.get("origin") or "base"),
+                by_group_origin=cnt(lambda r: "%s/%s" % (r["group"], r.get("origin") or "base")),
                 by_language=cnt(lambda r: r.get("lang", "both")),
                 by_answer_format=cnt(lambda r: v1_io.answer_format(r)[0]), by_difficulty=cnt(lambda r: r.get("difficulty")),
                 by_skill=cnt(lambda r: r["skill"]), by_image_type=cnt(lambda r: r["image_type"]),
@@ -293,8 +291,7 @@ def run_checks(rows: list, all_rows: list, catalog: dict, cases: list, qrecs: li
     ck.add("(version,id) キー一意・版が一致", len(set(keys)) == len(keys) and all(k[0] == DATASET_VERSION for k in keys),
            "%d ケース、版 %s" % (len(keys), DATASET_VERSION))
     ck.add("loader の版名 = DATASET_VERSION", loader.VERSIONS[-1] == DATASET_VERSION, "loader.VERSIONS = %s" % (loader.VERSIONS,))
-    drop_set = loader.dropped_ids()
-    dropped_all = {r["id"] for r in all_rows if loader.is_dropped(r, drop_set)}
+    dropped_all = {r["id"] for r in all_rows if loader.is_dropped(r)}
     ck.add("dropped が含まれない", not (dropped_all & set(ids)) and not (dropped_all & {c["id"] for c in cases}),
            "評価対象 %d / 全行 %d（dropped %d）" % (len(rows), len(all_rows), len(dropped_all)))
     ck.add("cases と questions の問数・ID 一致", [c["id"] for c in cases] == ids and [q["id"] for q in qrecs] == ids, "%d" % len(cases))
@@ -458,11 +455,9 @@ def main(argv=None) -> int:
         "cases_v1.jsonl": jl(cases),
         "images_v1.json": (json.dumps(catalog, ensure_ascii=False, indent=1) + "\n").encode("utf-8"),
     }
-    idmap = loader.idmap_legacy_v1() + loader.idmap_v1_new()
-    files["idmap_legacy_v1_full.csv"] = csv_bytes(v1_io.IDMAP_COLS, idmap)
     cls = v1_io.classification_rows(rows)
     for c, r in zip(cls, rows):
-        c.update(origin=r.get("origin") or "legacy-derived", derived_from=r.get("derived_from") or "", review_state=r["review"]["state"])
+        c.update(origin=r.get("origin") or "base", derived_from=r.get("derived_from") or "", review_state=r["review"]["state"])
     files["questions_v1_all.csv"] = csv_bytes(v1_io.Q2_COLS + ["origin", "derived_from", "review_state"], cls)
 
     stage('zip')

@@ -19,10 +19,6 @@ version = "v1"       # the question set the run is keyed to: results are keyed b
 
 # set name -> block code used in log names (<model>_<code>_<lang>_<px>.log); `report` reads the same names
 [blocks]
-commons = "wiki"
-synthetic = "syn"
-reasoning = "rsn"
-# v1 sets (run with --dataset-version v1; the block codes differ from the legacy ones so the logs never collide)
 photo = "v1photo"
 biz = "v1biz"
 rsn = "v1rsn"

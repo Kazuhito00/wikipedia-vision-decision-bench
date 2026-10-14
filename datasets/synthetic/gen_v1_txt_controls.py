@@ -861,7 +861,7 @@ def fits(c):
 
 def make_row(c, n):
     row = c["row"]
-    out = {"id": "txt-%04d" % n, "legacy_id": None, "origin": "new", "derived_from": c["qid"], "relation": "control", "group": "txt",
+    out = {"id": "txt-%04d" % n, "origin": "new", "derived_from": c["qid"], "relation": "control", "group": "txt",
            "source": "none", "image_type": "none", "skill": "text-comprehension", "difficulty": row["difficulty"], "lang": row["lang"],
            "langs": list(row["langs"]), "modality": "text", "kind": row["kind"], "answer_format": row["answer_format"],
            "tags": ["control", "no-picture", "from-" + c["src"], c["pat"]], "local_images": []}

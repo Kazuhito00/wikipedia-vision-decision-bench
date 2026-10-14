@@ -1,50 +1,27 @@
 # -*- coding: utf-8 -*-
-"""Frozen legacy, classification and id map: every legacy id exactly once, groups add up, no Wikipedia text in the repository."""
-import ast
+"""v1 files, classification table and image list: groups add up, the tables equal the rows, no Wikipedia text, no pictures."""
 import collections
-import hashlib
 import json
 import unittest
 
-import _paths
-from datasets import loader, taxonomy
+import _paths  # noqa: F401  (puts the repository root on sys.path)
+from datasets import loader
+from datasets.fetch.commons import OK_LICENSE
+from datasets.tools import v1_io
 
 M = loader.MANIFESTS
 
 
-class FrozenV1Tests(unittest.TestCase):
-    def test_frozen_files_are_unchanged(self):
-        """legacy stays legacy: the sha256 of each frozen file equals the value recorded when it was frozen (manifests/legacy_freeze.json)."""
-        info = json.loads((M / "legacy_freeze.json").read_text(encoding="utf-8"))
-        for name, d in info["files"].items():
-            p = loader.QDIR / "legacy" / name
-            self.assertEqual(hashlib.sha256(p.read_bytes()).hexdigest(), d["frozen_sha256"], name)
-            self.assertEqual(len(loader.read_jsonl(p)), d["rows"], name)
-
-    def test_legacy_has_1962_questions_in_three_files(self):
-        """1355 (1268 pictures + 87 text-only) + 382 + 225 = 1962, ids unique."""
-        rows = loader.load_rows("legacy")
-        self.assertEqual(len(rows), 1962)
-        self.assertEqual(len({r["id"] for r in rows}), 1962)
-        self.assertEqual(collections.Counter(r["id"].split("-")[0] for r in rows), {"img": 1268, "txt": 87, "syn": 382, "rsn": 225})
-
+class V1FileTests(unittest.TestCase):
     def test_no_wikipedia_text_in_the_question_files(self):
-        """The repository must not carry Wikipedia text: no `evidence` strings in the frozen rows (only their sha256) and none
-        in the items_text_*.py sources; a text-only question holds the article title and revision id, not the passage."""
-        for p in (loader.QDIR / "legacy").glob("*.jsonl"):
-            for r in loader.read_jsonl(p):
-                self.assertNotIn("evidence", r, r["id"])
-                self.assertNotIn("passage", r)
-                if r["modality"] == "text":
-                    self.assertEqual(set(r["article"]["en"]), {"title", "revid"})
-                    self.assertTrue(all(len(h) == 64 for h in r["evidence_sha256"]["en"]))
-        for p in loader.QDIR.glob("items_text_*.py"):
-            src = p.read_text(encoding="utf-8")
-            for node in ast.walk(ast.parse(src)):
-                if isinstance(node, ast.Call) and getattr(node.func, "id", "") in ("tchoice", "tnoul"):
-                    idx = (7, 8) if node.func.id == "tchoice" else (4, 5)
-                    for i in idx:
-                        self.assertEqual(ast.literal_eval(node.args[i]), [], (p.name, node.lineno))
+        """The repository must not carry Wikipedia text: a text-only question that has an article holds the article title and
+        revision id (and the sha256 of its evidence), not the passage."""
+        for r in loader.load_rows("v1", include_dropped=True):
+            self.assertNotIn("evidence", r, r["id"])
+            self.assertNotIn("passage", r)
+            if r["modality"] == "text" and "article" in r:
+                self.assertEqual(set(r["article"]["en"]), {"title", "revid"})
+                self.assertTrue(all(len(h) == 64 for h in r["evidence_sha256"]["en"]))
 
     def test_no_pictures_or_secrets_are_committed(self):
         """No image files and no .env anywhere under datasets/ (pictures and keys are never in the repository)."""
@@ -52,76 +29,57 @@ class FrozenV1Tests(unittest.TestCase):
                if p.suffix.lower() in (".png", ".jpg", ".jpeg", ".gif", ".webp") or p.name == ".env"]
         self.assertEqual(bad, [])
 
+    def test_rows_carry_no_trace_of_an_older_dataset(self):
+        """A v1 row has no legacy_id, and every row has a review block."""
+        for r in loader.load_rows("v1", include_dropped=True):
+            self.assertNotIn("legacy_id", r, r["id"])
+            self.assertIn(r["review"]["state"], v1_io.REVIEW_STATES, r["id"])
 
-class IdMapTests(unittest.TestCase):
-    def setUp(self):
-        self.idmap = loader.idmap_legacy_v1()
-        self.legacy = loader.load_rows("legacy")
-
-    def test_every_legacy_id_appears_exactly_once(self):
-        """The id map is a bijection on the legacy ids: each of the 1962 ids once, no id missing, none invented; v1 ids unique."""
-        ids = [m["legacy_id"] for m in self.idmap]
-        self.assertEqual(sorted(ids), sorted(r["id"] for r in self.legacy))
-        self.assertEqual(len(set(ids)), 1962)
-        self.assertEqual(len({m["v1_id"] for m in self.idmap}), 1962)
-
-    def test_new_groups_have_the_planned_sizes(self):
-        """photo 797 + 471 = 1268, biz 382 - 94 = 288, rsn 225 + 94 = 319, txt 87; v1 id prefix = group."""
-        c = collections.Counter(m["group_v1"] for m in self.idmap)
-        self.assertEqual(c, {"photo": 1268, "biz": 288, "rsn": 319, "txt": 87})
-        for m in self.idmap:
-            self.assertEqual(m["v1_id"].split("-")[0], m["group_v1"])
-        old = collections.Counter(m["group_legacy"] for m in self.idmap)
-        self.assertEqual(old, {"wikipedia": 797, "expansion": 471, "synthetic": 382, "reasoning": 225, "text": 87})
-        moved = [m for m in self.idmap if m["group_legacy"] == "synthetic" and m["group_v1"] == "rsn"]
-        self.assertEqual(len(moved), 94)
-
-    def test_id_map_matches_the_classification_rules(self):
-        """The csv equals what taxonomy.py derives from the frozen rows (so the table cannot drift from the rules)."""
-        by = {m["legacy_id"]: m for m in self.idmap}
-        for r in self.legacy:
-            self.assertEqual((by[r["id"]]["group_legacy"], by[r["id"]]["group_v1"]), (taxonomy.old_group(r), taxonomy.new_group(r)))
-
-    def test_id_map_has_status_and_review_columns(self):
-        """v1 is the polished legacy: each row carries status (kept / rewritten / dropped / pending), review_state, change_note."""
-        self.assertEqual(list(self.idmap[0]), ["legacy_id", "v1_id", "group_legacy", "group_v1", "status", "review_state", "change_note"])
-        self.assertLessEqual({m["status"] for m in self.idmap}, {"kept", "rewritten", "dropped", "pending"})
-
-    def test_legacy_to_v1_and_back_use_versioned_keys(self):
-        """The loader maps ('legacy', id) <-> ('v1', id); both directions are inverse."""
-        f, b = loader.legacy_to_v1(), loader.v1_to_legacy()
-        self.assertEqual(len(f), 1962)
-        for k, v in f.items():
-            self.assertEqual((k[0], v[0]), ("legacy", "v1"))
-            self.assertEqual(b[v], k)
+    def test_dropped_questions_are_the_ones_the_review_dropped(self):
+        allr = loader.load_rows("v1", include_dropped=True)
+        kept = loader.load_rows("v1")
+        self.assertEqual({r["id"] for r in allr} - {r["id"] for r in kept}, {r["id"] for r in allr if loader.is_dropped(r)})
 
 
 class ClassificationTests(unittest.TestCase):
-    def test_classification_csv_covers_every_legacy_question_with_known_values(self):
-        """questions_legacy.csv has one row per legacy question with source / image_type / skill / answer / difficulty / lang filled."""
-        cls = loader.classification("legacy")
-        self.assertEqual(len(cls), 1962)
-        for k, r in cls.items():
+    def test_classification_tables_equal_the_rows(self):
+        """questions_v1.csv + questions_v1_new_<tag>.csv hold one row per question with the values the rows give (so the tables
+        cannot drift from the question files)."""
+        cls = loader.classification()
+        rows = loader.load_rows("v1", include_dropped=True)
+        self.assertEqual(len(cls), len(rows))
+        for want in v1_io.classification_rows(rows):
+            got = cls[("v1", want["id"])]
+            for k in v1_io.Q2_COLS:
+                self.assertEqual(str(want[k]), got[k], (want["id"], k))
+
+    def test_classification_values_are_known(self):
+        for k, r in loader.classification().items():
             for col in ("source", "image_type", "skill", "answer", "difficulty", "lang", "group"):
                 self.assertTrue(r[col], (k, col))
-            self.assertIn(r["source"], {"commons-article", "commons-category", "rendered", "none"})
             self.assertIn(r["answer_kind"], {"choice", "yesno", "score"})
             self.assertIn(r["difficulty"], {"easy", "medium", "hard"})
-            self.assertEqual(r["lang"], "both")
-
-    def test_classification_csv_equals_the_rules(self):
-        """The committed csv is exactly what taxonomy.classify() gives today (rerun tools/make_manifests.py after a rule change)."""
-        cls = loader.classification("legacy")
-        for r in loader.load_rows("legacy"):
-            want = taxonomy.classify(r)
-            got = cls[("legacy", r["id"])]
-            for k, v in want.items():
-                self.assertEqual(str(v), got[k], (r["id"], k))
 
     def test_answer_axis_counts(self):
-        """Answer forms of legacy: choice 4 = 1416, choice 3 = 78, choice 2 = 1, score 5 = 49, yes/no = 418."""
-        c = collections.Counter(r["answer"] for r in loader.classification("legacy").values())
-        self.assertEqual(c, {"choice:4": 1416, "choice:3": 78, "choice:2": 1, "score:5": 49, "yesno": 418})
+        """Answer forms of the evaluated questions: choice 2091 / yes-no 537 / score 140."""
+        rows = loader.load_rows("v1")
+        c = collections.Counter(v1_io.answer_format(r)[1] for r in rows)
+        self.assertEqual(c, {"choice": 2091, "yesno": 537, "score": 140})
+
+
+class ImageListTests(unittest.TestCase):
+    def test_every_picture_not_drawn_for_v1_is_in_the_image_list(self):
+        """manifests/images_v1.json lists the Commons and earlier drawn pictures with sha256 and licence; Commons pictures are
+        CC0 / public domain only; pictures under generated/ are described by build_v1."""
+        m = json.loads((M / "images_v1.json").read_text(encoding="utf-8"))
+        listed = {e["file"]: e for e in m["images"] + m["rendered"]}
+        self.assertEqual((len(m["images"]), len(m["rendered"])), (1021, 477))
+        for e in m["images"]:
+            self.assertRegex(e["license"], OK_LICENSE, e["file"])
+        for r in loader.load_rows("v1"):
+            for p in r.get("local_images", []):
+                if not p.startswith("generated/"):
+                    self.assertIn(p.rsplit("/", 1)[-1], listed, r["id"])
 
 
 if __name__ == "__main__":

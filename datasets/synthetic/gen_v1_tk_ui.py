@@ -2013,7 +2013,7 @@ EASY_BASES = {"chk_list", "radio", "combo", "switches", "form_val", "dialog_cat"
 def make_row(qid, pattern, q):
     lang = q["lang"]
     kind = q["kind"]
-    row = {"id": qid, "legacy_id": None, "origin": "new", "derived_from": None, "group": "biz", "source": "rendered", "image_type": "ui",
+    row = {"id": qid, "origin": "new", "derived_from": None, "group": "biz", "source": "rendered", "image_type": "ui",
            "skill": q["skill"], "difficulty": q["difficulty"], "lang": "both" if lang == "en" else "ja", "langs": ["en", "ja"] if lang == "en" else ["ja"],
            "modality": "image", "kind": kind}
     if kind == "choice":

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Batch of timed blocks (models x question groups x languages) behind the calibration gate. Resumable: finished blocks are skipped.
 
-    uv run python -m runner.batch --models onejev,jevision --sets commons,synthetic,reasoning --langs en,ja \\
+    uv run python -m runner.batch --models onejev,jevision --sets photo,biz,rsn --langs en,ja \\
         [--models-file runner/models.local.toml] [--log-dir work/logs/timed] [--gpu] [--lock PATH]
 
 For every block, in order:
@@ -28,8 +28,6 @@ import time
 import tomllib
 
 from . import config, logfmt, results
-
-LEGACY_SETS = ("commons", "synthetic", "reasoning")      # the sets of version legacy; every other set name belongs to version v1
 
 
 def calibrate(models: dict) -> str:
@@ -82,7 +80,7 @@ def main(argv=None) -> int:
     cfg = config.load()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--models", required=True, help="comma separated runner keys")
-    ap.add_argument("--sets", default="commons,synthetic,reasoning")
+    ap.add_argument("--sets", default="photo,biz,rsn,txt")
     ap.add_argument("--langs", default="en,ja")
     ap.add_argument("--models-file", default=str(config.HERE / "models.local.toml"))
     ap.add_argument("--log-dir", default=str(config.work_dir() / "logs" / "timed"))
@@ -112,13 +110,10 @@ def main(argv=None) -> int:
                     if logfmt.is_finished(log_dir / (block + ".log")):
                         continue
                     before = "" if args.no_gate else gate(models, cfg)
-                    set_version = "legacy" if set_name in LEGACY_SETS else "v1"        # photo ... run against the v1 questions
                     cmd = [t.get("python", sys.executable), "-m", "runner.run", "--model", key, "--set", set_name, "--lang", lang,
                            "--mod", args.mod, "--log-dir", str(log_dir)]
                     if args.suffix:
                         cmd += ["--suffix", args.suffix]
-                    if set_version != version:
-                        cmd += ["--dataset-version", set_version]
                     if t.get("model_dir"):
                         cmd += ["--model-dir", t["model_dir"]]
                     if args.gpu:
@@ -131,7 +126,7 @@ def main(argv=None) -> int:
                     with open(log_dir / "blocks.log", "a", encoding="utf-8", newline="\n") as f:
                         f.write("%s before=%s after=%s %s\n" % (block, before, after, time.strftime("%H:%M:%S")))
                     if not args.no_gate:
-                        results.annotate_calibration(block, set_version, before, after, cfg["gate"]["cal_limit_ms"])
+                        results.annotate_calibration(block, version, before, after, cfg["gate"]["cal_limit_ms"])
         (log_dir / "_done").write_text("FINISHED\n", encoding="utf-8")
     return 0
 

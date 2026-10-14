@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Order of the options of a choice question: two modes, one reversal.
+"""Order of the options of a choice question: the balanced order, plus one reversal.
 
 Why this file exists: the position of the right answer must not be guessable and must be the same on every machine.
 
-legacy    (version "legacy" only)  the order of the old wikiqa.dataset.load_cases, reproduced exactly: a seeded shuffle per question,
-                     seed = int(sha1(<legacy question id>)[:12], 16). Position 0 of the shuffled list is NOT special: the shuffle is
-                     over the indices [0 = correct answer, 1.. = wrong answers]; the right answer's new position is
-                     ``order.index(0)``. Changing one byte of this function changes the legacy answer keys, so it is frozen
-                     (tests/test_options.py compares it with golden data made from the old loader).
-balanced  (version "v1" only)  the right answer's position is spread evenly *per question group and number of options* (the counts of the
+balanced  the right answer's position is spread evenly *per question group and number of options* (the counts of the
                      positions differ by at most one in each bucket), deterministically; the order of the wrong answers is a
-                     seeded shuffle. It raises for version "legacy": legacy results were measured with the legacy order.
+                     seeded shuffle.
                      Special options ("none of the above", "cannot be determined", ...; see ``is_special``) are not shuffled:
                      they stay at the end, in their original relative order, so the layout of a question stays natural.
                      A question whose right answer is a special option has a fixed position (the tail) and is left out of the
@@ -32,9 +27,8 @@ import random
 import re
 from typing import Iterable, Sequence
 
-LEGACY = "legacy"
 BALANCED = "balanced"
-MODES = (LEGACY, BALANCED)
+MODES = (BALANCED,)
 
 # options that mean "no listed answer applies / not decidable" (v1 rule: pinned to the end, not shuffled)
 _SPECIAL_EN = re.compile(r"^\s*(none of (the above|these|them|the (listed|options|choices))|neither|no (correct )?answer|not applicable|n/?a|"
@@ -60,15 +54,6 @@ def pinned_indices(*option_lists: Sequence[str]) -> list[int]:
 
 def _seed(text: str) -> int:
     return int(hashlib.sha1(text.encode()).hexdigest()[:12], 16)
-
-
-# ------------------------------------------------------------------------------------------------------ legacy order
-def legacy_order(qid: str, n: int) -> list[int]:
-    """The old order. ``qid`` must be the legacy question id. Returns ``order``: the option shown at position p is item
-    ``order[p]`` of [correct, wrong1, ...]; the right answer is at ``order.index(0)``."""
-    order = list(range(n))
-    random.Random(_seed(qid)).shuffle(order)
-    return order
 
 
 # ---------------------------------------------------------------------------------------------------- balanced (v1)
@@ -197,15 +182,11 @@ def option_labels(n: int) -> list:
 
 # --------------------------------------------------------------------------------------------------------- dispatch
 def order_for(mode: str, version: str, qid: str, n: int, *, position: int | None = None, pinned: Sequence[int] = ()) -> list[int]:
-    """One entry point. version legacy -> the legacy mode only (balanced raises), version v1 -> the balanced mode only (legacy raises)."""
+    """One entry point (the balanced mode of version v1)."""
     if mode not in MODES:
         raise ValueError("unknown mode %r" % mode)
-    if version == "legacy" and mode != LEGACY:
-        raise ValueError("legacy results were measured with the legacy order: balanced must never be used for legacy")
-    if version == "v1" and mode != BALANCED:
-        raise ValueError("v1 uses the balanced order")
-    if mode == LEGACY:
-        return legacy_order(qid, n)
+    if version != "v1":
+        raise ValueError("unknown dataset version %r" % version)
     if position is None:
         raise ValueError("balanced mode needs the position from assign_positions()")
     return balanced_order(qid, n, position, pinned)

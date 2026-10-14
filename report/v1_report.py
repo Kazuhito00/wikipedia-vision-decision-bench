@@ -44,12 +44,12 @@ CAL_LIMIT = 600
 PRICING = dict(usd_per_m_input=0.10,
                basis="GPT-6 Luna の入力料金（100 万トークンあたり 0.10 ドル）を仮に当てはめた概算。Decisions API 自体の料金は未公表。")
 #: names in summary_v1.json / per_question_v1.csv (runner/analyze_v1.py) -> run key
-LEGACY_KEYS = {"jev_cpu": "jevision_cpu", "jev_cuda": "jevision_cuda", "openai": "openai"}
+SUMMARY_KEYS = {"jev_cpu": "jevision_cpu", "jev_cuda": "jevision_cuda", "openai": "openai"}
 
 KIND_LABEL = {"choice": "choice", "noul": "yes/no", "score": "score"}
 GROUP_ORDER = ["photo", "biz", "rsn", "txt"]
 DIFF_ORDER = ["easy", "medium", "hard"]
-ORIGIN_LABEL = {"legacy-derived": "polished", "new": "new"}
+ORIGIN_LABEL = {"base": "base", "new": "new"}
 
 
 def read_csv(path):
@@ -282,7 +282,7 @@ def main(argv=None):
                 d[kk]["c"][k] += x[k]["ok"]
         return d
 
-    dims = [("group", "group", GROUP_ORDER), ("origin", "origin", ["polished", "new"]), ("kind", "kindl", ["choice", "yes/no", "score"]),
+    dims = [("group", "group", GROUP_ORDER), ("origin", "origin", ["base", "new"]), ("kind", "kindl", ["choice", "yes/no", "score"]),
             ("nopt", "nopt", None), ("difficulty", "diff", DIFF_ORDER), ("image_type", "itype", None), ("skill", "skill", None),
             ("modality", "modality", ["picture", "text only"]), ("nopt_full", "nopt_full", None)]
 
@@ -311,7 +311,7 @@ def main(argv=None):
         a["heat_skill_itype"] = heat("skill", "itype", None, None)
         a["heat_diff_kind"] = heat("diff", "kindl", DIFF_ORDER, ["choice", "yes/no", "score"])
         a["heat_group_diff"] = heat("group", "diff", GROUP_ORDER, DIFF_ORDER)
-        a["heat_group_origin"] = heat("group", "origin", GROUP_ORDER, ["polished", "new"])
+        a["heat_group_origin"] = heat("group", "origin", GROUP_ORDER, ["base", "new"])
         aggs[lg] = a
 
     # ---- time per run (a time that is not measured properly is not shown) and CPU/GPU pairs of one model
@@ -415,14 +415,14 @@ def main(argv=None):
         total=len(qs), asked=len(asked), images=len({p for c in cases for p in c["images"]}),
         group=cnt(lambda q: q["group"], GROUP_ORDER), kind=cnt(lambda q: KIND_LABEL[q["kind"]], ["choice", "yes/no", "score"]),
         difficulty=cnt(lambda q: q["difficulty"], DIFF_ORDER),
-        origin=cnt(lambda q: ORIGIN_LABEL.get(q["origin"], q["origin"]), ["polished", "new"]),
+        origin=cnt(lambda q: ORIGIN_LABEL.get(q["origin"], q["origin"]), ["base", "new"]),
         image_type=cnt(lambda q: q["image_type"]), skill=cnt(lambda q: q["skill"]),
         source=cnt(lambda q: q["source"]),
         lang=cnt(lambda q: "en+ja" if q["lang"] == "both" else "ja only", ["en+ja", "ja only"]),
         nopt=[dict(label=k, n=v) for k, v in sorted(nopt_q.items(), key=lambda t: bucket_order(t[0]))],
         relation=cnt(lambda q: q.get("relation") or "—"),
         group_origin={"%s|%s" % (g, o): sum(1 for q in qs if q["group"] == g and ORIGIN_LABEL.get(q["origin"], q["origin"]) == o)
-                      for g in GROUP_ORDER for o in ("polished", "new")},
+                      for g in GROUP_ORDER for o in ("base", "new")},
         review=cnt(lambda q: (q.get("review") or {}).get("state", "—")),
         manifest_counts=(json.loads((dist / "images_v1.json").read_text(encoding="utf-8")).get("counts") if (dist / "images_v1.json").exists() else None),
     )
@@ -464,12 +464,12 @@ def main(argv=None):
     OV = aggs["all"]["overall"]
     if dropped == 0:
         for sk, want in (summary.get("accuracy") or {}).items():
-            k = LEGACY_KEYS.get(sk, sk)
+            k = SUMMARY_KEYS.get(sk, sk)
             if k in OV["c"]:
                 chk("accuracy " + k, OV["c"][k] / OV["n"], want)
         if "cases" in summary:
             chk("cases", OV["n"], summary["cases"])
-        a_k, b_k = LEGACY_KEYS["jev_cpu"], LEGACY_KEYS["openai"]
+        a_k, b_k = SUMMARY_KEYS["jev_cpu"], SUMMARY_KEYS["openai"]
         if a_k in OV["c"] and b_k in OV["c"] and "both_wrong" in summary:
             wrong_all = defaultdict(list)
             for x in asked:
@@ -481,7 +481,7 @@ def main(argv=None):
             pq = read_csv(pqp)
             cols = {c[3:]: c for c in (pq[0].keys() if pq else []) if c.startswith("ok_")}
             for sk, colname in cols.items():
-                k = LEGACY_KEYS.get(sk, sk)
+                k = SUMMARY_KEYS.get(sk, sk)
                 if k not in OV["c"]:
                     continue
                 pqk = {(r["id"], r["lang"]): r[colname] for r in pq}

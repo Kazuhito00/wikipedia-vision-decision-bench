@@ -28,7 +28,7 @@ def results_dir(version: str) -> pathlib.Path:
 
 def manifest_ref() -> dict | None:
     """Which image list (manifest) the questions' pictures are described by: file name + sha256 of the file."""
-    p = config.ROOT / "datasets" / "manifests" / "images_legacy.json"
+    p = config.ROOT / "datasets" / "manifests" / "images_v1.json"
     if not p.exists():
         return None
     return dict(file="datasets/manifests/" + p.name, sha256=hashlib.sha256(p.read_bytes()).hexdigest())

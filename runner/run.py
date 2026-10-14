@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """Run ONE model on ONE question group in ONE language. Resumable: a re-run continues the block's log where it stopped.
 
-    uv run python -m runner.run --model onejev --set commons --lang en [--gpu] [--model-dir DIR] [--limit N]
+    uv run python -m runner.run --model onejev --set photo --lang en [--gpu] [--model-dir DIR] [--limit N]
         --model     onejev | onejev4 | openjev | openjev4 | intern | strands | clef | jevision | qev | d3edge | d3lite | d3nano      (adapters/)
-        --set       commons | synthetic | reasoning      (the question groups of legacy)
-                    photo | biz | rsn | txt | all | new   (with --dataset-version v1; new = only the new questions)
+        --set       photo | biz | rsn | txt | all | new   (new = only the new questions)
         --lang      en | ja
         --mod       image (default) | text | all          picture questions, text-only questions, or both
         --log-dir   where the per-question logs go (default work/logs/timed); one file per block: <model>_<code>_<lang>_<px>.log
@@ -153,8 +152,8 @@ def main(argv=None) -> int:
         t = time.perf_counter()
         return base(*a, **k), int((time.perf_counter() - t) * 1000)
 
-    # v1 has its own 224 px cache: a v1 picture can share a file name with a different legacy one (rsn-0102.png), so the caches must not mix
-    small = config.work_dir() / ("px%d" % args.px + ("" if args.dataset_version == "legacy" else "_" + args.dataset_version))
+    # one 224 px cache per dataset version, so the caches of two versions never mix
+    small = config.work_dir() / ("px%d_%s" % (args.px, args.dataset_version))
     small.mkdir(parents=True, exist_ok=True)
     started = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
     stopped_early = False

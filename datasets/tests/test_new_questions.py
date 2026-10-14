@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""New v1 questions: the common receiving end (id ranges, validator, loader, balanced options, runner checks, review round trip).
+"""New v1 questions: the common receiving end (id ranges, validator, loader, balanced options, runner checks, manifests round trip).
 
 Guards: the id-range table is consistent; the validator accepts the documented sample rows and rejects each kind of mistake with a
 specific message; new rows load like base rows and never move a base answer position; options work for 2..16 options and 3/7/10 score
-levels; the runner's limit check and dry run cover every v1 question; a full round trip (write -> validate -> manifests -> load ->
-balanced -> review batch -> apply -> summary) works on a temporary directory and touches nothing else. Real data is never written.
+levels; the runner's limit check and dry run cover every v1 question; a round trip (write -> validate -> manifests -> load) works on
+a temporary directory and touches nothing else. Real data is never written.
 """
 import collections
 import hashlib
@@ -12,16 +12,12 @@ import json
 import pathlib
 import re
 import shutil
-import subprocess
 import tempfile
 import unittest
 
 import _paths
 import _newq_samples as S
 from datasets import loader, newq, options
-from datasets.tools import apply_review as ar
-from datasets.tools import build_dataset_summary as B
-from datasets.tools import export_review_batches as ex
 from datasets.tools import v1_io
 from datasets.tools import validate_new as V
 from runner import cases as rc
@@ -39,7 +35,6 @@ def tmp_v1(base=True):
     if base:
         for g in v1_io.GROUPS:
             shutil.copyfile(REAL / ("%s.jsonl" % g), d / "q" / "v1" / ("%s.jsonl" % g))
-        shutil.copyfile(v1_io.MANIFESTS / "idmap_legacy_v1.csv", d / "m" / "idmap_legacy_v1.csv")
         shutil.copyfile(v1_io.MANIFESTS / "questions_v1.csv", d / "m" / "questions_v1.csv")
     return d
 
@@ -83,7 +78,7 @@ def sample_dir(parent_picture=False):
 
 class TableTests(unittest.TestCase):
     def test_range_table_is_consistent(self):
-        """No two reservations overlap, all lie in 1000..9999 (0001..0999 stays the legacy-derived band), spare ranges included."""
+        """No two reservations overlap, all lie in 1000..9999 (0001..0999 stays the base band), spare ranges included."""
         self.assertEqual(newq.check_table(), [])
         self.assertEqual(newq.tag_of_filename("new_photo_variants.jsonl"), "photo_variants")
         self.assertIsNone(newq.tag_of_filename("photo.jsonl"))
@@ -229,7 +224,7 @@ class ValidatorTests(unittest.TestCase):
         self.assertRejected(S.rendered_yesno(), "not registered in datasets/newq.py", tag="my_new_tag")
 
     def test_new_row_fields(self):
-        for key, val, needle in (("legacy_id", "syn-0001", "legacy_id must be null"), ("origin", "v1-old", "origin must be"),
+        for key, val, needle in (("origin", "v1-old", "origin must be"),
                                  ("derived_from", "photo-9999", "not a known v1 id"), ("difficulty", "trivial", "difficulty must be"),
                                  ("skill", "japanese", "skill 'japanese' not allowed"), ("image_type", "poster", "image_type 'poster' not allowed"),
                                  ("answer_format", "choice:3", "answer_format"), ("lang", "fr", "lang must be")):
@@ -418,8 +413,8 @@ class LoaderNewTests(unittest.TestCase):
         base = tmp_v1()
         try:
             q, m = d / "q", d / "m"
-            with_new = loader.load_v1_cases(qdir=q, manifests=m, images_root=d / "img", strict_passages=False)
-            without = loader.load_v1_cases(qdir=base / "q", manifests=base / "m", images_root=d / "img", strict_passages=False)
+            with_new = loader.load_v1_cases(qdir=q, images_root=d / "img", strict_passages=False)
+            without = loader.load_v1_cases(qdir=base / "q", images_root=d / "img", strict_passages=False)
             self.assertEqual(len(with_new), len(without) + 5)
             old = {c["id"]: c for c in without}
             for c in with_new:
@@ -441,11 +436,11 @@ class LoaderNewTests(unittest.TestCase):
             self.assertEqual(ja["ja"]["options"][4][0], "該当なし")
             t = new["txt-1001"]
             self.assertEqual((t["modality"], t["images"], t["en"]["state"]), ("text", [], "No picture is attached to this question."))
-            only = loader.load_v1_cases(qdir=q, manifests=m, only_new=True)
+            only = loader.load_v1_cases(qdir=q, only_new=True)
             self.assertEqual({c["id"] for c in only}, set(new))
-            sub = {c["id"]: c["expected"] for c in loader.load_v1_cases(["photo"], qdir=q, manifests=m)}
+            sub = {c["id"]: c["expected"] for c in loader.load_v1_cases(["photo"], qdir=q)}
             self.assertEqual(sub["photo-2001"], new["photo-2001"]["expected"])           # a subset never changes a position
-            self.assertEqual(loader.load_v1_cases(qdir=q, manifests=m, include_new=False, strict_passages=False)[0]["id"], without[0]["id"])
+            self.assertEqual(loader.load_v1_cases(qdir=q, include_new=False, strict_passages=False)[0]["id"], without[0]["id"])
         finally:
             shutil.rmtree(d, ignore_errors=True)
             shutil.rmtree(base, ignore_errors=True)
@@ -456,21 +451,19 @@ class LoaderNewTests(unittest.TestCase):
             rows = v1_io.read_jsonl(d / "q" / "v1" / "new_photo_variants.jsonl")
             rows[0]["review"]["state"] = "dropped"
             write_new(d, "photo_variants", rows)
-            ids = {c["id"] for c in loader.load_v1_cases(qdir=d / "q", manifests=d / "m", strict_passages=False)}
+            ids = {c["id"] for c in loader.load_v1_cases(qdir=d / "q", strict_passages=False)}
             self.assertNotIn("photo-2001", ids)
-            ids = {c["id"] for c in loader.load_v1_cases(qdir=d / "q", manifests=d / "m", include_dropped=True, strict_passages=False)}
+            ids = {c["id"] for c in loader.load_v1_cases(qdir=d / "q", include_dropped=True, strict_passages=False)}
             self.assertIn("photo-2001", ids)
         finally:
             shutil.rmtree(d, ignore_errors=True)
 
     def test_real_data_is_unchanged_by_the_new_machinery(self):
-        """Without any new file the v1 cases are the base ones: 1841 questions, no id from a reserved range, no new idmap rows."""
+        """Without any new file the v1 cases are the base ones: 1841 questions, no id from a reserved range."""
         if newq.new_files(REAL):
             self.skipTest("real new_*.jsonl files exist: the follower agents have started")
         cs = loader.load_v1_cases(strict_passages=False)
         self.assertEqual(len(cs), 1841)
-        self.assertEqual(loader.idmap_v1_new(), [])
-        self.assertEqual(len(loader.legacy_to_v1()), 1962)
 
 
 class RunnerTests(unittest.TestCase):
@@ -480,7 +473,7 @@ class RunnerTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             rc.load_cases("commons", version="v1")
         with self.assertRaises(ValueError):
-            rc.load_cases("photo", version="legacy")
+            rc.load_cases("photo", version="v0")
         with self.assertRaises(ValueError):
             rc.v1_set("nonsense")
 
@@ -548,7 +541,7 @@ class RunnerTests(unittest.TestCase):
             for t, rs in by.items():
                 write_new(d, t, rs)
             self.assertEqual(check(d).errors, [])
-            cs = loader.load_v1_cases(qdir=d / "q", manifests=d / "m", images_root=d / "img", only_new=True)
+            cs = loader.load_v1_cases(qdir=d / "q", images_root=d / "img", only_new=True)
             self.assertEqual(sorted(len(c["en"]["options"]) for c in cs), [3, 7, 10, 10, 12, 16])
             self.assertEqual(rc.dry_run(cs, check_images=True)["problems"], [])
             self.assertEqual(rc.check_limits(cs, dict(max_images=1, max_choice_options=16, max_score_levels=16, min_options=2)), [])
@@ -562,9 +555,9 @@ def sha(p):
 
 
 class RoundTripTests(unittest.TestCase):
-    """load -> validate -> balanced -> review batch -> apply -> summary on a temporary directory (the base files must stay as they are)."""
+    """validate -> manifests -> load on a temporary directory (the base files must stay as they are)."""
 
-    def test_full_round_trip(self):
+    def test_round_trip(self):
         d = tmp_v1()
         try:
             rows = []
@@ -577,121 +570,23 @@ class RoundTripTests(unittest.TestCase):
             write_new(d, "rendered", rows)
             q, m = d / "q" / "v1", d / "m"
             base_hash = {p.name: sha(p) for p in q.glob("*.jsonl") if not newq.tag_of_filename(p.name)}
-            map_hash = (sha(m / "idmap_legacy_v1.csv"), sha(m / "questions_v1.csv"))
+            map_hash = sha(m / "questions_v1.csv")
             # validate + manifests
             rep = V.validate(q, None, [d / "img"])
             self.assertEqual(rep.errors, [])
             self.assertEqual(V.main(["--v1dir", str(q), "--images-root", str(d / "img"), "--write-manifests", "--manifests", str(m)]), 2)
-            self.assertFalse(list(m.glob("idmap_v1_new_*")))                       # no tag: nothing is written
+            self.assertFalse(list(m.glob("questions_v1_new_*")))                   # no tag: nothing is written
             self.assertEqual(V.main(["--v1dir", str(q), "--images-root", str(d / "img"), "--write-manifests", "--tag", "rendered",
                                      "--manifests", str(m)]), 0)
-            im = v1_io.read_csv(m / "idmap_v1_new_rendered.csv")
-            self.assertEqual((len(im), im[0]["legacy_id"], im[0]["status"], im[0]["group_legacy"]), (130, "", "new", "new"))
             self.assertEqual(len(v1_io.read_csv(m / "questions_v1_new_rendered.csv")), 130)
-            self.assertEqual(len(loader.classification("v1", m)), 1962 + 130)
-            self.assertEqual(len(loader.legacy_to_v1(m)), 1962)
-            # review batches
-            out = d / "review"
-            index = ex.export_new(out, q, [], [d / "img"], None, manifests=m)
-            self.assertEqual([b["batch"] for b in index], ["new_rendered_01", "new_rendered_02", "new_rendered_03"])
-            self.assertEqual([b["n"] for b in index], [44, 43, 43])
-            self.assertEqual([p.name for p in out.glob("index_new*.json")], ["index_new_rendered.json"])
-            batch = json.loads((out / "new_rendered_01.json").read_text(encoding="utf-8"))
-            q0 = batch["questions"][0]
-            self.assertEqual((q0["new"], q0["legacy_id"], len(q0["images"])), (True, None, 1))
-            self.assertTrue(pathlib.Path(q0["images"][0]).is_file())
-            last = json.loads((out / "new_rendered_03.json").read_text(encoding="utf-8"))["questions"]
-            sc = next(x for x in last if x["kind"] == "score")                # sorted by id: the biz rows come before the rsn rows
-            self.assertEqual((sc["en"]["levels"], sc["en"]["expected_index"]), (rows[0]["en"]["levels"], 3))
-            first = batch["questions"][1]["id"]
-            # verdicts: ok for all but one fix and one drop
-            ids = [x["id"] for b in index for x in json.loads((out / (b["batch"] + ".json")).read_text(encoding="utf-8"))["questions"]]
-            for b in index:
-                ids_b = [x["id"] for x in json.loads((out / (b["batch"] + ".json")).read_text(encoding="utf-8"))["questions"]]
-                lines = [dict(id=i, verdict="ok", issues=[]) for i in ids_b]
-                if b["batch"] == "new_rendered_01":
-                    lines[0] = dict(id=ids_b[0], verdict="drop", issues=["unclear"], reason="the picture does not decide it")
-                    lines[1] = dict(id=ids_b[1], verdict="fix", issues=[], fix={"difficulty": "hard"}, reason="harder than it looks")
-                v1_io.write_jsonl(out / "out" / (b["batch"] + ".jsonl"), lines)
-            code, text = ar.process(out, q, m, "2026-10-12", apply=False)
-            self.assertEqual(code, 0, text)
-            self.assertEqual(sha(q / "new_rendered.jsonl"), sha(q / "new_rendered.jsonl"))
-            self.assertEqual(v1_io.read_jsonl(q / "new_rendered.jsonl")[0]["review"]["state"], "unreviewed")      # dry run writes nothing
-            code, text = ar.process(out, q, m, "2026-10-12", apply=True)
-            self.assertEqual(code, 0, text)
-            after = v1_io.read_jsonl(q / "new_rendered.jsonl")
-            st = collections.Counter(r["review"]["state"] for r in after)
-            self.assertEqual(st, {"reviewed": 128, "dropped": 1, "changed": 1})
-            self.assertEqual(next(r for r in after if r["id"] == first)["difficulty"], "hard")
-            self.assertEqual({p.name: sha(p) for p in q.glob("*.jsonl") if not newq.tag_of_filename(p.name)}, base_hash)   # the base is untouched
-            self.assertEqual((sha(m / "idmap_legacy_v1.csv"), sha(m / "questions_v1.csv")), map_hash)
-            im = {r["v1_id"]: r for r in v1_io.read_csv(m / "idmap_v1_new_rendered.csv")}
-            self.assertEqual(sorted(collections.Counter(r["status"] for r in im.values()).items()), [("dropped", 1), ("new", 129)])
-            self.assertEqual(len(loader.dropped_ids(m) & set(im)), 1)
-            # idempotent
-            h1 = (sha(q / "new_rendered.jsonl"), sha(m / "idmap_v1_new_rendered.csv"))
-            self.assertEqual(ar.process(out, q, m, "2026-10-12", apply=True)[0], 0)
-            self.assertEqual((sha(q / "new_rendered.jsonl"), sha(m / "idmap_v1_new_rendered.csv")), h1)
-            # the loader skips the dropped one
-            cs = loader.load_v1_cases(qdir=d / "q", manifests=m, only_new=True, images_root=d / "img")
+            self.assertEqual(len(loader.classification(m)), 1962 + 130)
+            # drop one of the new rows through the review state: the loader skips it
+            rows[0]["review"]["state"] = "dropped"
+            write_new(d, "rendered", rows)
+            cs = loader.load_v1_cases(qdir=d / "q", only_new=True, images_root=d / "img")
             self.assertEqual(len(cs), 129)
-            # only the named tag's verdict files are read when --tag is given (the base verdicts in out/ are not touched)
-            v1_io.write_jsonl(out / "out" / "batch_photo_01.jsonl", [dict(id="photo-0001", verdict="drop", issues=[], reason="x")])
-            code, text = ar.process(out, q, m, "2026-10-12", apply=True, tags=["rendered"])
-            self.assertEqual(code, 0, text)
-            self.assertEqual({p.name: sha(p) for p in q.glob("*.jsonl") if not newq.tag_of_filename(p.name)}, base_hash)
-            (out / "out" / "batch_photo_01.jsonl").unlink()
-            # a verdict for an id outside its batch is refused
-            v1_io.write_jsonl(out / "out" / "new_rendered_03.jsonl", [dict(id=ids[0], verdict="ok", issues=[])])
-            self.assertEqual(ar.process(out, q, m, "2026-10-12")[0], 2)
-            # summary
-            allrows = v1_io.load_v1_all(q)
-            data = B.build_data(allrows, v1_io.load_idmap(m), {}, {}, {}, idmap_new=v1_io.load_new_idmap(m))
-            self.assertEqual(data["stats"]["all"]["total"], 1962 + 130)
-            self.assertEqual(data["stats"]["active"]["total"], 1841 + 129)
-            self.assertEqual(sum(r["new"] for r in data["idmap_stats"]["rows"]), 129)
-            self.assertEqual(data["idmap_stats"]["total"], 1962)
-            self.assertEqual(data["idmap_stats"]["dropped_mismatch"], [])
-            self.assertEqual(sum(s for _, s in data["stats"]["active"]["score_levels"]), 41 + 65)
-            for mode in ("legacy", "balanced"):
-                self.assertEqual(sum(sum(p["counts"]) for p in data["stats"]["active"]["pos"][mode]) > 0, True)
-            B.render(data)
-            node = shutil.which("node")
-            if node:
-                js = d / "check.js"
-                js.write_text(B.extract_script(B.render(data)), encoding="utf-8")
-                self.assertEqual(subprocess.run([node, "--check", str(js)], capture_output=True, text=True).returncode, 0)
-        finally:
-            shutil.rmtree(d, ignore_errors=True)
-
-    def test_apply_writes_only_the_touched_tag(self):
-        """Two writers, two files: a verdict on one tag's rows never rewrites the other tag's file or the base."""
-        d = sample_dir()
-        try:
-            q, m = d / "q" / "v1", d / "m"
-            others = {p.name: sha(p) for p in q.glob("*.jsonl") if p.name != "new_ja_specific.jsonl"}
-            out = d / "review"
-            ex.export_new(out, q, [], [d / "img"], None, tags=["ja_specific"], manifests=m)
-            v1_io.write_jsonl(out / "out" / "new_ja_specific_01.jsonl", [dict(id="biz-2001", verdict="ok", issues=[])])
-            self.assertEqual(ar.process(out, q, m, "2026-10-12", apply=True)[0], 0)
-            self.assertEqual({p.name: sha(p) for p in q.glob("*.jsonl") if p.name != "new_ja_specific.jsonl"}, others)
-            self.assertEqual(v1_io.read_jsonl(q / "new_ja_specific.jsonl")[0]["review"]["state"], "reviewed")
-        finally:
-            shutil.rmtree(d, ignore_errors=True)
-
-    def test_review_batch_of_a_control_and_a_ja_only_question(self):
-        d = sample_dir(parent_picture=True)
-        try:
-            out = d / "review"
-            index = ex.export_new(out, d / "q" / "v1", [], [d / "img"], None, manifests=d / "m")
-            by = {i["tag"]: i for i in index}
-            self.assertEqual(set(by), {"photo_variants", "rendered", "ja_specific", "txt_controls"})
-            ja = json.loads((out / "new_ja_specific_01.json").read_text(encoding="utf-8"))["questions"][0]
-            self.assertNotIn("en", ja)
-            self.assertEqual(ja["ja"]["option_labels"], ["A", "B", "C", "D", "E"])
-            self.assertEqual(ja["ja"]["options_as_shown"][-1], "該当なし")
-            ctl = json.loads((out / "new_txt_controls_01.json").read_text(encoding="utf-8"))["questions"][0]
-            self.assertEqual((ctl["images"], ctl["en"]["state"], ctl["derived_from"]), ([], "No picture is attached to this question.", "biz-0015"))
+            self.assertEqual({p.name: sha(p) for p in q.glob("*.jsonl") if not newq.tag_of_filename(p.name)}, base_hash)   # the base is untouched
+            self.assertEqual(sha(m / "questions_v1.csv"), map_hash)
         finally:
             shutil.rmtree(d, ignore_errors=True)
 
@@ -739,29 +634,6 @@ class DuplicateTests(unittest.TestCase):
 
 
 class SharedWorkflowTests(unittest.TestCase):
-    def test_reapplying_the_real_base_verdicts_changes_no_byte(self):
-        """work/review/out/ holds the 33 base verdict files; a run of apply_review over them (what happens when a new-question writer forgets
-        --tag) must leave the base files and the base manifests byte-identical. Skipped when the review folder is not on this machine."""
-        rdir = _paths.ROOT / "work" / "review"
-        if not (rdir / "out").is_dir() or not list(rdir.glob("batch_*.json")):
-            self.skipTest("work/review (batches and verdicts) not on this machine")
-        d = tmp_v1()
-        try:
-            q, m = d / "q" / "v1", d / "m"
-            # only the base verdict files (batch_*): the new-question verdicts (new_*) belong to rows this temporary copy does not have
-            only = d / "review_base"
-            (only / "out").mkdir(parents=True)
-            for f in rdir.glob("batch_*.json"):
-                shutil.copy2(f, only / f.name)
-            for f in (rdir / "out").glob("batch_*.jsonl"):
-                shutil.copy2(f, only / "out" / f.name)
-            before = {p.name: sha(p) for p in list(q.glob("*")) + list(m.glob("*"))}
-            code, text = ar.process(only, q, m, "2026-10-12", apply=True)
-            self.assertEqual(code, 0, text[:300])
-            self.assertEqual({p.name: sha(p) for p in list(q.glob("*")) + list(m.glob("*"))}, before)
-        finally:
-            shutil.rmtree(d, ignore_errors=True)
-
     def test_write_helpers_leave_an_unchanged_file_alone(self):
         d = pathlib.Path(tempfile.mkdtemp())
         try:
@@ -777,9 +649,8 @@ class SharedWorkflowTests(unittest.TestCase):
 
     def test_batch_runner_sends_the_version_of_a_v1_set(self):
         src = (_paths.ROOT / "runner" / "batch.py").read_text(encoding="utf-8")
-        self.assertIn('set_version = "legacy" if set_name in LEGACY_SETS else "v1"', src)
-        self.assertIn("--dataset-version", src)
-        self.assertIn("annotate_calibration(block, set_version", src)
+        self.assertIn('cfg["dataset"]["version"]', src)
+        self.assertIn("annotate_calibration(block, version", src)
 
 
 if __name__ == "__main__":

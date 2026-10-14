@@ -1496,7 +1496,7 @@ def build_all():
     for i, (name, pattern, itype, fn) in enumerate(BUILDERS):
         img, spec = fn(rng_of(name))
         qid = "biz-%04d" % (FIRST_ID + i)
-        row = {"id": qid, "legacy_id": None, "origin": "new", "derived_from": None, "group": "biz", "source": "rendered",
+        row = {"id": qid, "origin": "new", "derived_from": None, "group": "biz", "source": "rendered",
                "image_type": itype, "skill": spec["skill"], "difficulty": spec["difficulty"], "lang": "ja", "langs": ["ja"],
                "modality": "image", "kind": spec["kind"], "answer_format": spec["fmt"],
                "tags": ["synthetic", "japanese", pattern] + [t for t in spec["tags"] if t != pattern],

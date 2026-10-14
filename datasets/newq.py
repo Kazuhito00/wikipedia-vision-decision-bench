@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""New v1 questions (added after the legacy polish): where they live, how they are numbered, the one table of reserved id ranges.
+"""New v1 questions (added after the first review): where they live, how they are numbered, the one table of reserved id ranges.
 
 Why: several agents add questions in parallel. Each works in its OWN file ``datasets/questions/v1/new_<tag>.jsonl`` and only inside
 the id ranges reserved for its tag, so no two writers ever touch the same file or draw the same number. This module is the single
 source of that table (``RANGES``); the validator (tools/validate_new.py), the loader and NOTES.md all use / print it.
 
-Numbering: ids keep the group prefix (photo / biz / rsn / txt) and four digits. 0001..0999 is the legacy-derived band (photo-0001..1268
-etc.), the new bands start at 1001, so a new id can never be mistaken for a legacy-derived one. A tag not in ``RANGES`` is not accepted:
+Numbering: ids keep the group prefix (photo / biz / rsn / txt) and four digits. 0001..0999 is the base band (photo-0001..1268
+etc.), the new bands start at 1001, so a new id can never be mistaken for a base one. A tag not in ``RANGES`` is not accepted:
 add it here first (one line), then use it.
 """
 from __future__ import annotations
@@ -92,14 +92,14 @@ def ranges_markdown() -> str:
 
 
 def check_table() -> list:
-    """Problems of the table itself (overlaps, ranges that reach the legacy-derived band, bad groups). Empty = fine."""
+    """Problems of the table itself (overlaps, ranges that reach the base band, bad groups). Empty = fine."""
     errs, spans = [], []
     for tag, rg in list(RANGES.items()) + [("(spare)", SPARE)]:
         for g, (lo, hi) in rg.items():
             if g not in GROUPS:
                 errs.append("%s: unknown group %r" % (tag, g))
             if not 1000 <= lo <= hi <= 9999:
-                errs.append("%s: %s range %d..%d must lie in 1000..9999 (0001..0999 is the legacy-derived band)" % (tag, g, lo, hi))
+                errs.append("%s: %s range %d..%d must lie in 1000..9999 (0001..0999 is the base band)" % (tag, g, lo, hi))
             spans.append((g, lo, hi, tag))
     spans.sort()
     for a, b in zip(spans, spans[1:]):

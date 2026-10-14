@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Summary of the v1 trial measurement (JEVision cpu = main, JEVision cuda = agreement + timing, OpenAI Decisions API).
 
-    python -m runner.analyze_v1 [--old-logs <eval_common dir>] [--out results/runs/v1/summary_v1.md]
+    python -m runner.analyze_v1 [--out results/runs/v1/summary_v1.md]
 
 Reads results/runs/v1/<block>.csv|json written by runner.run (blocks ``jevision_v1all_<lang>_224_cpu``, ``..._cuda``,
 ``openai_v1all_<lang>_224``) and the question attributes of datasets/questions/v1 (read only). Writes the markdown, a per-question CSV
@@ -24,7 +24,7 @@ from datasets import loader  # noqa: E402
 RUNS = ROOT / "results" / "runs" / "v1"
 MODELS = [("jev_cpu", "jevision_v1all_%s_224_cpu", "JEVision CPU"), ("jev_cuda", "jevision_v1all_%s_224_cuda", "JEVision GPU"),
           ("openai", "openai_v1all_%s_224", "OpenAI")]
-USD_PER_M_INPUT = 0.10      # estimate, same assumption as report/wiki_report.py PRICING (the Decisions API has no published price)
+USD_PER_M_INPUT = 0.10      # estimate (the Decisions API has no published price)
 
 
 def pct(a, n):
@@ -43,10 +43,10 @@ def load_attrs():
         af = r["answer_format"]
         kind = r["kind"]
         nopt = int(af.split(":")[1]) if ":" in af else None
-        attrs[r["id"]] = dict(id=r["id"], group=r["group"], origin=r.get("origin") or "polished", kind=kind, modality=r["modality"],
+        attrs[r["id"]] = dict(id=r["id"], group=r["group"], origin=r.get("origin") or "base", kind=kind, modality=r["modality"],
                               nopt=("choice %d" % nopt if kind == "choice" else "score %d" % nopt if kind == "score" else "yes/no"),
                               difficulty=r.get("difficulty") or "?", image_type=r.get("image_type") or "?", skill=r.get("skill") or "?",
-                              legacy_id=r.get("legacy_id"), derived_from=r.get("derived_from"), langs=r["langs"])
+                              derived_from=r.get("derived_from"), langs=r["langs"])
     return attrs
 
 
@@ -81,7 +81,6 @@ def dim_table(title, cases, keyfn, models, order=None):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--old-logs", default=str(ROOT.parent.parent / "eval_common"))
     ap.add_argument("--out", default=str(RUNS / "summary_v1.md"))
     a = ap.parse_args()
     attrs = load_attrs()
@@ -108,7 +107,7 @@ def main():
     models = [m for m in ("jev_cpu", "openai") if m in present]
     out.append(dim_table("language", cases, lambda c: c["lang"], models))
     out.append(dim_table("group", cases, lambda c: c["group"], models, ["photo", "biz", "rsn", "txt"]))
-    out.append(dim_table("origin (polished = legacy, polished in v1)", cases, lambda c: c["origin"], models))
+    out.append(dim_table("origin (base = first set, new = added later)", cases, lambda c: c["origin"], models))
     out.append(dim_table("format", cases, lambda c: {"choice": "choice", "noul": "yes/no", "score": "score"}[c["kind"]], models))
     out.append(dim_table("options", cases, lambda c: c["nopt"], models,
                          sorted({c["nopt"] for c in cases}, key=lambda s: (s.split()[0], int(s.split()[1]) if " " in s else 0))))
@@ -135,37 +134,8 @@ def main():
                          sum(p[1]["ok"][m] and not p[0]["ok"][m] for p in ps)])
     out.append(md_table(["lang", "model", "pairs", "picture question", "text-only control", "text - picture", "both right", "only text right",
                          "only picture right"], rows))
-    # (c) polished questions vs the old bench
-    out.append("## (c) Polished (legacy -> v1) questions vs the old bench\n")
-    try:
-        sys.path.insert(0, str(ROOT / "datasets" / "tools"))
-        from datasets.tools import regroup_check as rc  # noqa: WPS433
-        old = rc.compute(pathlib.Path(a.old_logs))
-    except Exception as e:                                                 # noqa: BLE001
-        old = {}
-        out.append("(old logs could not be read: %s)\n" % e)
-    rows, moved = [], {}
-    for m, oldkey, label in (("jev_cpu", "jevision", "JEVision (old: CPU)"), ("openai", "openai", "OpenAI")):
-        if m not in present:
-            continue
-        for lang in ("en", "ja"):
-            n = o_ok = n_ok = up = down = 0
-            for c in cases:
-                if c["lang"] != lang or not c["legacy_id"] or (oldkey, lang, c["legacy_id"]) not in old:
-                    continue
-                n += 1
-                oo, nn = old[(oldkey, lang, c["legacy_id"])], c["ok"][m]
-                o_ok += oo
-                n_ok += nn
-                up += (not oo) and nn
-                down += oo and not nn
-                moved.setdefault((m, lang), []).append((c["id"], c["legacy_id"], oo, nn))
-            rows.append([label, lang, n, pct(o_ok, n), pct(n_ok, n), "%+.1f pt" % (100.0 * (n_ok - o_ok) / n) if n else "-", up, down])
-    out.append(md_table(["model", "lang", "same questions", "old bench", "v1 (polished)", "change", "wrong -> right", "right -> wrong"], rows))
-    out.append("Matched by legacy_id; 'old' = the legacy logs (eval_common results_*) read with datasets/tools/regroup_check.py. The polish changed wording, "
-               "wrong options, answer positions (balanced order), image types and some answers, so a change is not a pure model effect.\n")
-    # (d) misses
-    out.append("## (d) Questions both models missed / only one missed\n")
+    # (c) misses
+    out.append("## (c) Questions both models missed / only one missed\n")
     per_id = collections.defaultdict(dict)
     for c in cases:
         per_id[c["id"]][c["lang"]] = c
@@ -197,7 +167,7 @@ def main():
     out.append(lst(both_wrong, "Both models wrong in every language"))
     out.append(lst(only_j, "Only JEVision wrong", 25))
     out.append(lst(only_o, "Only OpenAI wrong", 25))
-    # (e) candidates for the label check: both wrong, same wrong answer in every language
+    # (d) candidates for the label check: both wrong, same wrong answer in every language
     cand = []
     for q in both_wrong:
         d = per_id[q]
@@ -218,7 +188,7 @@ def main():
         rt = sum((m.get("usage") or {}).get("round_trip_s", 0) for m in meta["openai"])
         retries = sum((m.get("usage") or {}).get("retries", 0) for m in meta["openai"])
         out.append("OpenAI (model %s, endpoint %s): %d requests, %d input tokens, %d retries, summed round trip %.0f s. Estimated cost at an ASSUMED "
-                   "$%.2f per 1M input tokens (GPT-6 Luna input rate; the Decisions API has no published price; same assumption as report/wiki_report.py): "
+                   "$%.2f per 1M input tokens (GPT-6 Luna input rate; the Decisions API has no published price): "
                    "**$%.3f**. Output tokens were not billed in the assumption (they are reported as %d).\n" % (
                        meta["openai"][0].get("model_name"), meta["openai"][0].get("endpoint"), reqs, tok, retries, rt, USD_PER_M_INPUT,
                        tok / 1e6 * USD_PER_M_INPUT, sum((m.get("usage") or {}).get("output_tokens", 0) for m in meta["openai"])))
@@ -266,11 +236,11 @@ def main():
     # per-question merged CSV
     with open(RUNS / "per_question_v1.csv", "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, lineterminator="\n")
-        w.writerow(["id", "lang", "group", "origin", "kind", "options", "difficulty", "image_type", "skill", "modality", "legacy_id", "derived_from", "expected"]
+        w.writerow(["id", "lang", "group", "origin", "kind", "options", "difficulty", "image_type", "skill", "modality", "derived_from", "expected"]
                    + ["got_" + m for m in present] + ["ok_" + m for m in present])
         for c in sorted(cases, key=lambda c: (c["id"], c["lang"])):
             w.writerow([c["id"], c["lang"], c["group"], c["origin"], c["kind"], c["nopt"], c["difficulty"], c["image_type"], c["skill"], c["modality"],
-                        c["legacy_id"] or "", c["derived_from"] or "", c["exp"]] + [c["got"].get(m, "") for m in present]
+                        c["derived_from"] or "", c["exp"]] + [c["got"].get(m, "") for m in present]
                        + [int(c["ok"][m]) if m in c["ok"] else "" for m in present])
     summ = dict(cases=len(cases), accuracy={m: sum(c["ok"][m] for c in cases if m in c["ok"]) / max(1, len(cases)) for m in present},
                 both_wrong=sorted(both_wrong), label_check_candidates=sorted(cand))

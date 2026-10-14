@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 """Synthetic practical-question set: pictures drawn by this script, answers known exactly because the script drew them.
 
-    python datasets/synthetic/gen.py   # writes work/legacy_regen/synthetic/*.png and work/legacy_regen/synthetic.jsonl
-    (the frozen legacy rows are datasets/questions/legacy/synthetic.jsonl; this script never overwrites them -- tests/ compares)
+    python datasets/synthetic/gen.py   # writes work/regen/synthetic/*.png and work/regen/synthetic.jsonl
 
 Broadens the Wikipedia/Commons set with the pictures an agent actually meets: charts and tables, dashboards and gauges,
 UI screens, receipts and invoices, floor plans and warning signs, plus plain visual reasoning (counting, position, odd one
 out). Every item is a bilingual pair (the same picture, an English and a Japanese question) like the Commons items, and the
-rows have the same schema as data/linked.jsonl, so eval_common/run.py and wiki_report.py read them unchanged (they are
-tagged "synthetic" and tallied separately: nothing here is a photograph and nothing here comes from Wikipedia).
+rows have the same schema as the Commons rows (they are tagged "synthetic": nothing here is a photograph and nothing here
+comes from Wikipedia).
 
 Deterministic: every random choice is seeded from the item id. Text inside pictures is Latin letters and digits, so one
 picture serves both languages. Fonts: Arial if present, else Pillow's built-in font.
@@ -23,8 +22,8 @@ import sys
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-OUT_DIR = ROOT / "work" / "legacy_regen" / "synthetic"
-JSONL = ROOT / "work" / "legacy_regen" / "synthetic.jsonl"
+OUT_DIR = ROOT / "work" / "regen" / "synthetic"
+JSONL = ROOT / "work" / "regen" / "synthetic.jsonl"
 W, H = 640, 480
 
 COLORS = {"red": (210, 40, 40), "blue": (40, 80, 210), "green": (40, 160, 70), "yellow": (240, 200, 30),

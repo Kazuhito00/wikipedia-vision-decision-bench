@@ -7,7 +7,7 @@ A benchmark of the **picture understanding** of typed-decision models (`choice`,
 - What it measures: accuracy (per language, question group and answer form) and the time per question on CPU / GPU (calibrated blocks only).
 - A model meets the bench only in `adapters/`. Each model runs in an environment that has **its own repository's package** (`<OWNER>/<model name>-ONNX-CPU`).
 - **No pictures and no Wikipedia text are in this repository.** It holds the list (ids, license, author, URL, sha256) and the questions. The pictures are distributed as Release zips (in preparation).
-- **Dataset versions**: the first version of this repository is **version 1 (`v1`)** (2768 questions, `datasets/questions/v1/`, `dist/v1/`). **`legacy`** is the older material made elsewhere before this repository existed (the frozen 1962 questions, `datasets/questions/legacy/`); it is kept only for the mapping table to v1 (`datasets/manifests/idmap_legacy_v1.csv`) and for the gate that reproduces the old results. Question ids (`photo-0001`, `biz-1001`, ...) carry no version and did not change in the rename (rename map: `datasets/manifests/RENAMES.md`).
+- **Dataset version**: the current one is **version 1 (`v1`)** (2768 questions, `datasets/questions/v1/`, `dist/v1/`). Question ids (`photo-0001`, `biz-1001`, ...) do not contain a version name.
 
 ## Layout
 
@@ -16,7 +16,7 @@ wikipedia-vision-decision-bench/
 ├─ README.md  README_EN.md  pyproject.toml  .env.example  .gitignore
 ├─ adapters/        one ask() per model, ONE calling convention (adapters/__init__.py)
 ├─ runner/          run.py (one model x question group x language; resumable), batch.py (calibration-gated batch), config.toml (measurement conditions)
-├─ report/          wiki_report.py + HTML template (--public: tables and figures, no pictures)
+├─ report/          v1_report.py + HTML template (the results page; `--no-images` for a page without pictures)
 ├─ datasets/        questions/, synthetic/ (drawn pictures), fetch/ (download and inspection), manifests/ (lists), tests/, NOTES.md
 ├─ release/         make_image_release.py (builds the picture zips in dist/; never uploads)
 ├─ results/         aggregates only (runs/<dataset_version>/*.json, *.csv; checks/*.json). Per-question logs and generated HTML are not committed
@@ -60,17 +60,18 @@ The dependencies are also listed as optional groups in `pyproject.toml` (`onejev
 **3. Measure**
 
 ```powershell
-.venv-onejev\Scripts\python -m runner.run --model onejev --set commons --lang en          # one block
-.venv-onejev\Scripts\python -m runner.run --model onejev --set commons --lang en --gpu    # CUDA (CPU is the fallback)
+.venv-onejev\Scripts\python -m runner.run --model onejev --set photo --lang en            # one block
+.venv-onejev\Scripts\python -m runner.run --model onejev --set photo --lang en --gpu      # CUDA (CPU is the fallback)
 copy runner\models.example.toml runner\models.local.toml                                  # per model: python, model_dir
-uv run python -m runner.batch --models onejev,jevision --sets commons,synthetic,reasoning --langs en,ja   # calibration-gated, resumable
+uv run python -m runner.batch --models onejev,jevision --sets photo,biz,rsn,txt --langs en,ja   # calibration-gated, resumable
 ```
 
 **4. Report**
 
 ```powershell
-uv run python -m report.wiki_report --logs work/logs                 # work/report/wiki_report.html (with pictures; local only)
-uv run python -m report.wiki_report --logs work/logs --public --out work/report/public.html   # tables and figures only (no thumbnails)
+uv run python -m runner.analyze_v1                                   # results/runs/v1/summary_v1.md, per_question_v1.csv
+uv run python -m report.v1_report --out results/まとめ_v1.html          # the results page (with pictures; local only)
+uv run python -m report.v1_report --no-images --out results/まとめ_v1.html   # without thumbnails
 ```
 
 **5. Tests** (no network)
@@ -88,41 +89,30 @@ uv run python -m unittest discover -s tools -p "test_*.py"
 | Threads (onnxruntime) | 8 | `threads` in `runner/config.toml` (`THREADS`, `--threads`) |
 | Picture shrink | longest side 224 px (LANCZOS, JPEG) | `px` (`PX`, `--px`) |
 | Option order | not reversed (`REV=0`); `--rev 1` only to look at position bias | `rev` (`REV`) |
-| Pictures | one per question (legacy reasoning has 13 two-picture questions; QEV takes one, so they are out of scope for it) | - |
+| Pictures | one per question | - |
 | Which times count | the machine is calibrated (median of a fixed CPU job) before and after each block; only blocks with both at most 600 ms count. Quiet machine: about 170-200 ms | `[gate]`, `runner/calibrate.py`, `blocks.log` |
 | What a result records | model repository and tag, variant, providers really used, threads, px, rev, dataset_version, sha256 of the picture list | `results/runs/<dataset_version>/<block>.json` |
 
-Results are keyed by `(dataset_version, id)` (`results/runs/legacy/*.csv`: one row per question). A block is named `<model>_<group>_<lang>_<px>` (group: `wiki` = commons, `syn`, `rsn`); the per-question logs (`work/logs`, git-ignored) keep the format used so far.
+Results are keyed by `(dataset_version, id)` (`results/runs/<dataset_version>/*.csv`: one row per question).
 
-## Current question groups (legacy, English side)
+## Question groups (v1: 2768 questions)
 
-| Group | Questions | Form | Options | Difficulty | Pictures |
-|---|---|---|---|---|---|
-| Commons (Wikipedia 797 + expansion 471 = 1268 pictures, text-only 87) | 1355 | choice 1099 / yes-no 256 | almost all 4-way (4: 1095, 3: 3, 2: 1) | easy 276 / medium 692 / hard 387 | 1 |
-| synthetic | 382 | choice 247 / yes-no 106 / score 29 | choice: 3-way 39 / 4-way 208; score: 5 levels only (29) | easy 79 / medium 224 / hard 79 | 1 |
-| reasoning | 225 | choice 149 / yes-no 56 / score 20 | choice: 3-way 36 / 4-way 113; score: 5 levels only (20) | medium 83 / hard 142 | 1 for 212 / 2 for 13 |
+Options range over 2 to 16, score levels are 3 / 5 / 7 / 10, with negation / counting / spatial / "none of the above" questions, Japanese-specific questions, balanced answer positions and one picture per question. Classes: photo / business picture / reasoning / text only. The numbers come from `dist/v1/manifest_v1.json` (`python -m datasets.build_v1`).
 
-- 1875 questions have pictures (Commons 1268, synthetic 382, reasoning 225). The accuracies below use these 1875 (QEV: 1862, without the 13 two-picture questions); the 87 text-only questions are not included.
-- Known skews: options are 4 or fewer; score has 5 levels only; few text-only questions; the groups follow how the questions were collected (reasoning tags overlap). v1 revises this.
-
-### v1: 2768 questions (done)
-
-The final version: the 1841 questions of legacy that an Opus review polished one by one, plus 927 new questions that fill the gaps. It has more option counts (2 to 16), more score level counts (3 / 5 / 7 / 10), negation / counting / spatial / "none of the above" questions, one picture per question, Japanese-specific questions, balanced answer positions, and a cleaner classification (photos / business pictures / reasoning / text-only). The numbers come from `dist/v1/manifest_v1.json` (`python -m datasets.build_v1`).
-
-| Group | polished from legacy | new | total | what the new ones are |
-|---|---|---|---|---|
-| photo | 1265 | 211 | **1476** | photo variants (2 / 3 / 5-16 options, negation, none of the above, position, counting, score) |
-| biz | 197 | 449 | **646** | drawn pictures, 249 screenshots of real Tkinter windows, 101 Japanese-specific |
-| rsn | 292 | 168 | **460** | many options, 3 / 7 / 10 levels, negation, contradiction, uncertainty |
-| txt (text only) | 87 | 99 | **186** | controls: an image question with the picture removed |
-| **total** | **1841** | **927** | **2768** | |
+| Group | Questions | What they are |
+|---|---|---|
+| photo | 1476 | Commons photographs (2 / 3 / 5-16 options, negation, none of the above, position, counting, score) |
+| biz | 646 | drawn pictures, 249 screenshots of real Tkinter windows, 101 Japanese-specific |
+| rsn | 460 | many options, 3 / 7 / 10 levels, negation, contradiction, uncertainty |
+| txt (text only) | 186 | controls: an image question with the picture removed, and more |
+| **total** | **2768** | |
 
 - Formats: choice 2091 / yes-no 537 / score 140 (3 levels 35, 5 levels 45, 7 levels 35, 10 levels 25). Options: 2: 72, 3: 125, 4: 1495, 5-8: 343, 9-16: 56.
 - Languages: en and ja 2596 questions, Japanese only 172. Difficulty: easy 961 / medium 1328 / hard 479.
-- 2127 pictures: 1021 Commons photographs (CC0 / public domain), 477 pictures drawn for legacy, 629 made for v1. One picture per question. The zips are about 20 MB (224 px) and about 308 MB (original); they are meant for a Release and have not been uploaded.
+- 2127 pictures: 1021 Commons photographs (CC0 / public domain), 1106 drawn by scripts. One picture per question. The zips are about 20 MB (224 px) and about 308 MB (original); they are meant for a Release and have not been uploaded.
 - **Caution on the text-only controls**: their `state` holds exact numbers that the picture does not give, so the text version can be easier than the picture version. Say so when comparing them.
-- Results are keyed by `(dataset_version, id)` (legacy `rsn-0001` and v1 `rsn-0001` are different questions). v1 has not been measured yet.
-- Definitions, how it was made and known limits (legibility of pictures, fonts, OS dependence of the Tkinter pictures, the generator scripts overwrite the jsonl when run with `--apply`) are in `datasets/NOTES.md` section 11; the gap analysis is `datasets/manifests/gap_analysis_v1.md`.
+- Results are keyed by `(dataset_version, id)`.
+- Definitions, how it was made and known limits (legibility of pictures, fonts, OS dependence of the Tkinter pictures, the generator scripts overwrite the jsonl when run with `--apply`) are in `datasets/NOTES.md` section 11.
 
 Usage:
 
@@ -135,8 +125,6 @@ $env:WIKIQA_DATA_ROOT = "<unpacked folder>"        # must contain data/images/..
 ```
 
 ## Comparison of all models
-
-Accuracy is on the 1875 picture questions of legacy. Only measured values are listed. Conditions: 8 threads, 224 px, `REV=0`.
 
 | Model | Size / precision | Base | Dependencies | Picture limit | Option limit | Where from (planned) |
 |---|---|---|---|---|---|---|
@@ -154,41 +142,11 @@ Accuracy is on the 1875 picture questions of legacy. Only measured values are li
 | clef-flash 9B | 9B / bf16 weights, fp32 compute | Qwen3.5-9B (tuned) | same (large memory) | 4 | unconfirmed | `<OWNER>/clef-flash-ONNX-CPU` |
 | OpenAI Decisions API | not public | unknown | network and an API key | - | - | - |
 
-### Accuracy (%, Commons 1268 / synthetic 382 / reasoning 225)
-
-| Model | Commons en | Commons ja | synthetic en | synthetic ja | reasoning en | reasoning ja |
-|---|---|---|---|---|---|---|
-| OpenJev 0.8B | 90.0 | 80.8 | 86.9 | 81.4 | 38.2 | 36.0 |
-| Intern-Decision 0.8B | 92.2 | 85.2 | 88.2 | 83.2 | 44.0 | 40.9 |
-| JEVision 0.8B | 92.4 | 85.3 | 87.7 | 86.6 | 42.7 | 40.9 |
-| OneJev 0.8B | 93.0 | 87.0 | 91.6 | 89.0 | 45.8 | 47.6 |
-| QEV 2B | 96.7 | 93.8 | 94.0 | 91.1 | 52.4 (212 q.) | 50.9 (212 q.) |
-| Strands Decider 2B | 98.1 | 94.2 | 92.7 | 92.4 | 50.2 | 48.0 |
-| OpenJev 4B | 96.0 | 93.9 | 92.7 | 89.8 | 64.0 | 59.1 |
-| OneJev 4B | 97.9 | 96.8 | 95.3 | 95.0 | 68.9 | 67.6 |
-| clef-flash 9B | 98.3 | 98.2 | 97.4 | 96.1 | 76.4 | 80.0 |
-| OpenAI Decisions API (gpt-6-luna) | 97.2 | 97.2 | 97.6 | 98.4 | 72.4 | 71.1 |
-
-Reasoning includes forms where a guess is often right (few options, yes/no): read it with chance in mind (v1 revises this). QEV's reasoning figure leaves out the 13 two-picture questions (212 questions): QEV takes one picture, so they are not run and not scored.
-
-### Time per question (median, Commons 1268 questions, calibrated blocks only)
-
-| Model | CPU (8 threads) | GPU (RTX 3050 Ti Laptop 4 GB, CUDA) |
-|---|---|---|
-| JEVision 0.8B | 0.73 s | 75 ms |
-| OneJev 0.8B | 1.2 s | 87 ms |
-| OpenJev 0.8B | 1.3 s | 0.36 s |
-| Intern-Decision 0.8B | 3.4 s | not measured |
-| OpenJev 4B | 4.0 s | 1.0 s |
-| QEV 2B | 4.7 s | not measured |
-| OneJev 4B | 6.5 to 7.1 s | not measured |
-| Strands Decider 2B / clef-flash 9B | not listed (measured while the machine was off calibration) | not measured |
-
-These values come from the measurement logs (with the calibration record `blocks.log`) summarised by `report/wiki_report.py`. They are from the measurements made before the move; they will be replaced when the runs are repeated with this repository's `runner`.
+Measured results are summarised in the report built by `report/v1_report.py` (from `results/runs/v1/`).
 
 ## Data inspection (dead links, replaced pictures, license changes)
 
-The picture list is `datasets/manifests/images_legacy.json` (1023 Commons pictures and 620 drawn pictures). These commands detect changes on Commons (`WIKIQA_CONTACT` is required):
+The picture list is in `datasets/manifests/`. These commands detect changes on Commons (`WIKIQA_CONTACT` is required):
 
 ```powershell
 uv run python -m datasets.fetch check --limit 20     # metadata only, 50 titles per request (nothing downloaded)
@@ -206,13 +164,13 @@ uv run python -m datasets.fetch refresh --apply      # write them to the list af
 | license changed | no longer CC0 / public domain | remove it from the list and the Release |
 | author / description changed | attribution changed | update the list |
 
-Notes on the legacy list: the stored picture is Commons' **640 px wide thumbnail**; `sha1` is that of the full-size original on Commons. legacy has no `timestamp` (`null`), so `check` compares the sha1 only. The sha256 of a 224 px picture can change with the Pillow / libjpeg version (when the list was made, a fresh shrink of the stored files matched the recorded sha256 for all 1023); for an exact reproduction use the Release's `images-224px.zip`.
+Note: the stored picture is Commons' **640 px wide thumbnail**; `sha1` is that of the full-size original on Commons. The sha256 of a 224 px picture can change with the Pillow / libjpeg version; for an exact reproduction use the Release's `images-224px.zip`.
 
 ## License and attribution
 
 - Pictures: Wikimedia Commons, CC0 / public domain only (counts in the list: public domain 781, CC0 242). Author, license and URL are in the list and in each zip's `ATTRIBUTION.md`. Before publishing, `check` confirms that the license labels have not changed since the pictures were collected.
 - Wikipedia article text (CC BY-SA) is placed neither in the repository nor in a Release (the fetch command puts what a question needs in the local `work/` only).
-- Pictures made by this repository's scripts (629 under `generated/` and the 477 drawn pictures of legacy) are **CC0-1.0** (Public Domain Dedication), decided. The drawing scripts are in `datasets/synthetic`; Japanese text in the pictures is drawn with Noto Sans JP / Noto Serif JP (OFL 1.1; fonts are not distributed).
+- Pictures made by this repository's scripts (1106 drawn pictures) are **CC0-1.0** (Public Domain Dedication), decided. The drawing scripts are in `datasets/synthetic`; Japanese text in the pictures is drawn with Noto Sans JP / Noto Serif JP (OFL 1.1; fonts are not distributed).
 - Transparency note: some pictures have text drawn with fonts bundled with Windows (the Tkinter screens, 249 questions: Segoe UI for the English UI 203, Yu Gothic UI for the Japanese UI 46; the screens are our own and the screenshots contain no OS frame). The ids are listed in `datasets/manifests/windows_fonts_images_v1.md`. This states facts only, not a legal judgement.
 - Generated HTML contains Commons pictures, so it is **local only** (`*.html` is git-ignored). Use `--public` (no pictures) to publish.
 - The OpenAI key is read from the environment. `.env` is git-ignored; run `python tools/scan_secrets.py` before a commit (it never prints a key).

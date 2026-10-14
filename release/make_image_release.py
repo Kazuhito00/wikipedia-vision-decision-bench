@@ -1,19 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Pack the pictures for a GitHub Release: two zips in dist/ (git-ignored). NOTHING IS UPLOADED: uploading is a separate, approved step.
+"""Pack the pictures of the question set into two zips (``pack_catalog``; ``python -m datasets.build_v1`` calls it and writes them to
+dist/v1/, git-ignored). NOTHING IS UPLOADED: uploading is a separate, approved step.
 
-    uv run python -m release.make_image_release [--manifest datasets/manifests/images_legacy.json]
-        [--originals DIR] [--px224 DIR] [--dist dist] [--no-rendered] [--no-write-manifest]
-
-  images-224px.zip      the pictures as the models were given them (longest side 224 px): the 1023 Commons pictures and, unless --no-rendered,
-                        the 620 pictures drawn by datasets/synthetic. About 12-16 MB. Enough to reproduce the evaluation.
-  images-original.zip   the stored Commons files (the 640 px thumbnails the evaluation was made from; see the manifest's ``note``), about 290 MB.
-                        Needed to re-shrink, to try another resolution, and to tell which version of a picture was evaluated.
-Each zip holds ATTRIBUTION.md (title, author, license, URL per picture, made from the manifest) and the pictures flat, named by ``file``.
-Only CC0 / public-domain Commons pictures go in (anything else in the manifest stops the script); excluded pictures are left out.
-Every file is checked against the manifest's sha256 BEFORE it is packed, so a stale working folder cannot slip in.
+  images-224px.zip      the pictures as the models are given them (longest side 224 px): the Commons pictures and the pictures drawn by
+                        this repository's scripts. Enough to reproduce the evaluation.
+  images-original.zip   the stored Commons files (the 640 px thumbnails the evaluation was made from).
+Each zip holds ATTRIBUTION.md (title, author, license, URL per Commons picture). Only CC0 / public-domain Commons pictures go in.
 The zips are deterministic (sorted names, fixed timestamps, stored without compression, fixed attributes): the same inputs give the same
-sha256. Each zip must be < 2 GiB (the Release asset limit); its sha256 and size are written to the manifest ("release") and to
-dist/release_manifest.json.
+sha256. Each zip must be < 2 GiB (the Release asset limit).
 """
 from __future__ import annotations
 
@@ -21,27 +15,15 @@ import argparse
 import hashlib
 import json
 import pathlib
+import sys
 import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 from datasets.fetch.commons import OK_LICENSE  # noqa: E402
 
 LIMIT = 2 * 1024 ** 3 - 1                       # < 2 GiB per asset
 FIXED_DATE = (1980, 1, 1, 0, 0, 0)
-
-
-def attribution(manifest: dict, with_rendered: bool) -> str:
-    L = ["# Attribution", "",
-         "Pictures from Wikimedia Commons, CC0 / public domain only. License labels are those on Commons when the list was made;",
-         "run `python -m datasets.fetch check` to see whether Commons has changed since. No Wikipedia article text is included.", ""]
-    for e in sorted(manifest["images"], key=lambda e: e["file"]):
-        if e.get("excluded"):
-            continue
-        L.append("- %s: %s - %s - %s - <%s>" % (e["file"], e["title"], e["author"] or "unknown", e["license"], e["source_url"]))
-    if with_rendered:
-        L += ["", "Pictures drawn by this repository's datasets/synthetic scripts (not Commons files; deterministic, seeded):", ""]
-        L += ["- %s" % e["file"] for e in sorted(manifest.get("rendered", []), key=lambda e: e["file"])]
-    return "\n".join(L) + "\n"
 
 
 def write_zip(path: pathlib.Path, members: list[tuple[str, bytes]]) -> dict:
@@ -60,65 +42,11 @@ def write_zip(path: pathlib.Path, members: list[tuple[str, bytes]]) -> dict:
     return dict(sha256=hashlib.sha256(raw).hexdigest(), bytes=len(raw), members=len(members))
 
 
-def collect(entries: list[dict], folder: pathlib.Path, key: str) -> list[tuple[str, bytes]]:
-    out = []
-    for e in entries:
-        data = (folder / e["file"]).read_bytes()
-        want = e.get(key)
-        if want and hashlib.sha256(data).hexdigest() != want:
-            raise SystemExit("%s differs from the manifest's %s: refusing to pack a stale file" % (folder / e["file"], key))
-        if not want:
-            raise SystemExit("manifest has no %s for %s" % (key, e["file"]))
-        out.append((e["file"], data))
-    return out
-
-
-def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--manifest", default=str(ROOT / "datasets" / "manifests" / "images_legacy.json"))
-    ap.add_argument("--originals", default=str(ROOT / "work" / "data" / "images"))
-    ap.add_argument("--px224", default=str(ROOT / "work" / "px224"))
-    ap.add_argument("--dist", default=str(ROOT / "dist"))
-    ap.add_argument("--no-rendered", action="store_true", help="leave the drawn (synthetic / reasoning) pictures out of images-224px.zip")
-    ap.add_argument("--no-write-manifest", action="store_true", help="do not record the zips' sha256 in the manifest")
-    args = ap.parse_args(argv)
-
-    mpath = pathlib.Path(args.manifest)
-    manifest = json.loads(mpath.read_text(encoding="utf-8"))
-    commons = [e for e in manifest["images"] if not e.get("excluded")]
-    bad = [e["title"] for e in commons if not OK_LICENSE.match(e["license"] or "")]
-    if bad:
-        raise SystemExit("not CC0 / public domain, refusing to pack: %s" % bad[:5])
-    rendered = [] if args.no_rendered else manifest.get("rendered", [])
-    dist = pathlib.Path(args.dist)
-
-    m224 = collect(commons, pathlib.Path(args.px224), "sha256_224") + collect(rendered, pathlib.Path(args.px224), "sha256_224")
-    mori = collect(commons, pathlib.Path(args.originals), "sha256_original")
-    att = attribution(manifest, bool(rendered)).encode("utf-8")
-    release = {}
-    release["images-224px.zip"] = write_zip(dist / "images-224px.zip", m224 + [("ATTRIBUTION.md", att)])
-    release["images-original.zip"] = write_zip(dist / "images-original.zip", mori + [("ATTRIBUTION.md", att)])
-    release["images-224px.zip"]["includes_rendered"] = bool(rendered)
-    (dist / "release_manifest.json").write_text(json.dumps(release, indent=1) + "\n", encoding="utf-8", newline="\n")
-    if not args.no_write_manifest:
-        manifest["release"] = release
-        mpath.write_text(json.dumps(manifest, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
-    for name, r in release.items():
-        print("%-22s %9.1f MB  %5d files  sha256 %s" % (name, r["bytes"] / 1e6, r["members"], r["sha256"]))
-    print("written to %s (nothing uploaded)" % dist)
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
-
-
 # ------------------------------------------------------------------------------------------------------ catalog packs (images_v1.json)
 # The pictures of a question-set catalog (``datasets/build_v1.py`` writes it): Commons pictures (CC0 / public domain only) and the
 # pictures drawn by this repository's scripts. Members are named by the logical path the question rows use (``data/images/<sha1>.jpg``,
-# ``data/synthetic/syn-0001.png``, ``generated/biz-1001.png``), so an unpacked zip can be used as ``images_root`` as it is, and the
-# legacy-era ``rsn-0102.png`` and the v1 ``rsn-0102.png`` (different pictures) never collide. NOTHING IS UPLOADED; the legacy zips and
-# images_legacy.json are never touched (output goes where the caller says).
+# ``data/synthetic/syn-0001.png``, ``generated/biz-1001.png``), so an unpacked zip can be used as ``images_root`` as it is.
+# NOTHING IS UPLOADED (output goes where the caller says).
 def attribution_catalog(catalog: dict) -> str:
     L = ["# Attribution", "",
          "Dataset version: %s. No Wikipedia article text is included." % catalog["dataset_version"], "",

@@ -18,7 +18,7 @@ def review():
 
 def photo_choice():
     """A 6-choice variant of photo-0001 (same picture, derived_from = the parent)."""
-    return {"id": "photo-2001", "legacy_id": None, "origin": "new", "derived_from": "photo-0001", "relation": "variant",
+    return {"id": "photo-2001", "origin": "new", "derived_from": "photo-0001", "relation": "variant",
             "group": "photo", "source": "commons-article", "image_type": "photo-animal", "skill": "recognition",
             "difficulty": "easy", "lang": "both", "langs": ["en", "ja"], "modality": "image", "kind": "choice",
             "answer_format": "choice:6", "tags": ["classify", "animal", "many-options"],
@@ -29,7 +29,7 @@ def photo_choice():
 
 
 def rendered_yesno():
-    return {"id": "biz-1001", "legacy_id": None, "origin": "new", "derived_from": None, "group": "biz", "source": "rendered",
+    return {"id": "biz-1001", "origin": "new", "derived_from": None, "group": "biz", "source": "rendered",
             "image_type": "chart", "skill": "negation", "difficulty": "easy", "lang": "both", "langs": ["en", "ja"],
             "modality": "image", "kind": "noul", "answer_format": "yesno", "tags": ["synthetic", "chart", "negation"],
             "local_images": ["generated/biz-1001.png"],
@@ -39,7 +39,7 @@ def rendered_yesno():
 
 
 def rendered_score():
-    return {"id": "rsn-1001", "legacy_id": None, "origin": "new", "derived_from": None, "group": "rsn", "source": "rendered",
+    return {"id": "rsn-1001", "origin": "new", "derived_from": None, "group": "rsn", "source": "rendered",
             "image_type": "ui", "skill": "quantity", "difficulty": "medium", "lang": "both", "langs": ["en", "ja"],
             "modality": "image", "kind": "score", "answer_format": "score:7", "tags": ["synthetic", "gauge", "level"],
             "local_images": ["generated/rsn-1001.png"],
@@ -52,7 +52,7 @@ def rendered_score():
 
 def japanese_only():
     """A Japanese-specific question: lang "ja", only the ja side, a rendered picture with Japanese text."""
-    return {"id": "biz-2001", "legacy_id": None, "origin": "new", "derived_from": None, "group": "biz", "source": "rendered",
+    return {"id": "biz-2001", "origin": "new", "derived_from": None, "group": "biz", "source": "rendered",
             "image_type": "sign", "skill": "ocr", "difficulty": "medium", "lang": "ja", "langs": ["ja"],
             "modality": "image", "kind": "choice", "answer_format": "choice:5", "tags": ["synthetic", "japanese", "sign"],
             "local_images": ["generated/biz-2001.png"],
@@ -63,7 +63,7 @@ def japanese_only():
 
 def text_control():
     """A text-only control: the picture of biz-0015 removed; an authored state says so; no Wikipedia text."""
-    return {"id": "txt-1001", "legacy_id": None, "origin": "new", "derived_from": "biz-0015", "relation": "control", "group": "txt",
+    return {"id": "txt-1001", "origin": "new", "derived_from": "biz-0015", "relation": "control", "group": "txt",
             "source": "none", "image_type": "none", "skill": "text-comprehension", "difficulty": "easy", "lang": "both",
             "langs": ["en", "ja"], "modality": "text", "kind": "noul", "answer_format": "yesno", "tags": ["control", "no-picture"],
             "local_images": [],

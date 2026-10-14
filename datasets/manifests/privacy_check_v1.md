@@ -3,7 +3,7 @@
 レビュアーが「人物が写っている（顔・個人が特定され得る）」として `privacy-check` を付けた、評価対象の問の一覧です（drop された問は含みません）。
 方針: 人物が写っているだけでは外さず、設問が人物の同定を求めない限り残しました（同定を求める問は drop / fix 済み）。画像はすべて CC0・パブリックドメインの Commons 写真です。
 **決定: 残す（2026-10-11）。** ただし、人物の同定を求める設問は含まれません。
-要望があれば個別に除外できます: `python datasets/tools/drop_ids.py <ID> ... --reason "..." --apply` が、各 ID の `review.state` を `dropped` にし、対応表（`idmap_legacy_v1.csv` / `idmap_v1_new_<tag>.csv`）の status を `dropped` にして、分類表を作り直します（`v1_io` と `apply_review.apply_entries` の drop 判定と同じ）。その後 `python -m datasets.build_v1` で `dist/v1` を作り直します。
+要望があれば個別に除外できます: `python datasets/tools/drop_ids.py <ID> ... --reason "..." --apply` が、各 ID の `review.state` を `dropped` にします。その後 `python -m datasets.build_v1` で `dist/v1` を作り直します。
 人物の顔の画像はここに載せていません（ID と理由のみ）。画像は `dist/v1/images_v1.json` の `question_ids` から引けます。
 
 群別: photo 84

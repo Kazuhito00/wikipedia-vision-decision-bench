@@ -173,7 +173,7 @@ small.ci{font-size:10px;color:var(--mute);margin-left:2px}
 <section id="summary"><h2>② 比較：精度・速度・メモリ</h2>
 <div class="kpis" id="kpis"></div>
 <div class="card" style="margin-top:14px"><h3>全 run の比較（見出しを押すと並べ替え）</h3>
-  <p class="sub" style="margin:0 0 8px">1 行 = 1 run（モデル × デバイス）。正答数 ÷ 出題数、未回答は不正解。色が濃い緑ほど高い正答率で、全体の ± は 95% 信頼区間（Wilson）。時間は 1 問あたりの中央値。<b>「—」は測っていない（その run のデバイスではない）、「未」は記録なし・無効</b>（押さずにマウスを乗せると理由を表示）。</p>
+  <p class="sub" style="margin:0 0 8px">1 行 = 1 run（モデル × デバイス）。正答数 ÷ 出題数、未回答は不正解。色が濃い緑ほど高い正答率で、全体の ± は 95% 信頼区間（Wilson）。時間は 1 問あたりの中央値（GPU 実行の run の CPU 時間は、少数問だけ CPU で測った「○問参考」の値）。<b>「—」は測っていない（その run のデバイスではない）、「未」は記録なし・無効</b>（押さずにマウスを乗せると理由を表示）。</p>
   <div class="tabs" id="envFilter" style="display:none"></div>
   <div class="tabs"><button type="button" id="moreCols">詳細な列（群別・重み）を表示</button></div>
   <div class="scroll"><table class="cmp" id="cmp"></table></div>
@@ -359,7 +359,7 @@ const COLS = [
   {id: "overall", l: "全体", get: k => acc(OV, k), t: "acc"},
   {id: "en", l: "en", get: k => lgAcc(k, "en"), t: "acc", sep: 1}, {id: "ja", l: "ja", get: k => lgAcc(k, "ja"), t: "acc"},
 ].concat(GROUPS.map((g, i) => ({id: g, l: g, get: k => grAcc(k, g), t: "acc", sep: i === 0 ? 1 : 0, more: 1}))).concat([
-  {id: "cpu", l: "CPU 時間 (ms)", get: k => tOf(k, "cpu"), t: "time", sep: 1}, {id: "gpu", l: "GPU 時間 (ms)", get: k => tOf(k, "cuda"), t: "time"},
+  {id: "cpu", l: "CPU 時間 (ms)", get: k => { const c = R[k].kind === "api" ? null : cpuMs(k); return c ? c.ms : null; }, t: "time", sep: 1}, {id: "gpu", l: "GPU 時間 (ms)", get: k => tOf(k, "cuda"), t: "time"},
   {id: "api", l: "API 往復 (ms)", get: k => tOf(k, "remote"), t: "time"}, {id: "vram", l: "ピーク VRAM (GB)", get: k => R[k].vram_mib != null ? R[k].vram_mib / 1024 : null, t: "vram", sep: 1}, {id: "w", l: "重み (GB)", get: k => R[k].weights_gb, t: "gb", more: 1}]);
 const colRange = {};
 COLS.filter(c => c.t === "time").forEach(c => { const v = RK.map(c.get).filter(x => x != null); colRange[c.id] = [Math.min(...v), Math.max(...v)]; });
@@ -400,7 +400,8 @@ function drawTable() {
         const grp = c.id === "overall" ? OV : c.id === "en" || c.id === "ja" ? D.aggs.all.lang.find(x => x.label === c.id) : D.aggs.all.group.find(x => x.label === c.id);
         h += '<td class="' + cls + '" style="background:' + accBg(100 * v) + '" title="' + grp.c[k] + " / " + grp.n + '">' + (100 * v).toFixed(1) + (c.id === "overall" ? '<small class="ci">±' + ciHalf(grp.c[k], grp.n).toFixed(1) + "</small>" : "") + "</td>";
       } else if (c.t === "time") {
-        const mark = (c.id === "cpu" && r.timing === "uncal") ? '<sup title="較正の記録がありません（静かな機械か未確認）">※</sup>' : c.id === "gpu" ? '<sup title="GPU 実行は較正記録なし（参考値）">参考</sup>' : "";
+        const cref = c.id === "cpu" && r.device !== "cpu" ? (D.cpu_speed || []).find(x => x.model === r.model) : null;
+        const mark = cref ? '<sup title="GPU 実行の run に付けて、別に少数問（' + cref.n + ' 問）だけ CPU で測った参考値です（精度の集計には入れていません）">' + cref.n + "問参考</sup>" : (c.id === "cpu" && r.timing === "uncal") ? '<sup title="較正の記録がありません（静かな機械か未確認）">※</sup>' : c.id === "gpu" ? '<sup title="GPU 実行は較正記録なし（参考値）">参考</sup>' : "";
         h += '<td class="' + cls + '" style="' + timeBg(c, v) + '">' + fmt(Math.round(v)) + mark + "</td>";
       } else if (c.t === "vram") {
         h += '<td class="' + cls + '" title="' + (R[k].vram_note || "") + '">' + fx(v, 1) + "</td>";
@@ -519,7 +520,7 @@ function drawTop() {
   const gl = [["run", "1 つのモデルを 1 つのデバイス（CPU / GPU / API）で動かした結果の単位。モデルが同じなら CPU と GPU の答えはほぼ同じです。"],
     ["A / B", "ページ上部の「比べる 2 つの run」で選んだ 2 つの run。データの群ではありません。"],
     ["photo / biz / rsn / txt", "問題の群。photo = 実写、biz = 業務画像（描画・画面）、rsn = 推論、txt = 文章のみ（画像なしの対照）。"],
-    ["origin", "polished = 旧データセットを磨き直した問、new = v1 で新規に作った問（new のほうが難しめ）。"],
+    ["origin", "base = v1 の初版の問、new = 後から追加した問（new のほうが難しめ）。"],
     ["image_type / skill", "画像の種類と、その問いが測る力の分類。"],
     ["測定時の負荷確認（較正）", "CPU の時間を測る前後に、基準の処理（GLiNER）を実行して機械が静かか確かめる確認。モデルの確信度の調整（キャリブレーション）とは別の意味です。"],
     ["ピーク VRAM", "実行中の GPU メモリ使用量の最大値（nvidia-smi の標本。記録が無い run は「未記録」）。"],
@@ -529,7 +530,7 @@ function drawTop() {
 })();
 
 /* ---- 3. all-model overview ---- */
-const ALLDIMS = [["group", "群"], ["lang", "言語"], ["difficulty", "難度"], ["kind", "形式"], ["origin", "origin（旧版 / 新規）"], ["modality", "画像の有無"], ["nopt", "選択肢数"], ["image_type", "画像の種類"], ["skill", "問われる力"]];
+const ALLDIMS = [["group", "群"], ["lang", "言語"], ["difficulty", "難度"], ["kind", "形式"], ["origin", "origin（base / new）"], ["modality", "画像の有無"], ["nopt", "選択肢数"], ["image_type", "画像の種類"], ["skill", "問われる力"]];
 function drawAllHeat() {
   const a = S.dim === "lang" ? D.aggs.all : D.aggs[S.lang], cols = [{label: "全体", n: a.overall.n, c: a.overall.c}].concat(a[S.dim]);
   const cell = (k, c) => {
@@ -570,7 +571,7 @@ function syncLangTabs() { [["#langTabs", S.lang], ["#langTabsAll", S.lang]].forE
 })();
 
 /* ---- detail: breakdown ---- */
-const DIMS = [["group", "群（photo=実写 / biz=業務画像 / rsn=推論 / txt=文章のみ）"], ["origin", "origin（polished = 旧版を磨き直し / new = v1 新規）"], ["kind", "形式"], ["nopt", "選択肢数"], ["difficulty", "難度"],
+const DIMS = [["group", "群（photo=実写 / biz=業務画像 / rsn=推論 / txt=文章のみ）"], ["origin", "origin（base = 初版 / new = 追加）"], ["kind", "形式"], ["nopt", "選択肢数"], ["difficulty", "難度"],
   ["image_type", "image_type（画像の種類）"], ["skill", "skill（問われる力）"], ["modality", "画像の有無"]];
 function drawBreakdown() {
   const a = D.aggs[S.lang], ks = picked();
@@ -786,7 +787,7 @@ function drawSpeed() {
     '<div class="kpi"><div class="l">文章のみ（txt）</div><div class="v">' + fmt((d.group.find(x => x.label === "txt") || {n: 0}).n) + "</div></div></div>";
   h += '<div class="grid g3" style="margin-top:14px">' + c("群", d.group) + c("形式", d.kind) + c("選択肢数", d.nopt) + c("難度", d.difficulty) + c("言語", d.lang) + c("origin", d.origin) + c("image_type", d.image_type) + c("skill", d.skill) + c("画像の出所", d.source) + c("relation（variant / control）", d.relation) + c("レビュー状態", d.review) + "</div>";
   const go = d.group_origin;
-  h += '<div class="card" style="margin-top:14px"><h3>群 × origin</h3>' + GROUPS.map(g => { const p = go[g + "|polished"], n = go[g + "|new"], t = p + n; return t ? '<div style="font-size:12px;color:var(--mute);margin-top:6px">' + g + " (n=" + t + ")</div><div class='stack'><div style='width:" + (100 * p / t) + "%;background:var(--m0)'>polished " + p + "</div><div style='width:" + (100 * n / t) + "%;background:var(--m1)'>new " + n + "</div></div>" : ""; }).join("") + "</div>";
+  h += '<div class="card" style="margin-top:14px"><h3>群 × origin</h3>' + GROUPS.map(g => { const p = go[g + "|base"], n = go[g + "|new"], t = p + n; return t ? '<div style="font-size:12px;color:var(--mute);margin-top:6px">' + g + " (n=" + t + ")</div><div class='stack'><div style='width:" + (100 * p / t) + "%;background:var(--m0)'>base " + p + "</div><div style='width:" + (100 * n / t) + "%;background:var(--m1)'>new " + n + "</div></div>" : ""; }).join("") + "</div>";
   e.innerHTML = h;
 })();
 
@@ -796,7 +797,7 @@ function drawSpeed() {
     "<li><b>モデルと run は自動検出</b>: results/runs/v1 の <code>&lt;model&gt;_v1all_{en,ja}_224[_cpu|_cuda].json</code> から検出します。表示名・色・種別（local / api）は既定の表で、未知のモデルは名前＝キーと自動の色になります。1 つの run は 1 モデル × 1 デバイスです。</li>" +
     "<li><b>Windows のフォント</b>: ページは Yu Gothic UI / Meiryo を優先します。Windows 以外ではフォールバックの書体で表示されます。画像内の文字（合成図）は元画像のとおりで、フォントによる差は画像生成時のもの。</li>" +
     "<li><b>文章のみ（txt）は易しい対照</b>: 画像を読まないため正答率が高め。画像付きとの差は目安であり、問題内容が異なる比較です。</li>" +
-    "<li><b>v1 は新規、legacy は旧版</b>: origin が <code>polished</code> の問は旧データセット（legacy）から磨き直したもの、<code>new</code> は v1 で新規作成した問です。v1 と旧版の数値は問題が異なるため直接比べられません。new は難しめで正答率が低くなります。</li>" +
+    "<li><b>origin</b>: <code>base</code> は v1 の初版の問、<code>new</code> は後から追加した問です。new は難しめで正答率が低くなります。</li>" +
     "<li><b>費用は概算</b>: Decisions API の料金は未公表。GPT-6 Luna の入力単価を仮に当てはめた値で、実際の請求とは異なる可能性があります。</li>" +
     "<li><b>実行環境</b>: 各 run の機種は結果ファイルの <code>host</code>（CPU・コア数・RAM・GPU・ドライバ・onnxruntime・OS）から。「補記」は記録機能の追加前に測った結果へ、同じ PC で後から収集して付けたものです。ホスト名・ユーザー名・パス・IP は書きません。</li>" +
     "<li><b>時間比較</b>: 較正が外れた CPU 時間は載せません。較正記録がない run（※）と GPU 時間は参考値。API の時間は往復時間（ネットワーク・並列数・再試行を含む）。run どうしで機械が違うと時間は比べられません。</li>" +
@@ -827,7 +828,7 @@ function selectEl(id, lab, opts) { return "<label>" + lab + '<select id="' + id 
 function buildFilters() {
   const O = arr => [["", "すべて"]].concat(arr.map(x => [x, x]));
   $("#filters").innerHTML = selectEl("f_lang", "言語", [["", "すべて"], ["en", "en"], ["ja", "ja"]]) + selectEl("f_g", "群", O(GROUPS)) + selectEl("f_k", "形式", O(["choice", "yes/no", "score"])) +
-    selectEl("f_d", "難度", O(["easy", "medium", "hard"])) + selectEl("f_it", "image_type", O(uniq(i => i.it))) + selectEl("f_sk", "skill", O(uniq(i => i.sk))) + selectEl("f_o", "origin", O(["polished", "new"])) +
+    selectEl("f_d", "難度", O(["easy", "medium", "hard"])) + selectEl("f_it", "image_type", O(uniq(i => i.it))) + selectEl("f_sk", "skill", O(uniq(i => i.sk))) + selectEl("f_o", "origin", O(["base", "new"])) +
     selectEl("f_out", "結果（A / B は上で選択）", outs()) + '<label>検索（id・問題文・選択肢）<input type="text" id="f_q" placeholder="例: bar, biz-0033, 病院"></label><button type="button" id="f_reset">リセット</button>';
   ["lang:f_lang", "g:f_g", "k:f_k", "d:f_d", "it:f_it", "sk:f_sk", "o:f_o", "out:f_out"].forEach(p => { const [k, id] = p.split(":"); $("#" + id).onchange = e => { F[k] = e.target.value; F.page = 0; render(); }; });
   let tm; $("#f_q").oninput = e => { clearTimeout(tm); tm = setTimeout(() => { F.q = e.target.value; F.page = 0; render(); }, 200); };

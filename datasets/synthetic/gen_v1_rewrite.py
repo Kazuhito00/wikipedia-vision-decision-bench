@@ -5,15 +5,15 @@ questions about ONE picture ("1 question, 1 picture").
     python datasets/synthetic/gen_v1_rewrite.py [--apply] [--date 2026-10-11] [--out work/generated]
 
 * before-after (4): one picture, upper row "BEFORE", lower row "AFTER"; "Which object is in the top row but not in the bottom row?"
-  The scene (which 4 shapes, which one disappears) is the one the legacy item drew (same seed as gen_reasoning.cat_time); the right answer is
+  The scene (which 4 shapes, which one disappears) is the one of the original item (same seed as gen_reasoning.cat_time); the right answer is
   DERIVED from the scene specification (set difference), never typed in.
 * two bar charts (8): one picture, two 3-bar charts side by side ("LEFT" / "RIGHT") on ONE common value scale (so bar heights never
   mislead), values printed on the bars; "Which chart has the larger total of its three bars, left or right?" The values are the ones of
-  the legacy item (same seed as gen_reasoning.cat_two); the larger total is placed left for even i, right for odd i (legacy had 6 of 8 "first").
+  the original item (same seed as gen_reasoning.cat_two); the larger total is placed left for even i, right for odd i.
   The right answer is derived from the sums.
 Deterministic (seeds from the item; geometry fixed; only the font may differ by machine). Writes work/generated/<id>.png (640x480) and
 work/generated/px224/<id>.png (224 px, what the models receive). Default is a dry run (prints the specs); --apply writes the pictures and
-updates datasets/questions/v1/rsn.jsonl, manifests/idmap_legacy_v1.csv and manifests/questions_v1.csv (idempotent). Pictures are git-ignored.
+updates datasets/questions/v1/rsn.jsonl and manifests/questions_v1.csv (idempotent). Pictures are git-ignored.
 """
 from __future__ import annotations
 
@@ -66,7 +66,7 @@ def answer_before_after(spec: dict) -> tuple:
 
 
 def bar_pair_spec(qid: str) -> dict:
-    """{left: [3 values], right: [3 values]}. Values of the legacy item (seed w_two<i>), the larger total on the left for even i."""
+    """{left: [3 values], right: [3 values]}. Values of the original item (seed w_two<i>), the larger total on the left for even i."""
     i = int(qid.split("-")[1]) - 188
     r = rng_for("w_two%d" % i)
     a, b = r.sample(range(5, 30), 3), r.sample(range(5, 30), 3)
@@ -234,10 +234,9 @@ def thumb224(im: Image.Image) -> Image.Image:
     return t
 
 
-def apply_rewrite(by_group: dict, idmap: list, date: str, out: pathlib.Path, write_images: bool = True) -> list:
+def apply_rewrite(by_group: dict, date: str, out: pathlib.Path, write_images: bool = True) -> list:
     """Rebuild the 12 rows in place (idempotent). Returns [(id, description)]."""
     rows = {r["id"]: r for r in by_group["rsn"]}
-    im_ = {m["v1_id"]: m for m in idmap}
     done = []
     for qid in BA_IDS + BAR_IDS:
         old = rows[qid]
@@ -259,8 +258,6 @@ def apply_rewrite(by_group: dict, idmap: list, date: str, out: pathlib.Path, wri
         if not any(h["what"] == entry["what"] and h["why"] == entry["why"] for h in rev["history"]):
             rev["history"].append(entry)
         rev["state"] = "changed"
-        im_[qid]["status"] = "rewritten"
-        im_[qid]["change_note"] = "1 枚版に作り直した: " + desc
         done.append((qid, desc))
     return done
 
@@ -271,15 +268,14 @@ def main() -> int:
     ap.add_argument("--date", default=datetime.date.today().isoformat())
     ap.add_argument("--out", default=str(OUT_DIR))
     a = ap.parse_args()
-    by_group, idmap = v1_io.load_v1(), v1_io.load_idmap()
-    done = apply_rewrite(by_group, idmap, a.date, pathlib.Path(a.out), write_images=a.apply)
+    by_group = v1_io.load_v1()
+    done = apply_rewrite(by_group, a.date, pathlib.Path(a.out), write_images=a.apply)
     for qid, desc in done:
         print("%s: %s" % (qid, desc))
     if a.apply:
         v1_io.save_v1(by_group)
-        v1_io.save_idmap(idmap)
         v1_io.write_questions_csv(by_group)
-        print("written: %d pictures in %s (+ px224/), rsn.jsonl, idmap, questions_v1.csv" % (len(done), a.out))
+        print("written: %d pictures in %s (+ px224/), rsn.jsonl, questions_v1.csv" % (len(done), a.out))
     else:
         print("dry run (use --apply)")
     return 0

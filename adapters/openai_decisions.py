@@ -6,11 +6,10 @@ Standard library only (urllib). No package to install, no model files: ``--model
 Environment:
   OPENAI_API_KEY          the API key (required). It is only put into the Authorization header of the request; it is never printed,
                           logged or recorded, and every error text is scrubbed of it before it leaves this module.
-  OPENAI_DECISION_MODEL   model name (default ``gpt-6-luna``, the one eval_common/run_openai.py used)
+  OPENAI_DECISION_MODEL   model name (default ``gpt-6-luna``)
   OPENAI_MAX_WORKERS      concurrent requests the runner may use (default 3; the runner's --workers is capped by it)
 
-The request shape is the one the API accepted (no public reference exists; found from the API's validation errors, see
-eval_common/run_openai.py of the old bench):
+The request shape is the one the API accepted (no public reference exists; found from the API's validation errors):
     {"model": M, "input": [{"type": "message", "role": "user", "content": [{"type": "input_text", "text": STATE},
                                                                           {"type": "input_image", "image_url": "data:image/png;base64,..."}]}],
      "questions": [{"type": "choice", "instructions": ..., "choices": [{"value": key}, ...]}

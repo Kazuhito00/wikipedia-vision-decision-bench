@@ -7,7 +7,7 @@ Exit code 0 = no error (warnings may remain), 1 = errors (each printed as ``<fil
 before handing it over; it is also what the tests run over a temporary directory.
 
 What is checked, per row (E = error, W = warning):
-  schema     E: required keys (id, legacy_id = null, origin "new", derived_from (id or null), group, source, image_type, skill, difficulty,
+  schema     E: required keys (id, origin "new", derived_from (id or null), group, source, image_type, skill, difficulty,
                 lang, langs, modality, kind, answer_format, review, local_images, tags); values inside taxonomy.py's lists; answer_format
                 equals the one computed from the options; unknown keys W.
   id         E: <group>-NNNN with the prefix equal to ``group``; inside the id ranges reserved for the file's tag (datasets/newq.py RANGES);
@@ -49,11 +49,10 @@ sys.path.insert(0, str(ROOT))
 from datasets import newq, options, taxonomy  # noqa: E402
 from datasets.tools import v1_io  # noqa: E402
 
-JEV = ROOT.parents[1]
 MAX_CHOICE, MIN_CHOICE = 16, 2          # QEV: 2..16 options (adapters/qev.py LIMITS); the other models take more
 MAX_SCORE, MIN_SCORE = 10, 2            # OneJev / Strands: at most 10 levels (QEV 16)
 MAX_STATE, MAX_STRING = 600, 600
-REQUIRED = ("id", "legacy_id", "origin", "derived_from", "group", "source", "image_type", "skill", "difficulty", "lang", "langs", "modality",
+REQUIRED = ("id", "origin", "derived_from", "group", "source", "image_type", "skill", "difficulty", "lang", "langs", "modality",
             "kind", "answer_format", "review", "local_images", "tags")
 OPTIONAL = {"images", "sha1", "credit", "relation", "article", "evidence_sha256", "answer", "en", "ja", "note", "used_by", "articles"}
 RELATIONS = ("variant", "mirror", "control", "rewrite", "extension")
@@ -72,7 +71,7 @@ def _norm(s: str) -> str:
 
 
 def default_image_roots() -> list:
-    roots = [os.environ.get("WIKIQA_IMAGES"), ROOT / "work", os.environ.get("WIKIQA_DATA_ROOT"), JEV / "wiki_qa"]
+    roots = [os.environ.get("WIKIQA_IMAGES"), ROOT / "work", os.environ.get("WIKIQA_DATA_ROOT")]
     return [pathlib.Path(r) for r in roots if r]
 
 
@@ -213,8 +212,6 @@ def validate_row(row: dict, tag: str, where: str, ctx: dict, rep: Report) -> Non
             if not newq.in_reserved_range(tag, qid):
                 rg = ", ".join("%s-%04d..%04d" % (g, lo, hi) for g, (lo, hi) in newq.RANGES[tag].items())
                 err("id %s is outside the range reserved for tag %s (%s)" % (qid, tag, rg))
-    if row["legacy_id"] is not None:
-        err("legacy_id must be null for a new question")
     if row["origin"] != newq.ORIGIN:
         err('origin must be "%s"' % newq.ORIGIN)
     df = row["derived_from"]
@@ -413,7 +410,7 @@ def file_stats(rows: list, where: str, rep: Report) -> None:
 def dup_key(row: dict, picture: str) -> tuple | None:
     """What makes two questions the same question: kind, answer_format, modality, the picture, and per language the question wording (and
     the state), plus the right answer (choice: the correct option; yes/no and score: the answer). The WRONG options are deliberately not
-    part of it: the same question with another set of distractors is a duplicate (the rule of dedupe_v1.py, ``wrong-set-differs``).
+    part of it: the same question with another set of distractors is a duplicate.
     A variant is therefore a different question when it changes the option count / the kind (answer_format), the wording (negation), the
     picture (mirror) or the right answer."""
     try:
@@ -432,7 +429,7 @@ def dup_key(row: dict, picture: str) -> tuple | None:
 
 def check_duplicates(base_rows: list, parsed: dict, files: dict, roots: list, tags, rep: Report) -> None:
     """A new row that repeats an earlier row (base, or a new row with a smaller id) is an error. Own pictures are compared by content
-    (sha256), shared paths by path. dedupe_v1.py stays base-only: this is the duplicate rule for new rows."""
+    (sha256), shared paths by path. This is the duplicate rule for new rows."""
     seen: dict = {}
     for r in base_rows:
         k = dup_key(r, (r.get("local_images") or [""])[0])
@@ -516,7 +513,7 @@ def main(argv=None) -> int:
     ap.add_argument("--images-root", action="append", default=None, help="directory that contains generated/ (repeatable; default work/)")
     ap.add_argument("--no-image-check", action="store_true", help="do not require the picture files to exist")
     ap.add_argument("--write-manifests", action="store_true",
-                    help="with --tag: write manifests/idmap_v1_new_<tag>.csv and questions_v1_new_<tag>.csv for that tag if it has no error")
+                    help="with --tag: write manifests/questions_v1_new_<tag>.csv for that tag if it has no error")
     ap.add_argument("--manifests", default=str(v1_io.MANIFESTS))
     a = ap.parse_args(argv)
     for st in (sys.stdout, sys.stderr):

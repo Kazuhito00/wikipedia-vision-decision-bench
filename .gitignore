@@ -29,16 +29,12 @@ dist/
 *.out
 *.err
 _done*
-# the full report embeds Commons pictures: local only. A public version (--public) is a table-and-figure page without pictures.
+# a full report embeds Commons pictures: local only (build it with --no-images for a page without pictures).
 *.html
-!report/wiki_report_template.html
 !report/*_template.html
 results/**/logs/
 results/**/*.log
 
-# local dataset overview (holds pictures and question cards); the --public page is dataset_summary_public.html
-dataset_summary.html
-dataset_summary_files/
 
 # ---- measurement results (results/runs): only the published v1 baseline is tracked ---------------
 # Everything a run writes (per-model block results of Colab / a local PC, CPU speed references, n300 samples, smoke checks, whole

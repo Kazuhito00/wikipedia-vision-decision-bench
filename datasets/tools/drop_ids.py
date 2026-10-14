@@ -3,10 +3,9 @@
 
     python datasets/tools/drop_ids.py photo-0030 photo-0062 --reason "requested exclusion" [--date YYYY-MM-DD] [--apply]
 
-Default is a DRY RUN. With --apply: each id gets review.state = "dropped" (plus a history entry), its row in manifests/idmap_legacy_v1.csv
-gets status "dropped" (new questions have no such row; their manifests/idmap_v1_new_<tag>.csv and the classification tables are
-regenerated), and the question files are written. Uses the same code as apply_review.py (apply_entries), so the effect is identical to a
-"drop" verdict. The row stays in the file; consumers skip review.state == "dropped". Afterwards run `python -m datasets.build_v1`.
+Default is a DRY RUN. With --apply: each id gets review.state = "dropped" (plus a history entry), the classification tables are
+regenerated and the question files are written. The row stays in the file; consumers skip review.state == "dropped".
+Afterwards run `python -m datasets.build_v1`.
 """
 from __future__ import annotations
 
@@ -19,7 +18,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from datasets.tools import apply_review, v1_io  # noqa: E402
+from datasets.tools import v1_io  # noqa: E402
 
 
 def drop(ids, reason, date, apply=False, v1dir=v1_io.V1DIR, manifests=v1_io.MANIFESTS) -> str:
@@ -28,16 +27,17 @@ def drop(ids, reason, date, apply=False, v1dir=v1_io.V1DIR, manifests=v1_io.MANI
     unknown = [i for i in ids if i not in known]
     if unknown:
         raise SystemExit("unknown ids: %s" % ", ".join(unknown))
-    entries = [dict(id=i, verdict="drop", issues=[], fix={}, reason=reason) for i in ids]
-    wg, wn, wm = copy.deepcopy(by_group), copy.deepcopy(by_tag), copy.deepcopy(v1_io.load_idmap(manifests))
-    apply_review.apply_entries(wg, wm, entries, date, new_rows=v1_io.all_new_rows(wn))
+    wg, wn = copy.deepcopy(by_group), copy.deepcopy(by_tag)
+    for r in v1_io.all_rows(wg) + v1_io.all_new_rows(wn):
+        if r["id"] in ids:
+            r["review"]["state"] = "dropped"
+            r["review"]["history"].append({"date": date, "what": "dropped", "why": reason})
     if apply:
         touched = set(ids)
         groups = {g for g, rs in by_group.items() if any(r["id"] in touched for r in rs)}
         tags = {t for t, rs in by_tag.items() if any(r["id"] in touched for r in rs)}
         if groups:
             v1_io.save_v1({g: wg[g] for g in groups}, v1dir)
-            v1_io.save_idmap(wm, manifests)
             v1_io.write_questions_csv(wg, manifests)
         if tags:
             v1_io.save_new({t: wn[t] for t in tags}, v1dir)

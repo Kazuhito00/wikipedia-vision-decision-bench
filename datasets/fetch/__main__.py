@@ -3,7 +3,7 @@
 
   check     Commons imageinfo for every image of the manifest (50 titles per request), METADATA only, nothing downloaded.
             Reports 正常 / リンク切れ / 差し替え / ライセンス変更 / 作者・説明の変更 and writes results/checks/check_<date>.json.
-              --limit N   only the first N images (a trial)       --manifest PATH   (default datasets/manifests/images_legacy.json)
+              --limit N   only the first N images (a trial)       --manifest PATH   (default datasets/manifests/images_v1.json)
   fetch     Download the pictures (thumbnail at the manifest's width), compare sha256 with the manifest, shrink to 224 px and compare again.
               --from-release DIR   no network: extract + verify DIR/images-224px.zip and/or DIR/images-original.zip
               --limit N   --update-hashes (fill sha256 values that the manifest does not have yet)

@@ -25,7 +25,7 @@ from typing import Callable
 from . import commons, http
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-MANIFEST = ROOT / "datasets" / "manifests" / "images_legacy.json"
+MANIFEST = ROOT / "datasets" / "manifests" / "images_v1.json"
 CHECKS = ROOT / "results" / "checks"
 LABELS = {"ok": "正常", "broken": "リンク切れ", "replaced": "差し替え", "license": "ライセンス変更", "meta": "作者・説明の変更"}
 ORDER = ["ok", "broken", "replaced", "license", "meta"]

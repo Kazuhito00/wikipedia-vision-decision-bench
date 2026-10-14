@@ -32,6 +32,6 @@ def work_dir() -> pathlib.Path:
 
 
 def data_root() -> pathlib.Path:
-    """The folder that contains ``data/`` (linked.jsonl, synthetic.jsonl, reasoning.jsonl, images/, synthetic/, reasoning/, passages.json).
-    ``WIKIQA_DATA_ROOT`` points it elsewhere (for example at a checkout of the old wiki_qa/ folder)."""
+    """The folder that contains ``data/`` (images/, passages.json, ...) and ``generated/``.
+    ``WIKIQA_DATA_ROOT`` points it elsewhere (for example at the unpacked picture zip)."""
     return pathlib.Path(os.environ.get("WIKIQA_DATA_ROOT") or work_dir())

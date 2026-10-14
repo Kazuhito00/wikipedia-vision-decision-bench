@@ -7,7 +7,7 @@
 | Segoe UI | 英語（問は英日の両方） | 203 |
 | Yu Gothic UI | 日本語 | 46 |
 
-このほか、描画画像の一部（`datasets/synthetic/gen.py` の `font()`）は、その機械に Arial があれば Arial（Windows 同梱）、なければ DejaVu Sans で文字を描きます。どちらが使われたかは画像からは分かりません（旧版で作った画像の再現記録なし）。
+このほか、描画画像の一部（`datasets/synthetic/gen.py` の `font()`）は、その機械に Arial があれば Arial（Windows 同梱）、なければ DejaVu Sans で文字を描きます。どちらが使われたかは画像からは分かりません（再現記録なし）。
 
 ## Segoe UI（203 問）
 

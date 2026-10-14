@@ -7,8 +7,7 @@ Per-question logs go to `work/logs/v1/` (git-ignored).
 
 ## Setup used
 
-- The images and passages live in the old tree: `work/data` is a directory junction to `wiki_qa/data` (`mklink /J work\data <...>\wiki_qa\data`);
-  the generated pictures are in `work/generated`.
+- The pictures are in `work/data` and `work/generated` (unpacked from the Release zip, or set `WIKIQA_DATA_ROOT`).
 - JEVision runtime: `JEVision/` (package `jevision_decide`, no git/tag: `MODEL_TAG=local-untagged`), model `JEVision/models/jevision`, fp16.
   PYTHONPATH = this repository + `JEVision/`; `JEVISION_MODEL_DIR` or `--model-dir`.
   CPU: `OneJev/.venv-min` (onnxruntime 1.30, CPU only), 8 threads. GPU: `JEVision/.venv-cuda` (onnxruntime-gpu 1.31) with CUDA 13 / cuDNN 9 first on PATH
@@ -39,7 +38,7 @@ rmdir ../heavy.lock
 python -m runner.batch --models jevision --sets all --langs en,ja --mod all --suffix _cpu --log-dir work/logs/v1 --lock ../heavy.lock
 # before/after calibration per block -> work/logs/v1/blocks.log (copy: results/runs/v1/blocks_v1_cpu.txt) and the block's json "calibration"
 
-# 4. summary (reads results/runs/v1 and the old logs of eval_common for the legacy comparison)
+# 4. summary (reads results/runs/v1)
 python -m runner.analyze_v1
 python tools/scan_secrets.py        # must print: clean
 ```

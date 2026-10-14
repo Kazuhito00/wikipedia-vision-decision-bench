@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The per-question log format (kept byte-compatible with the old eval_common logs) and the blocks.log gate record.
+"""The per-question log format and the blocks.log gate record.
 
     ok  img-0016           got=0 exp=0 rev=None ms=1220          one line per question ("XX " when wrong)
     WIKI[onejev,en,224px] 1179/1268  choice fwd+rev both correct 0/0  (1866 s)     the last line of a finished block

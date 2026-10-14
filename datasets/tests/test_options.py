@@ -1,90 +1,27 @@
 # -*- coding: utf-8 -*-
-"""Option order: legacy equals the old loader exactly; balanced is even, deterministic and v1 only; reversal.
+"""Option order: balanced is even and deterministic; reversal.
 
     python -m unittest discover -s datasets/tests
 """
 import collections
-import csv
-import importlib.util
 import json
 import pathlib
 import tempfile
 import unittest
 
-import _paths
+import _paths  # noqa: F401  (puts the repository root on sys.path)
 from datasets import loader, options
-
-GOLDEN = list(csv.DictReader(open(loader.MANIFESTS / "legacy_option_order.csv", encoding="utf-8", newline="")))
-PASSAGES = _paths.OLD_WIKI_QA / "data" / "passages.json"
-
-
-class LegacyTests(unittest.TestCase):
-    def test_legacy_order_equals_the_golden_data_of_the_old_loader(self):
-        """Protects the legacy answer keys: for all 1495 choice questions of legacy the permutation of the options and the position of
-        the right answer are the ones the old wikiqa.dataset.load_cases produced (golden data made once from it)."""
-        n = 0
-        for g in GOLDEN:
-            if g["kind"] != "choice":
-                continue
-            order = options.legacy_order(g["id"], int(g["n_options"]))
-            self.assertEqual("-".join(map(str, order)), g["order"], g["id"])
-            self.assertEqual(options.expected_of(order), int(g["expected"]), g["id"])
-            n += 1
-        self.assertEqual(n, 1099 + 247 + 149)
-
-    def test_loader_legacy_cases_equal_the_golden_data(self):
-        """Protects the whole legacy case built by the new loader: kind, expected and option order of every non-text case
-        (text-only questions need the local Wikipedia passages: next test)."""
-        gold = {g["id"]: g for g in GOLDEN}
-        rows = {r["id"]: r for r in loader.load_rows("legacy")}
-        cases = loader.load_cases("legacy", files=("synthetic.jsonl", "reasoning.jsonl"))
-        self.assertEqual(len(cases), 607)
-        for c in cases:
-            g = gold[c["id"]]
-            self.assertEqual((c["version"], c["key"]), ("legacy", ("legacy", c["id"])))
-            self.assertEqual(str(c["expected"]), g["expected"], c["id"])
-            if c["kind"] == "choice":
-                r = rows[c["id"]]
-                en = [r["en"]["correct"]] + list(r["en"]["wrong"])
-                self.assertEqual("-".join(str(en.index(o[0])) for o in c["en"]["options"]), g["order"], c["id"])
-
-    @unittest.skipUnless((_paths.OLD_WIKI_QA / "wikiqa" / "dataset.py").exists() and PASSAGES.exists(),
-                         "old wiki_qa tree / local passages not available")
-    def test_all_legacy_cases_equal_the_original_load_cases(self):
-        """Direct comparison with the original implementation (only when the old tree exists): all 1962 cases, both languages,
-        options, state, expected, kind, tags, difficulty."""
-        spec = importlib.util.spec_from_file_location("old_dataset", _paths.OLD_WIKI_QA / "wikiqa" / "dataset.py")
-        old = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(old)
-        total = 0
-        for f in loader.LEGACY_FILES:
-            a = old.load_cases(_paths.OLD_WIKI_QA, files=(f,))
-            b = loader.load_cases("legacy", files=(f,), passages_path=PASSAGES)
-            self.assertEqual(len(a), len(b))
-            for x, y in zip(a, b):
-                self.assertEqual(x["id"], y["id"])
-                for k in ("kind", "modality", "tags", "difficulty", "expected"):
-                    self.assertEqual(x[k], y[k], (x["id"], k))
-                for lang in ("en", "ja"):
-                    self.assertEqual(x.get(lang), y.get(lang), (x["id"], lang))
-                total += 1
-        self.assertEqual(total, 1962)
-
-    def test_legacy_is_deterministic(self):
-        """The same id always gives the same order (no hidden state, no dependence on the machine)."""
-        self.assertEqual(options.legacy_order("img-0016", 4), options.legacy_order("img-0016", 4))
-        self.assertEqual(options.legacy_order("img-0016", 4), [0, 3, 2, 1])      # value fixed by the old loader (golden csv)
 
 
 class BalancedTests(unittest.TestCase):
-    def test_balanced_never_applies_to_legacy(self):
-        """legacy results were measured with the legacy order: asking for balanced on legacy must fail, loudly (and v1 never legacy)."""
+    def test_unknown_version_or_mode_raises(self):
+        """Only the balanced order of version v1 exists: anything else must fail, loudly."""
         with self.assertRaises(ValueError):
-            options.order_for("balanced", "legacy", "img-0001", 4, position=0)
+            options.order_for("balanced", "v0", "photo-0001", 4, position=0)
         with self.assertRaises(ValueError):
-            options.order_for("legacy", "v1", "photo-0001", 4)
+            options.order_for("shuffle", "v1", "photo-0001", 4)
         with self.assertRaises(ValueError):
-            loader.load_cases("legacy", mode="balanced")
+            loader.load_cases("v0")
 
     def test_positions_are_even_per_group_and_option_count(self):
         """Within each (group, n) bucket every position of the right answer occurs floor or ceil of count/n times, whatever the

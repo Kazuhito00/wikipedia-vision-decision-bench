@@ -2,8 +2,7 @@
 """Reasoning set (data set 4): pictures drawn by this script, questions that need an operation on what is seen, answers exact by
 construction.
 
-    python datasets/synthetic/gen_reasoning.py   # writes work/legacy_regen/reasoning/*.png and work/legacy_regen/reasoning.jsonl
-(the frozen legacy rows are datasets/questions/legacy/reasoning.jsonl; this script never overwrites them)
+    python datasets/synthetic/gen_reasoning.py   # writes work/regen/reasoning/*.png and work/regen/reasoning.jsonl
 
 Why: the first three sets are mostly "what is in the picture" (classify / read a word), which saturates (about 80 % of the questions
 are answered correctly by every model). Two independent reviews (Opus, Codex) agreed that what is missing is the step after
@@ -13,7 +12,7 @@ types (not just changed numbers), and the difficulty comes from the number of st
 
 Rules for the pictures: everything that matters is drawn large (the models see 224 px: text >= 36 px in the 640x480 canvas),
 at most about eight elements, numbers printed (no estimating from pixels), and no ambiguity in what "left / larger / touching" mean.
-Rows have the schema of the legacy synthetic rows (set "reasoning").
+Rows have the schema of the synthetic rows (set "reasoning").
 Deterministic: every random choice is seeded from the item.
 """
 from __future__ import annotations
@@ -31,8 +30,8 @@ sys.path.insert(0, str(HERE))
 from gen import COLORS, NAMES_JA, font, rng_for  # noqa: E402
 
 ROOT = HERE.parents[1]
-OUT_DIR = ROOT / "work" / "legacy_regen" / "reasoning"
-JSONL = ROOT / "work" / "legacy_regen" / "reasoning.jsonl"
+OUT_DIR = ROOT / "work" / "regen" / "reasoning"
+JSONL = ROOT / "work" / "regen" / "reasoning.jsonl"
 W, H = 640, 480
 BG = (250, 250, 246)
 INK = (25, 25, 25)

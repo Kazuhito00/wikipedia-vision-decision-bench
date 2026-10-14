@@ -26,11 +26,11 @@ Cases: 5364 (id x language; en 2596 + ja 2768 = 5364 when complete). Accuracy = 
 | rsn | 920 | 60.3% (555/920) | 84.7% (779/920) |
 | txt | 347 | 76.1% (264/347) | 96.8% (336/347) |
 
-#### origin (polished = legacy, polished in v1)
+#### origin (base = first set, new = added later)
 
 | category | n | JEVision CPU | OpenAI |
 |---|---|---|---|
-| polished | 3682 | 82.8% (3047/3682) | 94.6% (3482/3682) |
+| base | 3682 | 82.8% (3047/3682) | 94.6% (3482/3682) |
 | new | 1682 | 63.8% (1073/1682) | 88.9% (1496/1682) |
 
 #### format
@@ -134,33 +134,22 @@ Caution: the control puts the exact numbers (bar heights, amounts, times) into t
 | ja | JEVision CPU | 99 | 53.5% (53/99) | 50.5% (50/99) | -3.0 pt | 34 | 16 | 19 |
 | ja | OpenAI | 99 | 80.8% (80/99) | 91.9% (91/99) | +11.1 pt | 77 | 14 | 3 |
 
-## (c) Polished (legacy -> v1) questions vs the old bench
-
-| model | lang | same questions | old bench | v1 (polished) | change | wrong -> right | right -> wrong |
-|---|---|---|---|---|---|---|---|
-| JEVision (old: CPU) | en | 1754 | 85.5% (1499/1754) | 85.2% (1494/1754) | -0.3 pt | 51 | 56 |
-| JEVision (old: CPU) | ja | 1754 | 79.9% (1402/1754) | 79.0% (1386/1754) | -0.9 pt | 65 | 81 |
-| OpenAI | en | 1754 | 94.2% (1653/1754) | 94.6% (1660/1754) | +0.4 pt | 39 | 32 |
-| OpenAI | ja | 1754 | 94.3% (1654/1754) | 94.0% (1648/1754) | -0.3 pt | 31 | 37 |
-
-Matched by legacy_id; 'old' = the legacy logs (eval_common results_*) read with datasets/tools/regroup_check.py. The polish changed wording, wrong options, answer positions (balanced order), image types and some answers, so a change is not a pure model effect.
-
-## (d) Questions both models missed / only one missed
+## (c) Questions both models missed / only one missed
 
 Per question id over its languages: wrong in every language by both models: **103**; wrong only by JEVision (OpenAI right in every language): **372**; wrong only by OpenAI (JEVision right in every language): **40**.
 
-Both wrong by group/origin: biz/new 47, biz/polished 6, photo/new 1, photo/polished 9, rsn/new 6, rsn/polished 29, txt/new 5
+Both wrong by group/origin: biz/base 6, biz/new 47, photo/base 9, photo/new 1, rsn/base 29, rsn/new 6, txt/new 5
 
 #### Both models wrong in every language (first 40 of 103, by id)
 
 | id | group | origin | kind | options | difficulty | image_type | expected | JEVision got | OpenAI got |
 |---|---|---|---|---|---|---|---|---|---|
-| biz-0033 | biz | polished | choice | choice 4 | hard | chart | 0 | en:2/ja:2 | en:2/ja:2 |
-| biz-0036 | biz | polished | choice | choice 4 | hard | chart | 0 | en:3/ja:3 | en:2/ja:2 |
-| biz-0046 | biz | polished | choice | choice 3 | medium | chart | 1 | en:2/ja:2 | en:2/ja:2 |
-| biz-0097 | biz | polished | choice | choice 4 | hard | ui | 1 | en:0/ja:0 | en:0/ja:0 |
-| biz-0098 | biz | polished | choice | choice 4 | hard | ui | 3 | en:0/ja:0 | en:2/ja:2 |
-| biz-0103 | biz | polished | choice | choice 4 | hard | ui | 1 | en:0/ja:0 | en:2/ja:2 |
+| biz-0033 | biz | base | choice | choice 4 | hard | chart | 0 | en:2/ja:2 | en:2/ja:2 |
+| biz-0036 | biz | base | choice | choice 4 | hard | chart | 0 | en:3/ja:3 | en:2/ja:2 |
+| biz-0046 | biz | base | choice | choice 3 | medium | chart | 1 | en:2/ja:2 | en:2/ja:2 |
+| biz-0097 | biz | base | choice | choice 4 | hard | ui | 1 | en:0/ja:0 | en:0/ja:0 |
+| biz-0098 | biz | base | choice | choice 4 | hard | ui | 3 | en:0/ja:0 | en:2/ja:2 |
+| biz-0103 | biz | base | choice | choice 4 | hard | ui | 1 | en:0/ja:0 | en:2/ja:2 |
 | biz-1037 | biz | new | score | score 7 | medium | chart | 5 | en:2/ja:2 | en:6/ja:3 |
 | biz-1038 | biz | new | score | score 7 | medium | chart | 2 | en:1/ja:1 | en:1/ja:1 |
 | biz-1039 | biz | new | score | score 7 | medium | chart | 3 | en:2/ja:2 | en:2/ja:2 |
@@ -200,31 +189,31 @@ Both wrong by group/origin: biz/new 47, biz/polished 6, photo/new 1, photo/polis
 
 | id | group | origin | kind | options | difficulty | image_type | expected | JEVision got | OpenAI got |
 |---|---|---|---|---|---|---|---|---|---|
-| biz-0031 | biz | polished | choice | choice 4 | hard | chart | 0 | en:2/ja:2 | en:0/ja:0 |
-| biz-0032 | biz | polished | choice | choice 4 | hard | chart | 2 | en:0/ja:3 | en:2/ja:2 |
-| biz-0034 | biz | polished | choice | choice 4 | hard | chart | 1 | en:2/ja:2 | en:1/ja:1 |
-| biz-0035 | biz | polished | choice | choice 4 | hard | chart | 3 | en:1/ja:1 | en:3/ja:3 |
-| biz-0039 | biz | polished | choice | choice 4 | hard | chart | 3 | en:2/ja:1 | en:3/ja:3 |
-| biz-0040 | biz | polished | choice | choice 4 | hard | chart | 1 | en:2/ja:2 | en:1/ja:1 |
-| biz-0041 | biz | polished | choice | choice 3 | medium | chart | 1 | en:2/ja:2 | en:1/ja:1 |
-| biz-0047 | biz | polished | choice | choice 3 | medium | chart | 0 | en:2/ja:2 | en:0/ja:0 |
-| biz-0080 | biz | polished | score | score 5 | medium | ui | 3 | en:1/ja:1 | en:3/ja:3 |
-| biz-0082 | biz | polished | score | score 5 | medium | ui | 0 | en:1/ja:1 | en:0/ja:0 |
-| biz-0084 | biz | polished | score | score 5 | medium | ui | 2 | en:1/ja:1 | en:2/ja:2 |
-| biz-0085 | biz | polished | score | score 5 | medium | ui | 3 | en:1/ja:1 | en:3/ja:3 |
-| biz-0086 | biz | polished | score | score 5 | medium | ui | 4 | en:0/ja:0 | en:4/ja:4 |
-| biz-0090 | biz | polished | score | score 5 | medium | ui | 3 | en:1/ja:1 | en:3/ja:3 |
-| biz-0091 | biz | polished | score | score 5 | medium | ui | 4 | en:0/ja:0 | en:4/ja:4 |
-| biz-0096 | biz | polished | choice | choice 4 | hard | ui | 1 | en:0/ja:3 | en:1/ja:1 |
-| biz-0099 | biz | polished | choice | choice 4 | hard | ui | 1 | en:0/ja:0 | en:1/ja:1 |
-| biz-0106 | biz | polished | choice | choice 4 | hard | ui | 2 | en:0/ja:0 | en:2/ja:2 |
-| biz-0124 | biz | polished | choice | choice 3 | medium | ui | 2 | en:1/ja:0 | en:2/ja:2 |
-| biz-0133 | biz | polished | choice | choice 3 | medium | ui | 2 | en:1/ja:1 | en:2/ja:2 |
-| biz-0155 | biz | polished | noul | yes/no | medium | ui | False | en:True/ja:True | en:False/ja:False |
-| biz-0173 | biz | polished | choice | choice 5 | medium | ui | 1 | en:3/ja:3 | en:1/ja:1 |
-| biz-0174 | biz | polished | choice | choice 5 | medium | ui | 2 | en:1/ja:1 | en:2/ja:2 |
-| biz-0175 | biz | polished | choice | choice 4 | medium | ui | 3 | en:2/ja:2 | en:3/ja:3 |
-| biz-0219 | biz | polished | choice | choice 4 | medium | document | 0 | en:1/ja:1 | en:0/ja:0 |
+| biz-0031 | biz | base | choice | choice 4 | hard | chart | 0 | en:2/ja:2 | en:0/ja:0 |
+| biz-0032 | biz | base | choice | choice 4 | hard | chart | 2 | en:0/ja:3 | en:2/ja:2 |
+| biz-0034 | biz | base | choice | choice 4 | hard | chart | 1 | en:2/ja:2 | en:1/ja:1 |
+| biz-0035 | biz | base | choice | choice 4 | hard | chart | 3 | en:1/ja:1 | en:3/ja:3 |
+| biz-0039 | biz | base | choice | choice 4 | hard | chart | 3 | en:2/ja:1 | en:3/ja:3 |
+| biz-0040 | biz | base | choice | choice 4 | hard | chart | 1 | en:2/ja:2 | en:1/ja:1 |
+| biz-0041 | biz | base | choice | choice 3 | medium | chart | 1 | en:2/ja:2 | en:1/ja:1 |
+| biz-0047 | biz | base | choice | choice 3 | medium | chart | 0 | en:2/ja:2 | en:0/ja:0 |
+| biz-0080 | biz | base | score | score 5 | medium | ui | 3 | en:1/ja:1 | en:3/ja:3 |
+| biz-0082 | biz | base | score | score 5 | medium | ui | 0 | en:1/ja:1 | en:0/ja:0 |
+| biz-0084 | biz | base | score | score 5 | medium | ui | 2 | en:1/ja:1 | en:2/ja:2 |
+| biz-0085 | biz | base | score | score 5 | medium | ui | 3 | en:1/ja:1 | en:3/ja:3 |
+| biz-0086 | biz | base | score | score 5 | medium | ui | 4 | en:0/ja:0 | en:4/ja:4 |
+| biz-0090 | biz | base | score | score 5 | medium | ui | 3 | en:1/ja:1 | en:3/ja:3 |
+| biz-0091 | biz | base | score | score 5 | medium | ui | 4 | en:0/ja:0 | en:4/ja:4 |
+| biz-0096 | biz | base | choice | choice 4 | hard | ui | 1 | en:0/ja:3 | en:1/ja:1 |
+| biz-0099 | biz | base | choice | choice 4 | hard | ui | 1 | en:0/ja:0 | en:1/ja:1 |
+| biz-0106 | biz | base | choice | choice 4 | hard | ui | 2 | en:0/ja:0 | en:2/ja:2 |
+| biz-0124 | biz | base | choice | choice 3 | medium | ui | 2 | en:1/ja:0 | en:2/ja:2 |
+| biz-0133 | biz | base | choice | choice 3 | medium | ui | 2 | en:1/ja:1 | en:2/ja:2 |
+| biz-0155 | biz | base | noul | yes/no | medium | ui | False | en:True/ja:True | en:False/ja:False |
+| biz-0173 | biz | base | choice | choice 5 | medium | ui | 1 | en:3/ja:3 | en:1/ja:1 |
+| biz-0174 | biz | base | choice | choice 5 | medium | ui | 2 | en:1/ja:1 | en:2/ja:2 |
+| biz-0175 | biz | base | choice | choice 4 | medium | ui | 3 | en:2/ja:2 | en:3/ja:3 |
+| biz-0219 | biz | base | choice | choice 4 | medium | document | 0 | en:1/ja:1 | en:0/ja:0 |
 
 #### Only OpenAI wrong (first 25 of 40, by id)
 
@@ -248,13 +237,13 @@ Both wrong by group/origin: biz/new 47, biz/polished 6, photo/new 1, photo/polis
 | biz-3199 | biz | new | choice | choice 7 | medium | ui | 3 | en:3/ja:3 | en:1/ja:1 |
 | biz-3214 | biz | new | choice | choice 5 | medium | ui | 0 | en:0/ja:0 | en:3/ja:3 |
 | biz-3225 | biz | new | noul | yes/no | hard | ui | True | ja:True | ja:False |
-| photo-0042 | photo | polished | choice | choice 4 | hard | document | 3 | en:3/ja:3 | en:0/ja:0 |
-| photo-0461 | photo | polished | noul | yes/no | medium | photo-scene | True | en:True/ja:True | en:False/ja:False |
-| photo-0550 | photo | polished | choice | choice 4 | easy | photo-person | 1 | en:1/ja:1 | en:0/ja:0 |
-| photo-0635 | photo | polished | noul | yes/no | easy | photo-person | True | en:True/ja:True | en:False/ja:False |
-| photo-0878 | photo | polished | choice | choice 4 | hard | chart | 1 | en:1/ja:1 | en:0/ja:0 |
-| photo-1089 | photo | polished | choice | choice 4 | medium | photo-scene | 1 | en:1/ja:1 | en:0/ja:0 |
-| photo-1144 | photo | polished | choice | choice 4 | hard | document | 1 | en:1/ja:1 | en:2/ja:2 |
+| photo-0042 | photo | base | choice | choice 4 | hard | document | 3 | en:3/ja:3 | en:0/ja:0 |
+| photo-0461 | photo | base | noul | yes/no | medium | photo-scene | True | en:True/ja:True | en:False/ja:False |
+| photo-0550 | photo | base | choice | choice 4 | easy | photo-person | 1 | en:1/ja:1 | en:0/ja:0 |
+| photo-0635 | photo | base | noul | yes/no | easy | photo-person | True | en:True/ja:True | en:False/ja:False |
+| photo-0878 | photo | base | choice | choice 4 | hard | chart | 1 | en:1/ja:1 | en:0/ja:0 |
+| photo-1089 | photo | base | choice | choice 4 | medium | photo-scene | 1 | en:1/ja:1 | en:0/ja:0 |
+| photo-1144 | photo | base | choice | choice 4 | hard | document | 1 | en:1/ja:1 | en:2/ja:2 |
 
 #### Label-check candidates: both models wrong, giving the SAME wrong answer in every language (44)
 
@@ -268,7 +257,7 @@ biz-0033, biz-0046, biz-0097, biz-1038, biz-1039, biz-1040, biz-1041, biz-1090, 
 | JEVision GPU | 5364 | 0 |  |
 | OpenAI | 5364 | 0 |  |
 
-OpenAI (model gpt-6-luna, endpoint https://api.openai.com/v1/decisions): 5364 requests, 1019702 input tokens, 2 retries, summed round trip 2283 s. Estimated cost at an ASSUMED $0.10 per 1M input tokens (GPT-6 Luna input rate; the Decisions API has no published price; same assumption as report/wiki_report.py): **$0.102**. Output tokens were not billed in the assumption (they are reported as 0).
+OpenAI (model gpt-6-luna, endpoint https://api.openai.com/v1/decisions): 5364 requests, 1019702 input tokens, 2 retries, summed round trip 2283 s. Estimated cost at an ASSUMED $0.10 per 1M input tokens (GPT-6 Luna input rate; the Decisions API has no published price): **$0.102**. Output tokens were not billed in the assumption (they are reported as 0).
 
 ## JEVision CPU vs GPU
 
@@ -306,5 +295,5 @@ CPU calibration (GLiNER fixed job before/after each block, limit 600 ms): 2 of 2
 - jevision_v1all_ja_224_cpu: model=jevision repo=<OWNER>/JEVision-0.8B-ONNX-CPU tag=local-untagged variant=fp16 device=cpu providers_requested=['CPUExecutionProvider'] providers_used=['CPUExecutionProvider'] threads=8 dataset_version=v1 question_list sha256=b14ec1a246e4d2527f5cffad488a64a186e67000afd1af0e376558e0bbd40394 started=2026-10-11T13:21:46+09:00 finished=2026-10-11T13:58:29+09:00
 - jevision_v1all_en_224_cuda: model=jevision repo=<OWNER>/JEVision-0.8B-ONNX-CPU tag=local-untagged variant=fp16 device=cuda providers_requested=['CUDAExecutionProvider', 'CPUExecutionProvider'] providers_used=['CUDAExecutionProvider'] threads=8 dataset_version=v1 question_list sha256=b14ec1a246e4d2527f5cffad488a64a186e67000afd1af0e376558e0bbd40394 started=2026-10-11T12:38:41+09:00 finished=2026-10-11T12:41:46+09:00
 - jevision_v1all_ja_224_cuda: model=jevision repo=<OWNER>/JEVision-0.8B-ONNX-CPU tag=local-untagged variant=fp16 device=cuda providers_requested=['CUDAExecutionProvider', 'CPUExecutionProvider'] providers_used=['CUDAExecutionProvider'] threads=8 dataset_version=v1 question_list sha256=b14ec1a246e4d2527f5cffad488a64a186e67000afd1af0e376558e0bbd40394 started=2026-10-11T12:41:48+09:00 finished=2026-10-11T12:47:18+09:00
-- openai_v1all_en_224: model=openai repo=https://api.openai.com/v1/decisions (remote API) tag=api variant=gpt-6-luna device=remote providers_requested=['CPUExecutionProvider'] providers_used=['remote:https://api.openai.com/v1/decisions'] threads=8 dataset_version=v1 question_list sha256=b14ec1a246e4d2527f5cffad488a64a186e67000afd1af0e376558e0bbd40394 started=2026-10-11T12:38:26+09:00 finished=2026-10-11T12:38:27+09:00
-- openai_v1all_ja_224: model=openai repo=https://api.openai.com/v1/decisions (remote API) tag=api variant=gpt-6-luna device=remote providers_requested=['CPUExecutionProvider'] providers_used=['remote:https://api.openai.com/v1/decisions'] threads=8 dataset_version=v1 question_list sha256=b14ec1a246e4d2527f5cffad488a64a186e67000afd1af0e376558e0bbd40394 started=2026-10-11T12:29:36+09:00 finished=2026-10-11T12:36:20+09:00
+- openai_v1all_en_224: model=openai repo=https://api.openai.com/v1/decisions (remote API) tag=api variant=gpt-6-luna device=remote providers_requested=['remote'] providers_used=['remote:https://api.openai.com/v1/decisions'] threads=8 dataset_version=v1 question_list sha256=b14ec1a246e4d2527f5cffad488a64a186e67000afd1af0e376558e0bbd40394 started=2026-10-11T12:38:26+09:00 finished=2026-10-11T12:38:27+09:00
+- openai_v1all_ja_224: model=openai repo=https://api.openai.com/v1/decisions (remote API) tag=api variant=gpt-6-luna device=remote providers_requested=['remote'] providers_used=['remote:https://api.openai.com/v1/decisions'] threads=8 dataset_version=v1 question_list sha256=b14ec1a246e4d2527f5cffad488a64a186e67000afd1af0e376558e0bbd40394 started=2026-10-11T12:29:36+09:00 finished=2026-10-11T12:36:20+09:00

@@ -1058,7 +1058,7 @@ def assign_levels(plan):
 
 
 def make_row(qid, group, spec):
-    row = {"id": qid, "legacy_id": None, "origin": "new", "derived_from": None, "group": group, "source": "rendered",
+    row = {"id": qid, "origin": "new", "derived_from": None, "group": group, "source": "rendered",
            "image_type": spec["image_type"], "skill": spec["skill"], "difficulty": spec["difficulty"], "lang": "both", "langs": ["en", "ja"],
            "modality": "image", "kind": spec["kind"], "tags": spec["tags"], "local_images": ["generated/%s.png" % qid],
            "en": spec["en"], "ja": spec["ja"]}

@@ -69,7 +69,7 @@ class Check(unittest.TestCase):
 
     def test_each_state(self):
         """The five states of the policy are told apart, with the right question lists."""
-        m = {"manifest_version": "legacy", "images": [manifest_entry(i) for i in range(6)]}
+        m = {"manifest_version": "v1", "images": [manifest_entry(i) for i in range(6)]}
         files = {
             "File:T0.jpg": imageinfo(),                                         # ok
             "File:T1.jpg": None,                                                # broken: gone
@@ -86,7 +86,7 @@ class Check(unittest.TestCase):
         self.assertEqual(res["affected_questions"], ["q3"])                      # evaluated on the old picture
 
     def test_sha1_alone_when_timestamp_unknown(self):
-        """legacy has no timestamps: an image whose sha1 is unchanged is 正常 even though Commons now reports a timestamp."""
+        """the image list has no timestamps: an image whose sha1 is unchanged is 正常 even though Commons now reports a timestamp."""
         e = manifest_entry(0)
         state, _, _ = I.classify(e, commons.image_info(["File:T0.jpg"], api=FakeCommons({"File:T0.jpg": imageinfo(ts="2026-01-01T00:00:00Z")}))["File:T0.jpg"])
         self.assertEqual(state, "ok")
@@ -118,7 +118,7 @@ class Check(unittest.TestCase):
 
 class Refresh(unittest.TestCase):
     def setUp(self):
-        self.m = {"manifest_version": "legacy", "images": [manifest_entry(i) for i in range(4)]}
+        self.m = {"manifest_version": "v1", "images": [manifest_entry(i) for i in range(4)]}
         files = {"File:T0.jpg": imageinfo(author="Bob"), "File:T1.jpg": imageinfo(lic="CC BY 2.0"), "File:T2.jpg": None,
                  "File:T3.jpg": imageinfo(sha1="ccc")}
         self.res = I.check(self.m, api=FakeCommons(files))
@@ -172,7 +172,7 @@ class Fetch(unittest.TestCase):
             e["sha256_original"] = sha(data)
             e["sha256_224"] = sha(fetch_images.shrink(data, 224))
             entries.append(e)
-        m = {"manifest_version": "legacy", "source_width_px": 640, "input_px": 224, "images": entries}
+        m = {"manifest_version": "v1", "source_width_px": 640, "input_px": 224, "images": entries}
         files = {"File:T0.jpg": imageinfo(thumb="http://t/0"), "File:T1.jpg": imageinfo(thumb="http://t/1"),
                  "File:T2.jpg": imageinfo(sha1="zzz", thumb="http://t/2")}
         served = {"http://t/0": good, "http://t/1": rerender, "http://t/2": replaced}
