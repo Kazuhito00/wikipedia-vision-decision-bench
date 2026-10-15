@@ -32,14 +32,14 @@ NAMES = {
     "openjev": ("OpenJev 0.8B", "OpenJev 0.8B"), "openjev4": ("OpenJev 4B", "OpenJev 4B"),
     "intern": ("Intern-Decision 0.8B", "Intern"), "strands": ("Strands Decider 2B", "Strands"), "clef": ("clef-flash 9B", "clef-flash"),
     "qev": ("QEV 2B", "QEV"), "d3edge": ("d3-edge 0.6B", "d3-edge"), "d3lite": ("d3-lite 0.9B", "d3-lite"), "d3nano": ("d3-nano 2B", "d3-nano"),
-    "openai": ("OpenAI Decisions API", "OpenAI"),
+    "openai": ("OpenAI Decisions API", "OpenAI"), "jev": ("Jev API", "Jev API"),
 }
 #: a model that is an API (no device of its own); every other model is local. A run with no cpu/cuda suffix is "remote" either way.
-API_MODELS = {"openai"}
+API_MODELS = {"openai", "jev"}
 #: fixed colours of the models seen so far (the first two keep the colours of the first version of the page)
 COLORS = {"jevision": "#3b73d8", "openai": "#e0861a", "onejev": "#2a9d6f", "onejev4": "#1b6e4d", "openjev": "#6fb7a0", "openjev4": "#3d8b7a",
           "intern": "#8a5fc7", "strands": "#c0453f", "clef": "#b58900", "qev": "#2b9bb5", "d3edge": "#d2578f", "d3lite": "#a8643c",
-          "d3nano": "#7f9c1e"}
+          "d3nano": "#7f9c1e", "jev": "#c2185b"}
 #: for an unknown model: the next one that nobody uses
 SPARE = ["#4c6ef5", "#12a594", "#6c7a89", "#e05d44", "#9467bd", "#8c8c3c", "#17a2b8", "#c2579a", "#5b8c3a", "#a35d8f", "#2f7fa8", "#b9772e"]
 #: weight (download) size in GB where the repositories document one (colab/run_colab.py SPECS and the model READMEs). None = not documented.

@@ -23,7 +23,7 @@ Google Drive is OFF by default (no mount, no sync, no cache, no restore): result
 Pass --use-drive (the notebook: USE_DRIVE = True) to use Drive.  Everything is cloned by default (--models all: every repository, shared ones once; weights via
 download_model.py; with --weights auto they are deleted after each model only when they do not all fit the disk).
 
-Secrets: GITHUB_TOKEN (private repositories) and OPENAI_API_KEY (the openai model) are read from the environment ONLY; the notebook fills
+Secrets: GITHUB_TOKEN (private repositories), OPENAI_API_KEY (the openai model) and TYPESAFE_API_KEY (the jev model) are read from the environment ONLY; the notebook fills
 them from Colab Secrets. They are never printed, never written to a file, never put in a URL.
 Block names / results are the bench's own (runner/run.py): results/runs/v1/<model>_<set code>_<lang>_224_<cpu|cuda>.json.
 CPU speed reference (a GPU-only run, --devices cuda): a few questions per model are also solved on the CPU, only to give a time per question
@@ -89,7 +89,8 @@ SPECS = {
                    src="same repository and download as d3edge (counted there); weights in models/lite (4.2 GB)"),
     "d3nano": dict(repo="D3-ONNX-CPU", shared="d3edge", model_dir="models/nano", download=["download_model.py"], disk_gb=0, ram_gb=None, vram_gb=None, cpu_s=None, gpu_s=None,
                    src="same repository and download as d3edge (counted there); weights in models/nano (9.3 GB)"),
-    "openai": dict(repo="-", remote=True, src="remote API (costs money; needs OPENAI_API_KEY in the environment)"),
+    "openai": dict(repo="-", remote=True, key_env="OPENAI_API_KEY", src="remote API (costs money; needs OPENAI_API_KEY in the environment)"),
+    "jev": dict(repo="-", remote=True, key_env="TYPESAFE_API_KEY", src="remote API (costs money; needs TYPESAFE_API_KEY in the environment)"),
 }
 GLINER = dict(repo="GLiNER2.5-Decide-ONNX-CPU", model_dir="models/onnx", download=["download_model.py"], disk_gb=1.7)   # calibration only
 ALL_MODELS = list(SPECS)
@@ -187,7 +188,7 @@ def git_env() -> dict:
 
 
 def scrub(text: str) -> str:
-    for name in ("GITHUB_TOKEN", "OPENAI_API_KEY"):
+    for name in ("GITHUB_TOKEN", "OPENAI_API_KEY", "TYPESAFE_API_KEY"):
         v = os.environ.get(name)
         if v:
             text = text.replace(v, "***")
@@ -367,7 +368,7 @@ def parse_args(argv=None):
     ap.add_argument("--allow-unconfirmed-cuda", action="store_true", help="run a cuda model although providers_used could not be read")
     ap.add_argument("--force-models", action="store_true", help="try a model although its documented RAM / VRAM minimum is above this machine")
     ap.add_argument("--recheck", action="store_true", help="repeat the smoke / device check")
-    ap.add_argument("--no-api", action="store_true", help="never run the openai model")
+    ap.add_argument("--no-api", action="store_true", help="never run the remote API models (openai, jev)")
     ap.add_argument("--no-v1-report", action="store_true", help="skip the report/v1_report.py page (colab/make_v1_report.py)")
     ap.add_argument("--include-all-blocks", action="store_true", help="report: also blocks in results/runs/v1 that this machine did not run (default: Colab-run blocks only)")
     ap.add_argument("--dry-run", action="store_true", help="print what would be done; no install, no network, no run")
@@ -1246,8 +1247,9 @@ def run_models(args, models, devices, gpu, sets, langs, sync, status) -> None:
         hdr("model %s (%d/%d)" % (key, i + 1, len(models)))
         spec = SPECS[key]
         remote = bool(spec.get("remote"))
-        if remote and (args.no_api or not os.environ.get("OPENAI_API_KEY")):
-            reason = "--no-api" if args.no_api else "OPENAI_API_KEY is not set (Colab Secrets -> notebook cell): the OpenAI Decisions API is skipped"
+        key_env = spec.get("key_env", "OPENAI_API_KEY")
+        if remote and (args.no_api or not os.environ.get(key_env)):
+            reason = "--no-api" if args.no_api else "%s is not set (Colab Secrets -> notebook cell): the %s is skipped" % (key_env, key)
             status[(key, "remote")] = "skipped: " + reason
             say("  " + reason)
             continue
@@ -1531,7 +1533,7 @@ def step_plan(args, models, devices, gpu, sets, langs) -> None:
     for k in models:
         s = SPECS[k]
         if s.get("remote"):
-            say("%-9s %-34s %-10s %-9s %-10s %s" % (k, "(remote API)", "-", "-", "-", "OPENAI_API_KEY set: %s; costs money" % ("yes" if os.environ.get("OPENAI_API_KEY") else "NO -> skipped")))
+            say("%-9s %-34s %-10s %-9s %-10s %s" % (k, "(remote API)", "-", "-", "-", "%s set: %s; costs money" % (s.get("key_env", "OPENAI_API_KEY"), "yes" if os.environ.get(s.get("key_env", "OPENAI_API_KEY")) else "NO -> skipped")))
             continue
         est = "%.1f" % (s["cpu_s"] * total / 3600) if s.get("cpu_s") and total else "?"
         say("%-9s %-34s %-10s %-9s %-10s %s" % (k, "%s/%s" % (args.owner, s["repo"]), ("shared" if s.get("shared") else (s.get("disk_gb") or "?")), "%s/%s" % (s.get("ram_gb") or "?", s.get("vram_gb") or "?"), est, s["src"]))

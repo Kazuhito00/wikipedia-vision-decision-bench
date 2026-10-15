@@ -10,7 +10,7 @@
 3. uv で依存（pillow / numpy、GPU があれば onnxruntime-gpu、無ければ onnxruntime）。CUDA が本当に使えるか、手書きの小さな ONNX で確認
 4. 画像 `images-224px.zip`（既定: bench の GitHub Release `v0.0.0` からダウンロード → `SHA256SUMS` で照合 → 展開 → 全問の画像の存在確認）
 5. モデルごとに「clone → 重み取得（`download_model.py`）→ デバイス（cpu / cuda）ごとに スモーク → 本番ブロック →（必要なら）重み削除」。取得できない・載らない・CPU に落ちるモデルは**そのデバイスだけスキップ**して次へ、最後に一覧で表示
-6. OpenAI Decisions API は、Colab Secrets に `OPENAI_API_KEY` があるときだけ（有料。未設定なら理由を表示してスキップ）
+6. OpenAI Decisions API は Colab Secrets の `OPENAI_API_KEY`、Jev API（`jev-preview` = Jev 1.14）は `TYPESAFE_API_KEY` があるときだけ（有料。未設定なら理由を表示してスキップ）
 7. 集計（markdown / csv / html）と結果 zip。**Drive は既定でオフ**（結果は `/content` のローカルだけ。zip をダウンロードして持ち帰る）。`--use-drive` のときだけログ・結果・画像 zip・重みを Drive に保存
 
 CLI だけで回すとき:
@@ -69,6 +69,7 @@ T4 は VRAM 16 GB・RAM 約 12 GB（無料枠）というのが一般的な想�
 | OneJev 0.8B / 4B | `download_model.py` を**引数なし**で 1 回（0.8B と 4B の両方、約 13 GB。0.8B は `models/onnx`、4B は `models/onnx-4b`）。`onejev` と `onejev4` は同じリポジトリなので取得は 1 回だけ（共有） | 4B は実行に約 10 GB の RAM（README）。0.8B の記述なし | 未検証。ディスクを節約したいときは `--download-args "onejev=--model-size 0.8b"`（0.8B のみ約 2.9 GB。この場合 4B は取れないので `MODELS` から `onejev4` を外す） |
 | D3 Edge / Lite / Nano | 統合リポジトリ `D3-ONNX-CPU`（`Kazuhito00/D3-ONNX-CPU`）。`download_model.py` を引数なしで 1 回（edge 2.6 GB + lite 4.2 GB + nano 9.3 GB = 約 16 GB。`models/edge` / `models/lite` / `models/nano`）。`d3edge` / `d3lite` / `d3nano` は共有で取得は 1 回だけ。tokenizers が必要（setup が入れる）。**d3-mini（5B）は未対応**（export に約 25 GB の RAM が要るため。このスクリプトの対象外） | 重みだけの VRAM: edge 2.0 GB / lite 3.0 GB / nano 7.5 GB（README）。ピーク RAM（640x480 画像 + 3 設問）: edge 3.2 GB / lite 5.5 GB / nano 10.0 GB。edge だけ読み込みたいときは `--download-args "d3edge=--model edge"` | 未検証（取得できなければスキップ） |
 | OpenAI Decisions API | 重みなし。`OPENAI_API_KEY`、有料、3 並列 | — | GPU 不要 |
+| Jev API | 重みなし。`TYPESAFE_API_KEY`、有料、3 並列（画像は 256 px 以上に拡大して送る） | — | GPU 不要 |
 
 GPU 1 問あたりの時間は、作者の PC（RTX 3050 Ti Laptop 4 GB）の値しかありません（JEVision 75 ms / OneJev 87 ms）。T4 は未測定。
 

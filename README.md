@@ -141,6 +141,7 @@ $env:WIKIQA_DATA_ROOT = "<展開したフォルダ>"        # <フォルダ>/dat
 | OneJev 4B | 4B / fp16 | Qwen3.5-4B（調整） | 同上 | 未確認 | 255（段階 10） | `<OWNER>/OneJev-ONNX-CPU` |
 | clef-flash 9B | 9B / bf16 重み・fp32 計算 | Qwen3.5-9B（調整） | 同上（メモリ大） | 4 枚 | 未確認 | `<OWNER>/clef-flash-ONNX-CPU` |
 | OpenAI Decisions API | 非公開 | 不明 | ネットワークと API キー | — | — | — |
+| Jev API（TypeSafe。`jev-preview` = Jev 1.14） | 非公開 | 不明 | ネットワークと API キー（`TYPESAFE_API_KEY`）。画像は 256〜1568 px 以外を拒否するため 224 px の画像を拡大して送る | — | 255（段階 10） | — |
 
 測定結果は `report/v1_report.py` で作るレポート（`results/runs/v1/`）にまとめます。
 
@@ -173,7 +174,7 @@ uv run python -m datasets.fetch refresh --apply      # 確認のうえで一覧�
 - 自作の画像（描画画像 1106 枚）は **CC0-1.0**（Public Domain Dedication）で確定しています。描画スクリプトは `datasets/synthetic`、画像内の日本語は Noto Sans JP / Noto Serif JP（OFL 1.1。フォントは配布しません）で描いています。
 - 透明性の注記: 画像内の文字の描画に Windows 同梱フォントを使った画像が含まれます（Tkinter の画面 249 問: 英語 UI の Segoe UI 203、日本語 UI の Yu Gothic UI 46。画面は自作でスクリーンショットに OS の枠は含みません）。該当 ID の一覧は `datasets/manifests/windows_fonts_images_v1.md` です。事実の記載であり、法的な判断ではありません。
 - 生成した HTML は Commons の画像を含むため**ローカル専用**です（`*.html` は git 管理外）。公開するときは `--public`（画像なし）を使います。
-- OpenAI のキーは環境変数から読みます。`.env` は git 管理外で、`python tools/scan_secrets.py` をコミット前に実行します（キーの文字列は表示しません）。
+- OpenAI（`OPENAI_API_KEY`）と Jev（`TYPESAFE_API_KEY`）のキーは環境変数から読みます。`.env` は git 管理外で、`python tools/scan_secrets.py` をコミット前に実行します（キーの文字列は表示しません）。
 
 ## 公開前チェック
 

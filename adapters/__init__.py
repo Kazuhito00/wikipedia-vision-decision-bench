@@ -49,6 +49,7 @@ REGISTRY = {
     "d3lite": ("d3", "d3-lite 0.9B"),
     "d3nano": ("d3", "d3-nano 2B"),
     "openai": ("openai_decisions", "OpenAI Decisions API"),
+    "jev": ("typesafe_jev", "Jev API"),
 }
 #: model repository the runtime comes from (recorded with the results; "<OWNER>" is a placeholder until the repositories exist)
 REPOS = {
@@ -58,6 +59,7 @@ REPOS = {
     "jevision": "<OWNER>/JEVision-0.8B-ONNX-CPU", "qev": "<OWNER>/QEV-2B-ONNX-CPU",
     "d3edge": "Kazuhito00/D3-ONNX-CPU", "d3lite": "Kazuhito00/D3-ONNX-CPU", "d3nano": "Kazuhito00/D3-ONNX-CPU",   # d3-mini 5B: not supported (export needs ~25 GB RAM)
     "openai": "https://api.openai.com/v1/decisions (remote API)",
+    "jev": "https://api.typesafe.ai/v1/systemone (remote API)",
 }
 
 

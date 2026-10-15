@@ -131,7 +131,7 @@ def main(argv=None) -> int:
         return 0
 
     gpumem = None
-    if (args.device == "cuda" or (args.device is None and args.gpu)) and args.model != "openai":
+    if (args.device == "cuda" or (args.device is None and args.gpu)) and args.model not in ("openai", "jev"):
         from . import gpumem as _gm                               # peak GPU memory of this block (model load included)
         gpumem = _gm.Sampler().start()
     cases = select_cases(args)

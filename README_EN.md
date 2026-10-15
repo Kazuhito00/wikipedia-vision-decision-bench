@@ -141,6 +141,7 @@ $env:WIKIQA_DATA_ROOT = "<unpacked folder>"        # must contain data/images/..
 | OneJev 4B | 4B / fp16 | Qwen3.5-4B (tuned) | same | unconfirmed | 255 (score 10) | `<OWNER>/OneJev-ONNX-CPU` |
 | clef-flash 9B | 9B / bf16 weights, fp32 compute | Qwen3.5-9B (tuned) | same (large memory) | 4 | unconfirmed | `<OWNER>/clef-flash-ONNX-CPU` |
 | OpenAI Decisions API | not public | unknown | network and an API key | - | - | - |
+| Jev API (TypeSafe; `jev-preview` = Jev 1.14) | not public | unknown | network and an API key (`TYPESAFE_API_KEY`); the API rejects pictures outside 256-1568 px, so the 224 px pictures are scaled up | - | 255 (10 levels) | - |
 
 Measured results are summarised in the report built by `report/v1_report.py` (from `results/runs/v1/`).
 
@@ -173,7 +174,7 @@ Note: the stored picture is Commons' **640 px wide thumbnail**; `sha1` is that o
 - Pictures made by this repository's scripts (1106 drawn pictures) are **CC0-1.0** (Public Domain Dedication), decided. The drawing scripts are in `datasets/synthetic`; Japanese text in the pictures is drawn with Noto Sans JP / Noto Serif JP (OFL 1.1; fonts are not distributed).
 - Transparency note: some pictures have text drawn with fonts bundled with Windows (the Tkinter screens, 249 questions: Segoe UI for the English UI 203, Yu Gothic UI for the Japanese UI 46; the screens are our own and the screenshots contain no OS frame). The ids are listed in `datasets/manifests/windows_fonts_images_v1.md`. This states facts only, not a legal judgement.
 - Generated HTML contains Commons pictures, so it is **local only** (`*.html` is git-ignored). Use `--public` (no pictures) to publish.
-- The OpenAI key is read from the environment. `.env` is git-ignored; run `python tools/scan_secrets.py` before a commit (it never prints a key).
+- The OpenAI (`OPENAI_API_KEY`) and Jev (`TYPESAFE_API_KEY`) keys are read from the environment. `.env` is git-ignored; run `python tools/scan_secrets.py` before a commit (it never prints a key).
 
 ## Before publishing
 
