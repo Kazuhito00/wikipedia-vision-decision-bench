@@ -4,7 +4,7 @@
 方針: 人物が写っているだけでは外さず、設問が人物の同定を求めない限り残しました（同定を求める問は drop / fix 済み）。画像はすべて CC0・パブリックドメインの Commons 写真です。
 **決定: 残す（2026-10-11）。** ただし、人物の同定を求める設問は含まれません。
 要望があれば個別に除外できます: `python datasets/tools/drop_ids.py <ID> ... --reason "..." --apply` が、各 ID の `review.state` を `dropped` にします。その後 `python -m datasets.build_v1` で `dist/v1` を作り直します。
-人物の顔の画像はここに載せていません（ID と理由のみ）。画像は `dist/v1/images_v1.json` の `question_ids` から引けます。
+人物の顔の画像はここに載せていません（ID と理由のみ）。画像は `dist/build/images_v1.json` の `question_ids` から引けます。
 
 群別: photo 84
 

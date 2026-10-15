@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Pack the pictures of the question set into two zips (``pack_catalog``; ``python -m datasets.build_v1`` calls it and writes them to
-dist/v1/, git-ignored). NOTHING IS UPLOADED: uploading is a separate, approved step.
+dist/build/, git-ignored). NOTHING IS UPLOADED: uploading is a separate, approved step.
 
   images-224px.zip      the pictures as the models are given them (longest side 224 px): the Commons pictures and the pictures drawn by
                         this repository's scripts. Enough to reproduce the evaluation.

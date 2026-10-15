@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Prepare the assets of the images Release (images-224px.zip + SHA256SUMS) in dist/ (git-ignored). NOTHING IS UPLOADED.
 
-    uv run python tools/make_images_release.py [--src dist/v1] [--out dist/v1/release] [--max-part-gib 1.9]
+    uv run python tools/make_images_release.py [--src dist/build] [--out dist/build/release] [--max-part-gib 1.9]
 
-Input: dist/v1/images-224px.zip and dist/v1/images_v1.json, made by ``python -m datasets.build_v1`` (the 224 px pictures every v1 question uses;
+Input: dist/build/images-224px.zip and dist/build/images_v1.json, made by ``python -m datasets.build_v1`` (the 224 px pictures every v1 question uses;
 member names = the logical paths of the question rows, e.g. data/images/<sha1>.jpg, data/synthetic/syn-0001.png, generated/rsn-2040.png;
 ATTRIBUTION.md lists title / author / license / source URL of every Wikimedia Commons picture, from the manifest's metadata).
 What this script adds: it CHECKS the zip (every picture the v1 questions use is in it, every member matches the sha256_224 of images_v1.json,
@@ -78,7 +78,7 @@ def check(zpath: pathlib.Path, manifest: dict) -> list[str]:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--src", default=str(ROOT / "dist" / "v1"))
+    ap.add_argument("--src", default=str(ROOT / "dist" / "build"))
     ap.add_argument("--out", default="")
     ap.add_argument("--max-part-gib", type=float, default=1.9)
     ap.add_argument("--owner", default="Kazuhito00")

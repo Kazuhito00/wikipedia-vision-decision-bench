@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Final build of the question set: everything a user (or another repository) needs, in dist/<version>/ (git-ignored).
+"""Final build of the question set: everything a user (or another repository) needs, in dist/build/ (git-ignored).
 
-    python -m datasets.build_v1 [--out dist/v1] [--date 2026-10-11] [--root DIR ...] [--no-zip] [--no-runner-check]
+    python -m datasets.build_v1 [--out dist/build] [--date 2026-10-11] [--root DIR ...] [--no-zip] [--no-runner-check]
 
 Reads the question files (datasets/questions/v1/*.jsonl, dropped rows left out), the image list (manifests/images_v1.json) and the
 classification tables; READS ONLY: no question file is ever written. Needs the pictures on this machine: Commons pictures and the
@@ -115,7 +115,7 @@ def row_tag_map() -> dict:
     return out
 
 
-def build_catalog(rows: list, roots, date: str, problems: list) -> tuple:
+def build_catalog(rows: list, roots, date: str, problems: list, need_224: bool = True) -> tuple:
     """(catalog dict, {path: (original bytes, 224 bytes)}). Commons and the earlier drawn pictures inherit their entry of
     manifests/images_v1.json; the pictures under generated/ are made by the scripts: source "generated"."""
     listed = json.loads((loader.MANIFESTS / "images_v1.json").read_text(encoding="utf-8"))
@@ -132,22 +132,22 @@ def build_catalog(rows: list, roots, date: str, problems: list) -> tuple:
     for p in sorted(users):
         name = pathlib.PurePosixPath(p).name
         r = first_row[p]
-        orig_f, f224 = find_original(p, roots), find_224(p, roots)
-        if orig_f is None or f224 is None:
+        orig_f, f224 = find_original(p, roots), (find_224(p, roots) if need_224 else None)     # the runner's px cache is not the canonical 224 px picture
+        if orig_f is None or (f224 is None and need_224):
             problems.append("picture not found: %s (original %s, 224px %s)" % (p, bool(orig_f), bool(f224)))
             continue
-        ob, sb = orig_f.read_bytes(), f224.read_bytes()
-        so, s2 = sha256_bytes(ob), sha256_bytes(sb)
+        ob, sb = orig_f.read_bytes(), (f224.read_bytes() if f224 else None)       # no 224 px copy: only with --no-zip (the 224 px zip is retired)
+        so, s2 = sha256_bytes(ob), (sha256_bytes(sb) if sb is not None else None)
         qids = sorted(users[p])
         if p.startswith("generated/"):
             tag = tags.get(r["id"]) or "rewrite"
             gen, seed = GENERATORS[tag]
             e = dict(path=p, file=name, source="generated", generator=gen, seed=seed, license=LICENSE_DECIDED, license_status="decided",
                      sha256_original=so, sha256_224=s2,
-                     size_original=img_size(ob), size_224=img_size(sb), question_ids=qids)
+                     size_original=img_size(ob), size_224=img_size(sb) if sb is not None else None, question_ids=qids)
             if tag in TK_FONTS:
                 e["fonts"] = TK_FONTS[tag]
-            if not fresh_224_equal(ob, sb):
+            if sb is not None and not fresh_224_equal(ob, sb):
                 problems.append("warning: 224px copy of %s is not the fresh LANCZOS shrink of its original (using the stored copy)" % p)
         else:
             old = by_file.get(name)
@@ -155,7 +155,7 @@ def build_catalog(rows: list, roots, date: str, problems: list) -> tuple:
                 problems.append("%s is not in images_v1.json" % p)
                 continue
             e = {k: v for k, v in old.items() if k != "question_ids"}
-            if (so, s2) != (old["sha256_original"], old["sha256_224"]):
+            if (so, s2 if s2 is not None else old["sha256_224"]) != (old["sha256_original"], old["sha256_224"]):
                 problems.append("%s differs from images_v1.json (original %s, 224px %s)" % (
                     p, so == old["sha256_original"], s2 == old["sha256_224"]))
             if e.get("author"):                                      # a Commons author line may carry a private e-mail address: drop it
@@ -165,7 +165,9 @@ def build_catalog(rows: list, roots, date: str, problems: list) -> tuple:
                 e["license"] = LICENSE_DECIDED
                 e["license_status"] = "decided"
                 e["seed"] = "fixed seeds of datasets/synthetic (see generator)"
-            e.update(size_original=img_size(ob), size_224=img_size(sb), question_ids=qids)
+            e.update(size_original=img_size(ob), question_ids=qids)
+            if sb is not None:
+                e["size_224"] = img_size(sb)
         entries.append(e)
         blobs[p] = (ob, sb)
     counts = collections.Counter(e["source"] for e in entries)
@@ -303,7 +305,7 @@ def run_checks(rows: list, all_rows: list, catalog: dict, cases: list, qrecs: li
     bad_sha = []
     for e in catalog["images"]:
         f, f2 = find_original(e["path"], roots), find_224(e["path"], roots)
-        if f is None or f2 is None or sha256_bytes(f.read_bytes()) != e["sha256_original"] or sha256_bytes(f2.read_bytes()) != e["sha256_224"]:
+        if f is None or sha256_bytes(f.read_bytes()) != e["sha256_original"] or (zips is not None and (f2 is None or sha256_bytes(f2.read_bytes()) != e["sha256_224"])):
             bad_sha.append(e["path"])
     ck.add("画像 sha256 が一覧と一致（original と 224px、ディスクを再読込）", not bad_sha, "%d 枚を照合%s" % (len(have), "; 不一致: %s" % bad_sha[:5] if bad_sha else ""))
     used = {p for r in rows for p in r.get("local_images", [])}
@@ -445,7 +447,7 @@ def main(argv=None) -> int:
     rowmap = {r["id"]: r for r in rows}
     problems: list = []
     stage('catalog')
-    catalog, blobs = build_catalog(rows, roots, a.date, problems)
+    catalog, blobs = build_catalog(rows, roots, a.date, problems, need_224=not a.no_zip)
     stage('cases')
     cases_raw = loader.load_v1_cases(images_root=pathlib.Path("."), strict_passages=False)
     cases = [case_record(c, rowmap) for c in cases_raw]

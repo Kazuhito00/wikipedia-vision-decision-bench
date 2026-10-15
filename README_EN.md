@@ -7,7 +7,7 @@ A benchmark of the **picture understanding** of typed-decision models (`choice`,
 - What it measures: accuracy (per language, question group and answer form) and the time per question on CPU / GPU (calibrated blocks only).
 - A model meets the bench only in `adapters/`. Each model runs in an environment that has **its own repository's package** (`<OWNER>/<model name>-ONNX-CPU`).
 - **No pictures and no Wikipedia text are in this repository.** It holds the list (ids, license, author, URL, sha256) and the questions. The pictures are distributed as Release zips (in preparation).
-- **Dataset version**: the current one is **version 1 (`v1`)** (2768 questions, `datasets/questions/v1/`, `dist/v1/`). Question ids (`photo-0001`, `biz-1001`, ...) do not contain a version name.
+- **Dataset version**: the current one is **version 1 (`v1`)** (2768 questions, `datasets/questions/v1/`, `dist/build/`). Question ids (`photo-0001`, `biz-1001`, ...) do not contain a version name.
 
 ## Layout
 
@@ -117,7 +117,7 @@ Options range over 2 to 16, score levels are 3 / 5 / 7 / 10, with negation / cou
 Usage:
 
 ```powershell
-uv run python -m datasets.build_v1                 # writes dist/v1/: questions, cases, picture list, zips, build_report.md
+uv run python -m datasets.build_v1                 # writes dist/build/: questions, cases, picture list, zips, build_report.md
 # pictures: unpack images-original.zip (or images-320px.zip) into an empty folder and point at it
 $env:WIKIQA_DATA_ROOT = "<unpacked folder>"        # must contain data/images/... and generated/...
 .venv-onejev\Scripts\python -m runner.run --model onejev --set all --dataset-version v1 --lang en

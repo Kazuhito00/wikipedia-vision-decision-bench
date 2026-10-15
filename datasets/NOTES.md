@@ -38,7 +38,7 @@
 | `options.py` | 選択肢の並べ替え（balanced / 逆順）。§5 |
 | `taxonomy.py` | 分類軸の許可値（`V1_*`。検証が使う） |
 | `version.py` | 版名の定数 `DATASET_VERSION` |
-| `build_v1.py` | 最終ビルド: `dist/v1/` に問題・ケース・画像一覧・zip・検査結果を作る（§11.5） |
+| `build_v1.py` | 最終ビルド: `dist/build/` に問題・ケース・画像一覧・zip・検査結果を作る（§11.5） |
 | `questions/v1/` | v1 の問（上の表） |
 | `manifests/questions_v1.csv`、`questions_v1_new_<tag>.csv` | 分類表（行から作る。ローダーの `classification()` が読む） |
 | `manifests/images_v1.json` | Commons の画像と、以前に描いた画像の一覧（sha256・ライセンス・作者・URL。`question_ids` は画像ごとの問の一覧） |
@@ -238,7 +238,7 @@ privacy-check が付いた問は 84（`manifests/privacy_check_v1.md`。決定: 
 - フォント（事実の記載。フォント自体は配布しない）: 日本語の描画は Noto Sans JP / Noto Serif JP（OFL 1.1）、英数字の描画は Arial（その機械にあれば。なければ DejaVu Sans）。Tkinter の画像は自作画面のスクリーンショットで OS の枠は含まず、画面内の文字は **Windows 同梱のフォント（英語 UI は Segoe UI、日本語 UI は Yu Gothic UI）** で描かれている（249 問: Segoe UI 203・Yu Gothic UI 46。ID の一覧は `manifests/windows_fonts_images_v1.md`）。法的な判断はしない。
 - 問題文・選択肢は自作（Wikipedia の本文は含めない。記事の revision の参照だけ）。
 
-`python -m datasets.build_v1` は `dist/v1/`（gitignore）に次を作る。決定的で冪等（日付は `--date`、zip は名前順・固定時刻）。画像は `--root` / `$WIKIQA_DATA_ROOT` の下の `data/...`（Commons と以前に描いた画像）と、`work/generated/`（新しい画像）から読む。
+`python -m datasets.build_v1` は `dist/build/`（gitignore）に次を作る。決定的で冪等（日付は `--date`、zip は名前順・固定時刻）。画像は `--root` / `$WIKIQA_DATA_ROOT` の下の `data/...`（Commons と以前に描いた画像）と、`work/generated/`（新しい画像）から読む。
 
 | ファイル | 内容 |
 |---|---|

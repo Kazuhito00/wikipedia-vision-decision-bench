@@ -106,14 +106,14 @@ GPU 1 問あたりの時間は、作者の PC（RTX 3050 Ti Laptop 4 GB）の値
 
 ## 画像について
 
-画像（`images-320px.zip`、約 65 MB、2127 枚 + `ATTRIBUTION.md`）は Wikimedia Commons の CC0 / パブリックドメインの写真と、bench のスクリプトが描いた画像で、リポジトリには入っていません。モデルの重みと同じく **bench リポジトリの GitHub Release からダウンロード**します（既定: `https://github.com/<owner>/wikipedia-vision-decision-bench/releases/download/v0.0.1/images-320px.zip`）。優先順は `--images-zip`（`IMAGES_ZIP`）→ Drive キャッシュ（`--use-drive` のとき）→ `--images-url`（空なら上の既定の Release）。sha256 は Release の `SHA256SUMS` と照合（無ければ `--images-sha256`、それも無ければ 2026-10-15 のビルドの値 `58ff7629...`）。途中で切れたダウンロードは `.part` から再開し、Release が `images-320px.zip.partNN`（2 GiB 超）に分かれていれば `SHA256SUMS` を見て結合します。展開は zip の外に出る名前を拒否します。
+画像（`images-320px.zip`、約 65 MB、2127 枚 + `ATTRIBUTION.md`）は Wikimedia Commons の CC0 / パブリックドメインの写真と、bench のスクリプトが描いた画像で、リポジトリには入っていません。モデルの重みと同じく **bench リポジトリの GitHub Release からダウンロード**します（既定: `https://github.com/<owner>/wikipedia-vision-decision-bench/releases/download/v0.0.1/images-320px.zip`）。優先順は `--images-zip`（`IMAGES_ZIP`）→ Drive キャッシュ（`--use-drive` のとき）→ `--images-url`（空なら上の既定の Release）。sha256 は Release の `SHA256SUMS` と照合（無ければ `--images-sha256`、それも無ければ 2026-10-15 のビルドの値 `a7537f41...`）。途中で切れたダウンロードは `.part` から再開し、Release が `images-320px.zip.partNN`（2 GiB 超）に分かれていれば `SHA256SUMS` を見て結合します。展開は zip の外に出る名前を拒否します。
 
 失敗の原因は終了コードで区別し、ノートブックが案内を出します: 3 = Release 未公開 / タグ違い（404）または `--images-zip` が無い、4 = ネットワーク、5 = sha256 不一致、6 = 展開後に問の画像が足りない。Release が取れないときの最後の手段は、Commons からの自前取得（`python -m datasets.fetch fetch`）の**案内のみ**です（Commons の写真しか取れず、biz / rsn の描画画像は含まれない。連絡先は環境変数 `WIKIQA_CONTACT` で渡す: Colab では Secrets に自分の連絡先を設定し、ファイル・ログ・出力には書かない）。
 
 ### Release を作る（作者側。アップロードはしていない）
 
 ```bash
-uv run python -m datasets.build_v1                 # dist/v1/images-224px.zip・images-original.zip など（画像が手元にあるとき。ATTRIBUTION.md の元）
+uv run python -m datasets.build_v1                 # dist/build/images-224px.zip・images-original.zip など（画像が手元にあるとき。ATTRIBUTION.md の元）
 uv run python tools/make_images_320.py             # 元画像から 320×320 レターボックスを作り、検査 → dist/v1/release320/{images-320px.zip,SHA256SUMS} と datasets/manifests/images_v1_320.json
 gh release create v0.0.1 --repo <owner>/wikipedia-vision-decision-bench --title "v1 images (320 px letterbox)" --notes "..." dist/v1/release320/images-320px.zip dist/v1/release320/SHA256SUMS
 ```

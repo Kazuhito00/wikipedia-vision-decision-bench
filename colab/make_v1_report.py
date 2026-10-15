@@ -10,7 +10,7 @@ folder (the real dist/ and results/ are never written):
   * results/runs/v1/<model>_<set code>_<lang>_224<suffix>.json|csv blocks (photo / biz / rsn / txt / all / new) are merged per
     (model, suffix, language) into one run (`<model>_v1all_<lang>_224<suffix>`);
   * only the (id, language) pairs that EVERY run answered are compared (a run that did not ask a question must not count as wrong);
-  * dist/v1/cases_v1.jsonl and questions_v1.jsonl are rebuilt from datasets/questions (build_v1's own record functions, no pictures needed).
+  * dist/build/cases_v1.jsonl and questions_v1.jsonl are rebuilt from datasets/questions (build_v1's own record functions, no pictures needed).
     A text-only question whose Wikipedia passage is not on the machine gets a placeholder text (the page says so; the right/wrong counts do not
     depend on it). --strict-passages makes a missing passage an error instead (use it where passages.json exists and the text matters);
   * display names come from adapters.REGISTRY; colours and the local/api kind from the defaults of report/v1_models.py (unknown models: automatic).
@@ -167,7 +167,7 @@ def main(argv=None) -> int:
     ap.add_argument("--runs-dir", default=str(ROOT / "results" / "runs" / "v1"))
     ap.add_argument("--images-zip", default="", help="images-320px.zip (or images-224px.zip) to embed thumbnails from (default: dist/v1/images-320px.zip, release320/, or images-224px.zip, the first that exists)")
     ap.add_argument("--no-images", action="store_true", help="build the page without pictures")
-    ap.add_argument("--images-original-zip", default="", help="images-original.zip (default: dist/v1/images-original.zip when it exists): with it the picture dialog also offers the originals")
+    ap.add_argument("--images-original-zip", default="", help="images-original.zip (default: dist/build/images-original.zip when it exists): with it the picture dialog also offers the originals")
     ap.add_argument("--no-image-files", action="store_true", help="do not write the <page>_images folder (input / original files next to the page); the dialog then shows the embedded thumbnail only")
     ap.add_argument("--blocks-dir", default=str(work / "colab" / "blocks"))
     ap.add_argument("--include-all-blocks", action="store_true", help="also use blocks that this machine did not run (no Colab sidecar)")
@@ -222,7 +222,7 @@ def main(argv=None) -> int:
     found = vm.discover_runs(runs_tmp)
     print("v1 report: %d runs (%s), %d (question, language) pairs answered by every run, %d questions" %
           (len(found), ", ".join(sorted(found)), len(pairs), n_cases))
-    zp = pathlib.Path(a.images_zip) if a.images_zip else next((p for p in (ROOT / "dist" / "v1" / "images-320px.zip", ROOT / "dist" / "v1" / "release320" / "images-320px.zip", ROOT / "dist" / "v1" / "images-224px.zip") if p.exists()), ROOT / "dist" / "v1" / "images-320px.zip")
+    zp = pathlib.Path(a.images_zip) if a.images_zip else next((p for p in (ROOT / "dist" / "v1" / "images-320px.zip", ROOT / "dist" / "build" / "images-224px.zip") if p.exists()), ROOT / "dist" / "v1" / "images-320px.zip")
     args = ["--out", str(a.out), "--runs-dir", str(runs_tmp), "--dist-dir", str(dist)]
     if a.no_images or not zp.exists():
         print("no pictures in the page (%s)" % ("--no-images" if a.no_images else "%s not found; pass --images-zip" % zp))
@@ -230,7 +230,7 @@ def main(argv=None) -> int:
     else:
         shutil.copyfile(zp, dist / zp.name)          # thumbnails are embedded in the page (the zip itself is not kept)
         if not a.no_image_files:
-            op = pathlib.Path(a.images_original_zip) if a.images_original_zip else ROOT / "dist" / "v1" / "images-original.zip"
+            op = pathlib.Path(a.images_original_zip) if a.images_original_zip else ROOT / "dist" / "build" / "images-original.zip"
             folder = pathlib.Path(a.out).with_name(pathlib.Path(a.out).stem + "_images")
             n224 = extract_images(zp, folder / "input")
             nor = extract_images(op, folder / "original") if op.exists() else 0

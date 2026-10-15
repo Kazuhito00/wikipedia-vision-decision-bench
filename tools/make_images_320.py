@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Build the 320 px pictures Release assets (images-320px.zip + SHA256SUMS) in dist/v1/release320/ (git-ignored). NOTHING IS UPLOADED.
+"""Build the 320 px pictures Release assets (images-320px.zip + SHA256SUMS) in dist/v1/ (git-ignored): everything directly under dist/v1/ is a Release asset (gh release create ... dist/v1/*). NOTHING IS UPLOADED.
 
-    uv run python tools/make_images_320.py [--out dist/v1/release320] [--attribution-from dist/v1/images-224px.zip]
+    uv run python tools/make_images_320.py [--out dist/v1] [--catalog dist/build/images_v1.json]
 
 Every picture an evaluated v1 question uses (member name = its logical path, e.g. data/images/<sha1>.jpg) is made from its ORIGINAL file on this
 machine (the 640 px Commons thumbnail, or the 640x480 drawn picture; never from the 224 px copy) by datasets/imgfit.py: scaled to fit inside a
 320 x 320 square (LANCZOS) and centred on mid-grey (128). Files named .jpg are stored as JPEG (quality 95), the others as PNG.
 Also written: datasets/manifests/images_v1_320.json (path -> sha256 of the 320 px file; no pictures) -- colab/run_colab.py and the checks read it.
-ATTRIBUTION.md is copied from the 224 px zip (same pictures, same licenses). The zip is deterministic (sorted, fixed timestamps).
+ATTRIBUTION.md is written from the picture list dist/build/images_v1.json (``python -m datasets.build_v1 --no-zip``). The zip is deterministic (sorted, fixed timestamps).
 """
 from __future__ import annotations
 
@@ -31,8 +31,8 @@ STAMP = (2026, 10, 15, 0, 0, 0)
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--out", default=str(ROOT / "dist" / "v1" / "release320"))
-    ap.add_argument("--attribution-from", default=str(ROOT / "dist" / "v1" / "images-224px.zip"))
+    ap.add_argument("--out", default=str(ROOT / "dist" / "v1"))
+    ap.add_argument("--catalog", default=str(ROOT / "dist" / "build" / "images_v1.json"))
     ap.add_argument("--owner", default="Kazuhito00")
     ap.add_argument("--tag", default="v0.0.1")
     args = ap.parse_args(argv)
@@ -50,8 +50,8 @@ def main(argv=None) -> int:
         blobs[p] = imgfit.encode(Image.open(f), pathlib.PurePosixPath(p).name, imgfit.PX)
     if missing:
         raise SystemExit("%d original picture(s) not found, e.g. %s (set WIKIQA_DATA_ROOT / WIKIQA_IMAGES)" % (len(missing), missing[:3]))
-    with zipfile.ZipFile(args.attribution_from) as z:
-        attribution = z.read("ATTRIBUTION.md")
+    from release.make_image_release import attribution_catalog
+    attribution = attribution_catalog(json.loads(pathlib.Path(args.catalog).read_text(encoding="utf-8"))).encode("utf-8")
     zpath = out / NAME
     with zipfile.ZipFile(zpath, "w", zipfile.ZIP_STORED) as z:
         for n, data in [("ATTRIBUTION.md", attribution)] + sorted(blobs.items()):
@@ -71,10 +71,10 @@ def main(argv=None) -> int:
     (out / "SHA256SUMS").write_text("%s  %s\n" % (sha256_file(zpath), NAME), encoding="utf-8", newline="\n")
     print("wrote %s: %d pictures + ATTRIBUTION.md, %.1f MB; sha256 %s" % (zpath, len(sums), zpath.stat().st_size / 1e6, sha256_file(zpath)))
     print("manifest: %s" % MANIFEST)
-    print("\nUpload (YOU run this; nothing was uploaded):")
+    print("\nUpload (YOU run this; nothing was uploaded). Everything directly under %s is a Release asset:" % out)
     print("  gh release create %s --repo %s/wikipedia-vision-decision-bench --title \"v1 images (320 px letterbox)\" \\" % (args.tag, args.owner))
     print("      --notes \"Dataset v1: 320x320 letterboxed pictures (mid-grey 128). See ATTRIBUTION.md inside the zip.\" \\")
-    print("      \"%s\" \"%s\"" % (str(zpath).replace("\\", "/"), str(out / "SHA256SUMS").replace("\\", "/")))
+    print("      %s" % str(out / "*").replace("\\", "/"))
     return 0
 
 

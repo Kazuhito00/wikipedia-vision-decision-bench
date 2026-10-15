@@ -101,7 +101,7 @@ BENCH_REPO_NAME = "wikipedia-vision-decision-bench"           # the Release that
 DEFAULT_DRIVE_DIR = "/content/drive/MyDrive/wikipedia-vision-decision-bench-colab"
 # exit codes of the images step (the notebook explains each one)
 EXIT_NO_RELEASE, EXIT_DOWNLOAD, EXIT_SHA, EXIT_PICTURES = 3, 4, 5, 6
-IMAGES_SHA256 = "58ff762916d31605a9b25691ccab01e956b3c06d98f8127cbfebf78b68bbae69"
+IMAGES_SHA256 = "a7537f41db74eb37fe4f7f678e8569e39a40ea617ed027e710e34e536c4843d8"
 IMAGES_MEMBERS = 2128
 
 

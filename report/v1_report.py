@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Build the v1 report page (comparison table, selectable details, all-model heat map, question explorer) from the v1 results.
 
-    uv run python -m report.v1_report [--out results/まとめ_v1.html] [--no-images] [--runs-dir results/runs/v1] [--dist-dir dist/v1]
+    uv run python -m report.v1_report [--out results/まとめ_v1.html] [--no-images] [--runs-dir results/runs/v1] [--dist-dir dist/build]
 
 Inputs:
     <dist-dir>/cases_v1.jsonl, questions_v1.jsonl, manifest_v1.json, images-320px.zip   (the question set; pictures only for thumbnails)
@@ -35,7 +35,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from report import v1_models  # noqa: E402
 
-DIST = ROOT / "dist" / "v1"
+DIST = ROOT / "dist" / "build"          # questions / cases; the pictures zip is found in dist/v1/ (the Release assets) too
 RUNS = ROOT / "results" / "runs" / "v1"
 LANGS = v1_models.LANGS
 #: a timed CPU block counts only if the calibration (GLiNER ms) before and after it was at most this (quiet machine: ~170-250)
@@ -54,7 +54,7 @@ ORIGIN_LABEL = {"base": "base", "new": "new"}
 
 def images_zip_of(dist):
     """images-320px.zip (the model-input pictures), else the earlier images-224px.zip; None when neither is in ``dist``."""
-    return next((p for p in (dist / "images-320px.zip", dist / "images-224px.zip") if p.exists()), None)
+    return next((p for p in (dist / "images-320px.zip", ROOT / "dist" / "v1" / "images-320px.zip", dist / "images-224px.zip") if p.exists()), None)
 
 
 def read_csv(path):

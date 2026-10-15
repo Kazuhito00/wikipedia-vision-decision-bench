@@ -7,7 +7,7 @@
 - 測るもの: 正答率（言語別・問題群別・形式別）と、CPU／GPU での 1 問あたりの時間（較正が合った測定だけ）。
 - モデルとの結合は `adapters/` だけです。各モデルは**自分のリポジトリ（`<OWNER>/<モデル名>-ONNX-CPU`）のパッケージ**を入れた環境で動かします。
 - **画像と Wikipedia の本文は、このリポジトリに入っていません。** 入っているのは一覧（ID・ライセンス・作者・URL・sha256）と質問だけです。画像は Release の zip で配ります（準備中）。
-- **データセットの版**: 現行は **version 1（`v1`）**（2768 問、`datasets/questions/v1/`、`dist/v1/`）です。問の ID（`photo-0001`、`biz-1001` など）は版名を含みません。
+- **データセットの版**: 現行は **version 1（`v1`）**（2768 問、`datasets/questions/v1/`、`dist/build/`）です。問の ID（`photo-0001`、`biz-1001` など）は版名を含みません。
 
 ## 構成
 
@@ -117,7 +117,7 @@ uv run python -m unittest discover -s tools -p "test_*.py"
 使い方:
 
 ```powershell
-uv run python -m datasets.build_v1                 # dist/v1/ に問題・ケース・画像一覧・zip・検査結果（build_report.md）を作る
+uv run python -m datasets.build_v1                 # dist/build/ に問題・ケース・画像一覧・zip・検査結果（build_report.md）を作る
 # 画像: images-original.zip（または images-320px.zip）を空のフォルダに展開し、そのフォルダを指す
 $env:WIKIQA_DATA_ROOT = "<展開したフォルダ>"        # <フォルダ>/data/images/..., <フォルダ>/generated/... が見える場所
 .venv-onejev\Scripts\python -m runner.run --model onejev --set all --dataset-version v1 --lang en
