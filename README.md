@@ -42,7 +42,7 @@ $env:WIKIQA_CONTACT = "<連絡先>"
 uv run python -m datasets.fetch fetch
 ```
 
-画像は `work/data/images/`（Commons の保存画像）と `work/px224/`（モデルへの入力: 長辺 224px）に置かれます。
+画像は `work/data/images/`（Commons の保存画像）と `work/px320lb_v1/`（モデルへの入力: 320×320 のレターボックス）に置かれます。
 
 **2. モデルの環境を作る**（モデルごとに別の venv。モデルの重みは各モデルのリポジトリの Release から取得）
 
@@ -87,7 +87,7 @@ uv run python -m unittest discover -s tools -p "test_*.py"
 | 項目 | 値 | 設定の場所 |
 |---|---|---|
 | スレッド数（onnxruntime） | 8 | `runner/config.toml` の `threads`（`THREADS`、`--threads`） |
-| 画像の縮小 | 長辺 224px（LANCZOS、JPEG） | `px`（`PX`、`--px`） |
+| 画像の加工 | 320×320 のレターボックス（長辺 320 に縮小して灰 128 の正方形の中央に置く。LANCZOS。.jpg は JPEG q95） | `px`（`PX`、`--px`）、`--fit` |
 | 選択肢の順序の入れ替え | なし（`REV=0`）。位置の偏りを見たいときだけ `--rev 1` | `rev`（`REV`） |
 | 画像 | 1 問 1 枚 | — |
 | 時間の採用 | ブロックの前後に較正（固定の CPU 処理の中央値）を測り、どちらも 600 ms 以下のブロックだけ。静かな機械で約 170〜200 ms | `[gate]`、`runner/calibrate.py`、`blocks.log` |
@@ -109,7 +109,7 @@ uv run python -m unittest discover -s tools -p "test_*.py"
 
 - 形式: 選択 2091 / はい・いいえ 537 / 段階評価 140（3 段階 35・5 段階 45・7 段階 35・10 段階 25）。選択肢数: 2 択 72 / 3 択 125 / 4 択 1495 / 5〜8 択 343 / 9〜16 択 56。
 - 言語: en・ja 両方 2596 問、日本語のみ 172 問。難度: easy 961 / medium 1328 / hard 479。
-- 画像 2127 枚: Commons 写真 1021（CC0・パブリックドメイン）、描画画像 1106（スクリプトで作成）。1 問 1 枚。画像の zip は 224px 版 約 20 MB・原寸版 約 308 MB（Release に置く予定。まだアップロードしていません）。
+- 画像 2127 枚: Commons 写真 1021（CC0・パブリックドメイン）、描画画像 1106（スクリプトで作成）。1 問 1 枚。画像の zip は 320px 版 約 65 MB・原寸版 約 308 MB（Release に置く予定。まだアップロードしていません）。
 - **文章のみの対照の注意**: 対照の `state` には画像にない正確な数値が入るため、文章版は画像版より易しくなり得ます。比較するときは、この点を明記してください。
 - 結果は `(dataset_version, id)` で記録します。
 - 定義・作り方・既知の制約（画像の判読性、フォント、Tkinter 画像の OS 依存、生成スクリプトの `--apply` で jsonl が上書きされる注意）は `datasets/NOTES.md` §11。
@@ -118,7 +118,7 @@ uv run python -m unittest discover -s tools -p "test_*.py"
 
 ```powershell
 uv run python -m datasets.build_v1                 # dist/v1/ に問題・ケース・画像一覧・zip・検査結果（build_report.md）を作る
-# 画像: images-original.zip（または images-224px.zip）を空のフォルダに展開し、そのフォルダを指す
+# 画像: images-original.zip（または images-320px.zip）を空のフォルダに展開し、そのフォルダを指す
 $env:WIKIQA_DATA_ROOT = "<展開したフォルダ>"        # <フォルダ>/data/images/..., <フォルダ>/generated/... が見える場所
 .venv-onejev\Scripts\python -m runner.run --model onejev --set all --dataset-version v1 --lang en
 # セット: photo / biz / rsn / txt / all / new（新問だけ）。txt の記事由来の問は手元の passages.json（本文は配布しない）が要ります
@@ -141,7 +141,7 @@ $env:WIKIQA_DATA_ROOT = "<展開したフォルダ>"        # <フォルダ>/dat
 | OneJev 4B | 4B / fp16 | Qwen3.5-4B（調整） | 同上 | 未確認 | 255（段階 10） | `<OWNER>/OneJev-ONNX-CPU` |
 | clef-flash 9B | 9B / bf16 重み・fp32 計算 | Qwen3.5-9B（調整） | 同上（メモリ大） | 4 枚 | 未確認 | `<OWNER>/clef-flash-ONNX-CPU` |
 | OpenAI Decisions API | 非公開 | 不明 | ネットワークと API キー | — | — | — |
-| Jev API（TypeSafe。`jev-preview` = Jev 1.14） | 非公開 | 不明 | ネットワークと API キー（`TYPESAFE_API_KEY`）。画像は 256〜1568 px 以外を拒否するため 224 px の画像を拡大して送る | — | 255（段階 10） | — |
+| Jev API（TypeSafe。`jev-preview` = Jev 1.14） | 非公開 | 不明 | ネットワークと API キー（`TYPESAFE_API_KEY`）。画像は各辺 280〜1568 px だけ受け付ける（320×320 はそのまま送れる） | — | 255（段階 10） | — |
 
 測定結果は `report/v1_report.py` で作るレポート（`results/runs/v1/`）にまとめます。
 
@@ -152,7 +152,7 @@ $env:WIKIQA_DATA_ROOT = "<展開したフォルダ>"        # <フォルダ>/dat
 ```powershell
 uv run python -m datasets.fetch check --limit 20     # メタデータだけを 50 件ずつ問い合わせる（ダウンロードしない）
 uv run python -m datasets.fetch check                # 全件 → results/checks/check_<日時>.json
-uv run python -m datasets.fetch fetch                # 画像を取得し sha256 を一覧と照合、224px に縮小して再照合
+uv run python -m datasets.fetch fetch                # 画像を取得し sha256 を一覧と照合、320px レターボックスに加工して再照合
 uv run python -m datasets.fetch refresh              # 変更の予定を表示（書き換えない）
 uv run python -m datasets.fetch refresh --apply      # 確認のうえで一覧に反映
 ```
@@ -165,7 +165,7 @@ uv run python -m datasets.fetch refresh --apply      # 確認のうえで一覧�
 | ライセンス変更 | CC0／パブリックドメイン以外になった | 一覧と Release から外す |
 | 作者・説明の変更 | 帰属情報が変わった | 一覧を更新 |
 
-注意: 保存画像は Commons の**幅 640px のサムネイル**で、`sha1` は Commons 上のフルサイズ原画のものです。224px 画像の sha256 は Pillow／libjpeg の版で変わりうるため、厳密な再現には Release の `images-224px.zip` を使ってください。
+注意: 保存画像は Commons の**幅 640px のサムネイル**で、`sha1` は Commons 上のフルサイズ原画のものです。320px 画像の sha256 は Pillow／libjpeg の版で変わりうるため、厳密な再現には Release（`v0.0.1`）の `images-320px.zip` を使ってください。
 
 ## ライセンスと帰属
 

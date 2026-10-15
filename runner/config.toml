@@ -3,7 +3,8 @@
 
 [measure]
 threads = 8          # intra-op threads of onnxruntime for timed runs (accuracy-only runs may use more)
-px = 224             # longest side of the pictures given to the models (LANCZOS thumbnail)
+px = 320             # side of the pictures given to the models
+fit = "letterbox"    # letterbox: a px x px square, the picture centred on mid-grey (128). thumbnail: longest side px (the earlier 224 px condition)
 rev = 0              # 0: no reversed-options pass (the default). 1: also ask every choice question with the options reversed (position bias)
 gpu = false          # true: providers CUDA, CPU last (what GPU=1 did)
 

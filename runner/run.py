@@ -24,6 +24,7 @@ import datetime
 import os
 import threading
 import pathlib
+import shutil
 import sys
 import time
 
@@ -43,6 +44,8 @@ def parse_args(argv=None):
     ap.add_argument("--variant")
     ap.add_argument("--threads", type=int, default=m["threads"])
     ap.add_argument("--px", type=int, default=m["px"])
+    ap.add_argument("--fit", choices=["letterbox", "thumbnail"], default=m.get("fit", "thumbnail"),
+                    help="letterbox: px x px square on mid-grey (the 320 px condition); thumbnail: longest side px (the earlier 224 px condition)")
     ap.add_argument("--rev", type=int, default=m["rev"], choices=[0, 1])
     ap.add_argument("--gpu", action="store_true", default=m["gpu"])
     ap.add_argument("--workers", type=int, default=1, help="concurrent questions (only for remote adapters that allow it, e.g. openai; capped by the adapter)")
@@ -85,18 +88,25 @@ def select_cases(args) -> list[dict]:
     return cases
 
 
-def prepare_images(case, small: pathlib.Path, px: int) -> list[str]:
-    """The pictures as the models get them: longest side ``px``, LANCZOS. A picture already in ``small`` (made by an earlier run, or
-    fetched from the Release's images-224px.zip and sha256-checked) is used as it is."""
+def prepare_images(case, small: pathlib.Path, px: int, fit: str = "thumbnail") -> list[str]:
+    """The pictures as the models get them. fit="letterbox": a px x px square, the picture centred on mid-grey (datasets/imgfit.py);
+    fit="thumbnail": longest side ``px``, LANCZOS (the earlier 224 px condition). A picture already in ``small`` (made by an earlier run, or
+    fetched from the Release's images-<px>px.zip and sha256-checked) is used as it is."""
     from PIL import Image
     out = []
     for n in case["images"]:
         outp = small / pathlib.Path(n).name
         if not outp.exists():
             im = Image.open(n).convert("RGB")
-            im.thumbnail((px, px), Image.LANCZOS)
             tmp = outp.with_name("%s.%d.%d.tmp.png" % (outp.stem, os.getpid(), threading.get_ident()))   # atomic: threads share pictures
-            im.save(tmp)
+            if fit == "letterbox" and im.size == (px, px):
+                shutil.copyfile(n, tmp)                  # already the Release's px x px picture (Colab): keep its bytes, no second JPEG pass
+            elif fit == "letterbox":
+                from datasets.imgfit import encode       # the same bytes as the Release's images-<px>px.zip
+                tmp.write_bytes(encode(im, outp.name, px))
+            else:
+                im.thumbnail((px, px), Image.LANCZOS)
+                im.save(tmp)
             try:
                 os.replace(tmp, outp)
             except OSError:                                        # Windows: another thread just made it (and may be reading it)
@@ -153,7 +163,7 @@ def main(argv=None) -> int:
         return base(*a, **k), int((time.perf_counter() - t) * 1000)
 
     # one 224 px cache per dataset version, so the caches of two versions never mix
-    small = config.work_dir() / ("px%d_%s" % (args.px, args.dataset_version))
+    small = config.work_dir() / ("px%d%s_%s" % (args.px, "lb" if args.fit == "letterbox" else "", args.dataset_version))
     small.mkdir(parents=True, exist_ok=True)
     started = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
     stopped_early = False
@@ -169,7 +179,7 @@ def main(argv=None) -> int:
         """-> (case, got, ok, rev_ok, ms, error text or None)"""
         L = c[args.lang]
         try:
-            imgs = prepare_images(c, small, args.px)
+            imgs = prepare_images(c, small, args.px, args.fit)
             got, ms = ask(L["state"], imgs, c["kind"], L["instr"], L["options"])
             ok = got == c["expected"]
             rev_ok = None
@@ -227,7 +237,7 @@ def main(argv=None) -> int:
         meta = dict(dataset_version=args.dataset_version, block=block, model=args.model, model_repo=REPOS[args.model],
                     model_tag=os.environ.get("MODEL_TAG") or "local", variant=info.get("variant"),
                     providers_requested=["remote"] if remote else (providers or ["CPUExecutionProvider"]), providers_used=info.get("providers_used"),
-                    threads=args.threads, px=args.px, rev=args.rev, lang=args.lang, set=args.set_name, modality=args.mod,
+                    threads=args.threads, px=args.px, fit=args.fit, rev=args.rev, lang=args.lang, set=args.set_name, modality=args.mod,
                     questions_in_block=len(cases), limits=info.get("limits"), pillow=PIL.__version__,
                     device=args.device or ("remote" if remote else "cuda" if args.gpu else "cpu"), workers=workers,
                     endpoint=info.get("endpoint"), model_name=info.get("model_name"),

@@ -15,7 +15,7 @@ Request (https://docs.typesafe.ai/api.md, https://docs.typesafe.ai/images.md):
                                               | {"type": "score", "instructions": ..., "criteria": [level, ...]}},
      "assets": {REF: {"type": "image", "format": "png", "data_base64": ...}}}
 A picture is an asset; the state refers to it by its reference string (``{"context": text, "image": REF}``). Requests with a picture carry the
-header ``TypeSafe-Danger-Zone-Images: true``. The API takes PNG / JPEG with each side 256..1568 px and 78,400..2,458,624 pixels in all, and
+header ``TypeSafe-Danger-Zone-Images: true``. The API takes PNG / JPEG with each side 280..1568 (the docs say 256, but the live API rejects a side of 279 or less) px and 78,400..2,458,624 pixels in all, and
 REJECTS (does not resize) anything else, so the bench's 224 px pictures are scaled up (LANCZOS, aspect kept; padded with white when an extreme
 aspect ratio cannot satisfy both limits). The picture content is the same; only the pixel grid differs from what the local models get.
 Answers: noul -> ``noul`` (0..1, > 0.5 = yes), choice -> ``choice`` (the option), score -> argmax of ``probabilities`` (keyed by level index).
@@ -40,11 +40,11 @@ DEFAULT_MODEL = "jev-preview"
 LIMITS = dict(max_images=None, max_choice_options=255, max_score_levels=10, gpu=False, note="remote API; 255 options, 2..10 score levels")
 RETRY_CODES = (429, 500, 502, 503, 504, 529)
 ATTEMPTS = 6
-MIN_SIDE, MAX_SIDE, MIN_PIXELS, MAX_PIXELS = 256, 1568, 78_400, 2_458_624
+MIN_SIDE, MAX_SIDE, MIN_PIXELS, MAX_PIXELS = 280, 1568, 78_400, 2_458_624
 
 
 def fit_size(w: int, h: int) -> tuple[int, int]:
-    """The size the API accepts that is closest to (w, h): every side >= 256 and <= 1568, total pixels within the limits (aspect kept
+    """The size the API accepts that is closest to (w, h): every side >= 280 and <= 1568, total pixels within the limits (aspect kept
     where the two limits allow it; otherwise the long side is capped and the caller pads the short one)."""
     s = max(MIN_SIDE / w, MIN_SIDE / h, math.sqrt(MIN_PIXELS / (w * h)))
     nw, nh = math.ceil(w * s), math.ceil(h * s)

@@ -17,7 +17,7 @@ folder (the real dist/ and results/ are never written):
   * timing-only blocks (``..._cpu_speed<N>``, `speed_only: true`) never become a run: they are written as speed_cpu_v1.json and shown only in the
     speed section (CPU reference next to the GPU time of the same questions);
 Only blocks that a Colab run made (a sidecar in work/colab/blocks) are used, unless --include-all-blocks.
-Pictures: thumbnails are embedded when images-224px.zip is given (--images-zip, or dist/v1/images-224px.zip); otherwise the page has none.
+Pictures: thumbnails are embedded when images-320px.zip (or the earlier images-224px.zip) is given (--images-zip, or dist/v1/); otherwise the page has none.
 """
 from __future__ import annotations
 
@@ -165,10 +165,10 @@ def main(argv=None) -> int:
     work = pathlib.Path(os.environ.get("BENCH_WORK") or ROOT / "work")
     ap.add_argument("--out", default=str(work / "colab" / "out" / "v1_report.html"))
     ap.add_argument("--runs-dir", default=str(ROOT / "results" / "runs" / "v1"))
-    ap.add_argument("--images-zip", default="", help="images-224px.zip to embed thumbnails from (default: dist/v1/images-224px.zip when it exists)")
+    ap.add_argument("--images-zip", default="", help="images-320px.zip (or images-224px.zip) to embed thumbnails from (default: dist/v1/images-320px.zip, release320/, or images-224px.zip, the first that exists)")
     ap.add_argument("--no-images", action="store_true", help="build the page without pictures")
     ap.add_argument("--images-original-zip", default="", help="images-original.zip (default: dist/v1/images-original.zip when it exists): with it the picture dialog also offers the originals")
-    ap.add_argument("--no-image-files", action="store_true", help="do not write the <page>_images folder (224 px / original files next to the page); the dialog then shows the embedded thumbnail only")
+    ap.add_argument("--no-image-files", action="store_true", help="do not write the <page>_images folder (input / original files next to the page); the dialog then shows the embedded thumbnail only")
     ap.add_argument("--blocks-dir", default=str(work / "colab" / "blocks"))
     ap.add_argument("--include-all-blocks", action="store_true", help="also use blocks that this machine did not run (no Colab sidecar)")
     ap.add_argument("--strict-passages", action="store_true",
@@ -222,19 +222,19 @@ def main(argv=None) -> int:
     found = vm.discover_runs(runs_tmp)
     print("v1 report: %d runs (%s), %d (question, language) pairs answered by every run, %d questions" %
           (len(found), ", ".join(sorted(found)), len(pairs), n_cases))
-    zp = pathlib.Path(a.images_zip) if a.images_zip else ROOT / "dist" / "v1" / "images-224px.zip"
+    zp = pathlib.Path(a.images_zip) if a.images_zip else next((p for p in (ROOT / "dist" / "v1" / "images-320px.zip", ROOT / "dist" / "v1" / "release320" / "images-320px.zip", ROOT / "dist" / "v1" / "images-224px.zip") if p.exists()), ROOT / "dist" / "v1" / "images-320px.zip")
     args = ["--out", str(a.out), "--runs-dir", str(runs_tmp), "--dist-dir", str(dist)]
     if a.no_images or not zp.exists():
         print("no pictures in the page (%s)" % ("--no-images" if a.no_images else "%s not found; pass --images-zip" % zp))
         args.append("--no-images")
     else:
-        shutil.copyfile(zp, dist / "images-224px.zip")          # thumbnails are embedded in the page (the zip itself is not kept)
+        shutil.copyfile(zp, dist / zp.name)          # thumbnails are embedded in the page (the zip itself is not kept)
         if not a.no_image_files:
             op = pathlib.Path(a.images_original_zip) if a.images_original_zip else ROOT / "dist" / "v1" / "images-original.zip"
             folder = pathlib.Path(a.out).with_name(pathlib.Path(a.out).stem + "_images")
-            n224 = extract_images(zp, folder / "224")
+            n224 = extract_images(zp, folder / "input")
             nor = extract_images(op, folder / "original") if op.exists() else 0
-            print("picture files next to the page: %s (224 px: %d, original: %d)  -- local use only, never publish or commit them" % (folder, n224, nor))
+            print("picture files next to the page: %s (input: %d, original: %d)  -- local use only, never publish or commit them" % (folder, n224, nor))
             if n224:
                 args += ["--images-base", folder.name]
     return v1_report.main(args)

@@ -116,7 +116,7 @@ svg .ax{stroke:var(--mute);stroke-width:1}
 .modal.open{display:block}
 .modal .box{max-width:760px;margin:20px auto;background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--line)}
 .modal .pic{float:right;margin:0 0 8px 12px}
-.modal .pic img{width:224px;max-width:42vw;border-radius:8px;image-rendering:auto;background:var(--soft)}
+.modal .pic img{width:320px;max-width:42vw;border-radius:8px;image-rendering:auto;background:var(--soft)}
 .modal .pic .pm{display:flex;gap:4px;margin:0 0 4px;font-size:12px}
 .modal .pic .pm button{padding:1px 8px;font-size:12px}
 .modal .pic .pm button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -251,7 +251,7 @@ const envTag = k => { const h = hostOf(k), t = []; if (h.host_id && h.source ===
 const envChip = k => '<span class="env ' + envCls(k) + '" title="' + esc(envName(k) + (envTag(k).length ? "（" + envTag(k).join(" / ") + "）" : "")) + '"><i></i>' + esc(envName(k)) + "</span>" + envTag(k).map(t => ' <span class="chip' + (t === "再開で環境が混在" ? " warn" : "") + '">' + esc(t) + "</span>").join("");
 const ENVIDS = [...new Set(RK.map(k => hostOf(k).host_id || ""))];
 const multiEnv = ENVIDS.length > 1 || RK.some(k => hostOf(k).mixed);
-const S = {more: false, imgMode: "224", env: "all", A: RK[0], B: "", lang: "all", sort: "overall", dir: -1, dim: "group", heat: "A", cmpLang: "all"};
+const S = {more: false, imgMode: "input", env: "all", A: RK[0], B: "", lang: "all", sort: "overall", dir: -1, dim: "group", heat: "A", cmpLang: "all"};
 (function () {
   const others = ORDER.filter(k => R[k].model !== R[S.A].model);
   S.B = others[0] || ORDER.find(k => k !== S.A) || "";
@@ -794,7 +794,7 @@ function drawSpeed() {
 /* ---- notes + self check ---- */
 (function () {
   $("#notesBody").innerHTML = '<ul class="n">' +
-    "<li><b>モデルと run は自動検出</b>: results/runs/v1 の <code>&lt;model&gt;_v1all_{en,ja}_224[_cpu|_cuda].json</code> から検出します。表示名・色・種別（local / api）は既定の表で、未知のモデルは名前＝キーと自動の色になります。1 つの run は 1 モデル × 1 デバイスです。</li>" +
+    "<li><b>モデルと run は自動検出</b>: results/runs/v1 の <code>&lt;model&gt;_v1all_{en,ja}_&lt;px&gt;[_cpu|_cuda].json</code> から検出します。表示名・色・種別（local / api）は既定の表で、未知のモデルは名前＝キーと自動の色になります。1 つの run は 1 モデル × 1 デバイスです。</li>" +
     "<li><b>Windows のフォント</b>: ページは Yu Gothic UI / Meiryo を優先します。Windows 以外ではフォールバックの書体で表示されます。画像内の文字（合成図）は元画像のとおりで、フォントによる差は画像生成時のもの。</li>" +
     "<li><b>文章のみ（txt）は易しい対照</b>: 画像を読まないため正答率が高め。画像付きとの差は目安であり、問題内容が異なる比較です。</li>" +
     "<li><b>origin</b>: <code>base</code> は v1 の初版の問、<code>new</code> は後から追加した問です。new は難しめで正答率が低くなります。</li>" +
@@ -802,7 +802,7 @@ function drawSpeed() {
     "<li><b>実行環境</b>: 各 run の機種は結果ファイルの <code>host</code>（CPU・コア数・RAM・GPU・ドライバ・onnxruntime・OS）から。「補記」は記録機能の追加前に測った結果へ、同じ PC で後から収集して付けたものです。ホスト名・ユーザー名・パス・IP は書きません。</li>" +
     "<li><b>時間比較</b>: 較正が外れた CPU 時間は載せません。較正記録がない run（※）と GPU 時間は参考値。API の時間は往復時間（ネットワーク・並列数・再試行を含む）。run どうしで機械が違うと時間は比べられません。</li>" +
     "<li><b>重みのサイズ</b>: リポジトリの記述にある配布サイズの概算で、実行に必要なメモリではありません。</li>" +
-    "<li><b>入力画像</b>: 224 px（長辺）で入力。ページ内のサムネイルは表示用の縮小（長辺 120 px）で、モデルが見た画像そのものではありません。</li>" +
+    "<li><b>入力画像</b>: 320×320 px（長辺 320 に縮小し、灰色 128 の正方形の中央に置く）で入力。旧条件の 224 px（長辺）の結果は別の run として扱います。ページ内のサムネイルは表示用の縮小（長辺 120 px）で、モデルが見た画像そのものではありません。</li>" +
     "<li><b>誤答の扱い</b>: 未回答（NA）は不正解として数えています。全 run が答えた（質問 × 言語）だけを比べます。件数が少ないカテゴリ（n が小さい）は正答率のばらつきが大きいので注意。</li>" +
     "<li><b>出典と公開</b>: 画像は Wikimedia Commons 由来を含みます。このページは生成物で、コミット・公開しません。</li></ul>";
   const c = D.checks;
@@ -894,13 +894,13 @@ function openModal(i) {
   document.querySelectorAll("#modalBox .pm button").forEach(b => { b.onclick = () => { S.imgMode = b.dataset.m; openModal(i); }; });
   $("#mClose").onclick = closeModal; $("#mPrev").onclick = () => openModal(Math.max(0, i - 1)); $("#mNext").onclick = () => openModal(Math.min(CUR.length - 1, i + 1));
 }
-// the dialog's picture: the 224 px file or the original, from the folder next to this page (D.img_base); the embedded thumbnail is the fallback
+// the dialog's picture: the model-input file or the original, from the folder next to this page (D.img_base); the embedded thumbnail is the fallback
 function picHtml(it) {
   const th = D.thumbs[it.im];
   if (!D.img_base) return '<div class="pic"><img alt="" src="' + th + '"></div>';
   const url = m => encodeURI(D.img_base + "/" + m + "/" + D.img_paths[it.im]);
-  const mode = S.imgMode === "original" ? "original" : "224";
-  return '<div class="pic' + (mode === "original" ? " orig" : "") + '"><div class="pm"><button type="button" data-m="224" class="' + (mode === "224" ? "on" : "") + '">224px</button><button type="button" data-m="original" class="' + (mode === "original" ? "on" : "") + '">オリジナル</button></div>' +
+  const mode = S.imgMode === "original" ? "original" : "input";
+  return '<div class="pic' + (mode === "original" ? " orig" : "") + '"><div class="pm"><button type="button" data-m="input" class="' + (mode === "input" ? "on" : "") + '">入力画像</button><button type="button" data-m="original" class="' + (mode === "original" ? "on" : "") + '">オリジナル</button></div>' +
     '<img alt="" src="' + url(mode) + '"><div class="pn" hidden>画像フォルダが見つからないため、縮小版を表示しています（' + esc(D.img_base) + "）</div></div>";
 }
 function closeModal() { $("#modal").classList.remove("open"); }

@@ -15,7 +15,7 @@ Per-question logs go to `work/logs/v1/` (git-ignored).
 - OpenAI: `OPENAI_API_KEY` (and optionally `OPENAI_DECISION_MODEL`, default `gpt-6-luna`) only in the environment of the process
   (`set -a; . <path to .env>; set +a`); never written to a file here. Adapter: `adapters/openai_decisions.py` (urllib only, 3 workers, retries on 429/5xx/timeouts).
 - Jev API (TypeSafe): `TYPESAFE_API_KEY` (and optionally `TYPESAFE_JEV_MODEL`, default `jev-preview` = Jev 1.14; `jev-latest` = 1.13) only in the environment; `python -m runner.run --model jev ...` (key `jev`, same options as `openai`).
-  Adapter: `adapters/typesafe_jev.py` (urllib + Pillow; 3 workers, retries on 429/5xx/529). The API takes pictures of 256..1568 px per side only, so the 224 px pictures are scaled up before sending.
+  Adapter: `adapters/typesafe_jev.py` (urllib + Pillow; 3 workers, retries on 429/5xx/529). The API takes pictures of 280..1568 px per side only; the bench's 320 x 320 letterbox pictures go as they are.
 - Shared heavy lock: `mkdir _temp/heavy.lock` during the GPU and CPU runs (rmdir at the end). Order: OpenAI, then GPU, then CPU (quiet machine, nothing else running).
 
 ## Commands (from the repository root, bash; `PYTHONIOENCODING=utf-8`)

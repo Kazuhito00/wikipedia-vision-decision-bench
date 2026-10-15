@@ -8,7 +8,7 @@
 1. `nvidia-smi` でランタイム確認（GPU は「ランタイムのタイプを変更」で T4 を選ぶ）
 2. bench を clone（非公開なら Colab Secrets の `GITHUB_TOKEN`）。モデルのリポジトリ（`Kazuhito00/<Model>-ONNX-CPU`）は、実行時にモデルごと clone
 3. uv で依存（pillow / numpy、GPU があれば onnxruntime-gpu、無ければ onnxruntime）。CUDA が本当に使えるか、手書きの小さな ONNX で確認
-4. 画像 `images-224px.zip`（既定: bench の GitHub Release `v0.0.0` からダウンロード → `SHA256SUMS` で照合 → 展開 → 全問の画像の存在確認）
+4. 画像 `images-320px.zip`（既定: bench の GitHub Release `v0.0.1` からダウンロード → `SHA256SUMS` で照合 → 展開 → 全問の画像の存在確認）
 5. モデルごとに「clone → 重み取得（`download_model.py`）→ デバイス（cpu / cuda）ごとに スモーク → 本番ブロック →（必要なら）重み削除」。取得できない・載らない・CPU に落ちるモデルは**そのデバイスだけスキップ**して次へ、最後に一覧で表示
 6. OpenAI Decisions API は Colab Secrets の `OPENAI_API_KEY`、Jev API（`jev-preview` = Jev 1.14）は `TYPESAFE_API_KEY` があるときだけ（有料。未設定なら理由を表示してスキップ）
 7. 集計（markdown / csv / html）と結果 zip。**Drive は既定でオフ**（結果は `/content` のローカルだけ。zip をダウンロードして持ち帰る）。`--use-drive` のときだけログ・結果・画像 zip・重みを Drive に保存
@@ -69,7 +69,7 @@ T4 は VRAM 16 GB・RAM 約 12 GB（無料枠）というのが一般的な想�
 | OneJev 0.8B / 4B | `download_model.py` を**引数なし**で 1 回（0.8B と 4B の両方、約 13 GB。0.8B は `models/onnx`、4B は `models/onnx-4b`）。`onejev` と `onejev4` は同じリポジトリなので取得は 1 回だけ（共有） | 4B は実行に約 10 GB の RAM（README）。0.8B の記述なし | 未検証。ディスクを節約したいときは `--download-args "onejev=--model-size 0.8b"`（0.8B のみ約 2.9 GB。この場合 4B は取れないので `MODELS` から `onejev4` を外す） |
 | D3 Edge / Lite / Nano | 統合リポジトリ `D3-ONNX-CPU`（`Kazuhito00/D3-ONNX-CPU`）。`download_model.py` を引数なしで 1 回（edge 2.6 GB + lite 4.2 GB + nano 9.3 GB = 約 16 GB。`models/edge` / `models/lite` / `models/nano`）。`d3edge` / `d3lite` / `d3nano` は共有で取得は 1 回だけ。tokenizers が必要（setup が入れる）。**d3-mini（5B）は未対応**（export に約 25 GB の RAM が要るため。このスクリプトの対象外） | 重みだけの VRAM: edge 2.0 GB / lite 3.0 GB / nano 7.5 GB（README）。ピーク RAM（640x480 画像 + 3 設問）: edge 3.2 GB / lite 5.5 GB / nano 10.0 GB。edge だけ読み込みたいときは `--download-args "d3edge=--model edge"` | 未検証（取得できなければスキップ） |
 | OpenAI Decisions API | 重みなし。`OPENAI_API_KEY`、有料、3 並列 | — | GPU 不要 |
-| Jev API | 重みなし。`TYPESAFE_API_KEY`、有料、3 並列（画像は 256 px 以上に拡大して送る） | — | GPU 不要 |
+| Jev API | 重みなし。`TYPESAFE_API_KEY`、有料、3 並列（画像は 280 px 以上に拡大して送る） | — | GPU 不要 |
 
 GPU 1 問あたりの時間は、作者の PC（RTX 3050 Ti Laptop 4 GB）の値しかありません（JEVision 75 ms / OneJev 87 ms）。T4 は未測定。
 
@@ -86,7 +86,7 @@ GPU 1 問あたりの時間は、作者の PC（RTX 3050 Ti Laptop 4 GB）の値
 
 - **対象**: `cuda` を含み `cpu` を含まないとき（`--cpu-speed-n 0` で無効）。ローカルモデルだけ（OpenAI は対象外）。cpu デバイスも回す設定のときは、本番ブロックの CPU 時間があるので何もしません。
 - **問**: 先頭の set × 先頭の言語（既定 photo / en）から、固定 seed（20261012）で N 問を選び、**全モデルで同じ問**（`work/colab/samples/cpuspeed_*.txt`）。
-- **ブロック名**: `<model>_v1photo_en_224_cpu_speed<N>`（結果 `results/runs/v1/` の json / csv、ログ `work/logs/v1/`）。json に `speed_only: true`・`speed_questions`・`speed_max_seconds`・`speed_stopped_early` が入ります。再実行は既存の再開に乗り（終わったブロックは飛ばす）、Drive 同期の対象でもあります。
+- **ブロック名**: `<model>_v1photo_en_320_cpu_speed<N>`（結果 `results/runs/v1/` の json / csv、ログ `work/logs/v1/`）。json に `speed_only: true`・`speed_questions`・`speed_max_seconds`・`speed_stopped_early` が入ります。再実行は既存の再開に乗り（終わったブロックは飛ばす）、Drive 同期の対象でもあります。
 - **精度の集計には入りません**: `report/v1_models.py` は suffix に `_speed` を含む結果を run として拾わないので、正答率の表・「全 run が答えた質問」の共通集合・ヒートマップ・ベン図には混ざりません（`colab_summary.md` でも別の節）。`v1_report.html` の「速度」セクションにだけ、「CPU 速度の参考値」の表（CPU の問数・中央値・平均・90%、**同じ問の GPU 中央値**、問ごとの CPU / GPU の比、測定環境の CPU 名・コア数、較正の状態）として出ます。`colab/make_v1_report.py` が `speed_cpu_v1.json` を一時フォルダに作って `report/v1_report.py` に渡します。
 - **時間の有効性**: CPU ブロックの前後の GLiNER 較正は、GLiNER2.5-Decide を取得できたときだけ記録します（記録が無ければ表に「較正なし（参考値）」）。Colab の CPU は少数コアで、手元の PC とは別の機械です。**手元 PC の CPU 時間と並べて比べないでください**（ページにも注記があります）。
 - **上限と失敗**: 1 モデルあたり `--cpu-speed-max-s`（既定 600 秒）。重い CPU モデルは上限で打ち切って、そこまでの問数の中央値を出します（最低 3 問）。モデルの読み込み時間と、1 問の途中は上限に数えません（1 問がとても長いと上限を超えます）。メモリ不足・読み込み失敗・半数超が NA のときは、他のモデルを止めずに、最後の一覧（`cpu-speed` 行）に理由を出します。文書化された RAM の下限に届かないモデルは、重みを取得せずにスキップします。
@@ -106,25 +106,25 @@ GPU 1 問あたりの時間は、作者の PC（RTX 3050 Ti Laptop 4 GB）の値
 
 ## 画像について
 
-画像（`images-224px.zip`、約 20 MB、2127 枚 + `ATTRIBUTION.md`）は Wikimedia Commons の CC0 / パブリックドメインの写真と、bench のスクリプトが描いた画像で、リポジトリには入っていません。モデルの重みと同じく **bench リポジトリの GitHub Release からダウンロード**します（既定: `https://github.com/<owner>/wikipedia-vision-decision-bench/releases/download/v0.0.0/images-224px.zip`）。優先順は `--images-zip`（`IMAGES_ZIP`）→ Drive キャッシュ（`--use-drive` のとき）→ `--images-url`（空なら上の既定の Release）。sha256 は Release の `SHA256SUMS` と照合（無ければ `--images-sha256`、それも無ければ 2026-10-11 のビルドの値 `c079de92...`）。途中で切れたダウンロードは `.part` から再開し、Release が `images-224px.zip.partNN`（2 GiB 超）に分かれていれば `SHA256SUMS` を見て結合します。展開は zip の外に出る名前を拒否します。
+画像（`images-320px.zip`、約 65 MB、2127 枚 + `ATTRIBUTION.md`）は Wikimedia Commons の CC0 / パブリックドメインの写真と、bench のスクリプトが描いた画像で、リポジトリには入っていません。モデルの重みと同じく **bench リポジトリの GitHub Release からダウンロード**します（既定: `https://github.com/<owner>/wikipedia-vision-decision-bench/releases/download/v0.0.1/images-320px.zip`）。優先順は `--images-zip`（`IMAGES_ZIP`）→ Drive キャッシュ（`--use-drive` のとき）→ `--images-url`（空なら上の既定の Release）。sha256 は Release の `SHA256SUMS` と照合（無ければ `--images-sha256`、それも無ければ 2026-10-15 のビルドの値 `58ff7629...`）。途中で切れたダウンロードは `.part` から再開し、Release が `images-320px.zip.partNN`（2 GiB 超）に分かれていれば `SHA256SUMS` を見て結合します。展開は zip の外に出る名前を拒否します。
 
 失敗の原因は終了コードで区別し、ノートブックが案内を出します: 3 = Release 未公開 / タグ違い（404）または `--images-zip` が無い、4 = ネットワーク、5 = sha256 不一致、6 = 展開後に問の画像が足りない。Release が取れないときの最後の手段は、Commons からの自前取得（`python -m datasets.fetch fetch`）の**案内のみ**です（Commons の写真しか取れず、biz / rsn の描画画像は含まれない。連絡先は環境変数 `WIKIQA_CONTACT` で渡す: Colab では Secrets に自分の連絡先を設定し、ファイル・ログ・出力には書かない）。
 
 ### Release を作る（作者側。アップロードはしていない）
 
 ```bash
-uv run python -m datasets.build_v1                 # dist/v1/images-224px.zip（画像が手元にあるとき）
-uv run python tools/make_images_release.py         # 検査（問が使う 2127 枚が全部入っているか・sha256_224・ATTRIBUTION.md）→ dist/v1/release/{images-224px.zip,SHA256SUMS}
-gh release create v0.0.0 --repo <owner>/wikipedia-vision-decision-bench --title "v1 images (224 px)" --notes "..." dist/v1/release/images-224px.zip dist/v1/release/SHA256SUMS
+uv run python -m datasets.build_v1                 # dist/v1/images-224px.zip・images-original.zip など（画像が手元にあるとき。ATTRIBUTION.md の元）
+uv run python tools/make_images_320.py             # 元画像から 320×320 レターボックスを作り、検査 → dist/v1/release320/{images-320px.zip,SHA256SUMS} と datasets/manifests/images_v1_320.json
+gh release create v0.0.1 --repo <owner>/wikipedia-vision-decision-bench --title "v1 images (320 px letterbox)" --notes "..." dist/v1/release320/images-320px.zip dist/v1/release320/SHA256SUMS
 ```
 
-zip に `ATTRIBUTION.md`（ファイルごとの題名・作者・ライセンス・元 URL。Commons 由来の画像は CC0 / パブリックドメインのみ）を同梱します。Wikipedia の本文は含みません。zip が 2 GiB を超えるときは `make_images_release.py` が `images-224px.zip.partNN` に分割します（今回は約 20 MB で 1 ファイル）。`.zip` と `dist/` は git に入りません。
+zip に `ATTRIBUTION.md`（ファイルごとの題名・作者・ライセンス・元 URL。Commons 由来の画像は CC0 / パブリックドメインのみ）を同梱します。Wikipedia の本文は含みません。zip が 2 GiB を超えるときは `make_images_release.py` が `images-320px.zip.partNN` に分割します（今回は約 65 MB で 1 ファイル）。`.zip` と `dist/` は git に入りません。
 
 ## 集計と HTML
 
 `report` ステップは次を作ります（`work/colab/out/`）。
 - `colab_summary.{md,csv,html}`: ブロック別、グループ別・形式別の正答率、モデル × デバイスの状態（ok / skipped: 理由 / failed: 理由）。「run here」列は、この Colab（または Drive から戻したこの環境のセッション）で測ったブロックかどうか。
-- `v1_report.html`: `report/v1_report.py` のダッシュボード（全 run の比較表・A/B 選択式の詳細・全モデルのヒートマップ・質問探索）。モデルと run は結果ファイル名（`<model>_v1all_<lang>_224[_cpu|_cuda]`）から**自動検出**します（`report/v1_models.py`。表示名・色は既定の表、未知のモデルは自動）。`colab/make_v1_report.py` が、`report/` を変更せずに、問題ファイルなどの入力を**一時フォルダ**に作って呼びます。
+- `v1_report.html`: `report/v1_report.py` のダッシュボード（全 run の比較表・A/B 選択式の詳細・全モデルのヒートマップ・質問探索）。モデルと run は結果ファイル名（`<model>_v1all_<lang>_<px>[_cpu|_cuda]`）から**自動検出**します（`report/v1_models.py`。表示名・色は既定の表、未知のモデルは自動）。`colab/make_v1_report.py` が、`report/` を変更せずに、問題ファイルなどの入力を**一時フォルダ**に作って呼びます。
   - `photo` / `biz` / `rsn` / `txt` / `all` のブロックを、(モデル, デバイス, 言語) ごとに 1 つの run に結合
   - **全 run が答えた (問, 言語) だけ**を比べる（答えていない問を誤答として数えないため。サンプルやスキップしたモデルがあると、共通の問だけになる）
   - `cases_v1.jsonl` / `questions_v1.jsonl` は `datasets/build_v1.py` の関数で `datasets/questions` から作り直す（画像は不要。画像は埋め込まない）
@@ -152,5 +152,5 @@ Colab も `runner.run` 経由なので、結果 json に `host`（CPU・コア�
 - onnxruntime-gpu の版（CUDA 12 系 / 13 系の選び方）と CUDA ライブラリの検索、T4 での各モデルの動作・速度・VRAM
 - Drive のマウント・保存・復元の実動作、`google.colab.userdata` と `files.download`
 - 各モデルのリポジトリ・Release の公開状況、`download_model.py` の実動作（非公開は取得不可）
-- 画像 Release（`v0.0.0` の `images-224px.zip` + `SHA256SUMS`）が公開されていること・GitHub からのダウンロードの実動作（ローカルでは、同じ形式の Release をローカルの HTTP サーバに置いて、単一 / 分割 / 404 / sha256 不一致の 4 通りの取得を確認した）
+- 画像 Release（`v0.0.1` の `images-320px.zip` + `SHA256SUMS`）が公開されていること・GitHub からのダウンロードの実動作（ローカルでは、同じ形式の Release をローカルの HTTP サーバに置いて、単一 / 分割 / 404 / sha256 不一致の 4 通りの取得を確認した）
 - `providers_used` が各モデルの実装で読めるか（読めないモデルは cuda がスキップされる）

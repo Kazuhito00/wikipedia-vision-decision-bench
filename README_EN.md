@@ -42,7 +42,7 @@ $env:WIKIQA_CONTACT = "<contact>"
 uv run python -m datasets.fetch fetch
 ```
 
-Pictures go to `work/data/images/` (the stored Commons files) and `work/px224/` (the model input: longest side 224 px).
+Pictures go to `work/data/images/` (the stored Commons files) and `work/px320lb_v1/` (the model input: a 320 x 320 letterbox).
 
 **2. Make an environment per model** (one venv per model; the weights come from each model repository's Release)
 
@@ -87,7 +87,7 @@ uv run python -m unittest discover -s tools -p "test_*.py"
 | Item | Value | Where |
 |---|---|---|
 | Threads (onnxruntime) | 8 | `threads` in `runner/config.toml` (`THREADS`, `--threads`) |
-| Picture shrink | longest side 224 px (LANCZOS, JPEG) | `px` (`PX`, `--px`) |
+| Picture processing | 320 x 320 letterbox (longest side shrunk to 320, centred on a mid-grey 128 square; LANCZOS; .jpg stored as JPEG q95) | `px` (`PX`, `--px`), `--fit` |
 | Option order | not reversed (`REV=0`); `--rev 1` only to look at position bias | `rev` (`REV`) |
 | Pictures | one per question | - |
 | Which times count | the machine is calibrated (median of a fixed CPU job) before and after each block; only blocks with both at most 600 ms count. Quiet machine: about 170-200 ms | `[gate]`, `runner/calibrate.py`, `blocks.log` |
@@ -109,7 +109,7 @@ Options range over 2 to 16, score levels are 3 / 5 / 7 / 10, with negation / cou
 
 - Formats: choice 2091 / yes-no 537 / score 140 (3 levels 35, 5 levels 45, 7 levels 35, 10 levels 25). Options: 2: 72, 3: 125, 4: 1495, 5-8: 343, 9-16: 56.
 - Languages: en and ja 2596 questions, Japanese only 172. Difficulty: easy 961 / medium 1328 / hard 479.
-- 2127 pictures: 1021 Commons photographs (CC0 / public domain), 1106 drawn by scripts. One picture per question. The zips are about 20 MB (224 px) and about 308 MB (original); they are meant for a Release and have not been uploaded.
+- 2127 pictures: 1021 Commons photographs (CC0 / public domain), 1106 drawn by scripts. One picture per question. The zips are about 65 MB (320 px) and about 308 MB (original); they are meant for a Release and have not been uploaded.
 - **Caution on the text-only controls**: their `state` holds exact numbers that the picture does not give, so the text version can be easier than the picture version. Say so when comparing them.
 - Results are keyed by `(dataset_version, id)`.
 - Definitions, how it was made and known limits (legibility of pictures, fonts, OS dependence of the Tkinter pictures, the generator scripts overwrite the jsonl when run with `--apply`) are in `datasets/NOTES.md` section 11.
@@ -118,7 +118,7 @@ Usage:
 
 ```powershell
 uv run python -m datasets.build_v1                 # writes dist/v1/: questions, cases, picture list, zips, build_report.md
-# pictures: unpack images-original.zip (or images-224px.zip) into an empty folder and point at it
+# pictures: unpack images-original.zip (or images-320px.zip) into an empty folder and point at it
 $env:WIKIQA_DATA_ROOT = "<unpacked folder>"        # must contain data/images/... and generated/...
 .venv-onejev\Scripts\python -m runner.run --model onejev --set all --dataset-version v1 --lang en
 # sets: photo / biz / rsn / txt / all / new (new questions only). Article-based txt questions need a local passages.json (the text is not distributed)
@@ -141,7 +141,7 @@ $env:WIKIQA_DATA_ROOT = "<unpacked folder>"        # must contain data/images/..
 | OneJev 4B | 4B / fp16 | Qwen3.5-4B (tuned) | same | unconfirmed | 255 (score 10) | `<OWNER>/OneJev-ONNX-CPU` |
 | clef-flash 9B | 9B / bf16 weights, fp32 compute | Qwen3.5-9B (tuned) | same (large memory) | 4 | unconfirmed | `<OWNER>/clef-flash-ONNX-CPU` |
 | OpenAI Decisions API | not public | unknown | network and an API key | - | - | - |
-| Jev API (TypeSafe; `jev-preview` = Jev 1.14) | not public | unknown | network and an API key (`TYPESAFE_API_KEY`); the API rejects pictures outside 256-1568 px, so the 224 px pictures are scaled up | - | 255 (10 levels) | - |
+| Jev API (TypeSafe; `jev-preview` = Jev 1.14) | not public | unknown | network and an API key (`TYPESAFE_API_KEY`); the API accepts each side of 280-1568 px only (the 320 x 320 pictures go as they are) | - | 255 (10 levels) | - |
 
 Measured results are summarised in the report built by `report/v1_report.py` (from `results/runs/v1/`).
 
@@ -152,7 +152,7 @@ The picture list is in `datasets/manifests/`. These commands detect changes on C
 ```powershell
 uv run python -m datasets.fetch check --limit 20     # metadata only, 50 titles per request (nothing downloaded)
 uv run python -m datasets.fetch check                # everything -> results/checks/check_<date>.json
-uv run python -m datasets.fetch fetch                # download, compare sha256 with the list, shrink to 224 px, compare again
+uv run python -m datasets.fetch fetch                # download, compare sha256 with the list, process to the 320 px letterbox, compare again
 uv run python -m datasets.fetch refresh              # show the planned changes (writes nothing)
 uv run python -m datasets.fetch refresh --apply      # write them to the list after confirmation
 ```
@@ -165,7 +165,7 @@ uv run python -m datasets.fetch refresh --apply      # write them to the list af
 | license changed | no longer CC0 / public domain | remove it from the list and the Release |
 | author / description changed | attribution changed | update the list |
 
-Note: the stored picture is Commons' **640 px wide thumbnail**; `sha1` is that of the full-size original on Commons. The sha256 of a 224 px picture can change with the Pillow / libjpeg version; for an exact reproduction use the Release's `images-224px.zip`.
+Note: the stored picture is Commons' **640 px wide thumbnail**; `sha1` is that of the full-size original on Commons. The sha256 of a 320 px picture can change with the Pillow / libjpeg version; for an exact reproduction use the Release's (`v0.0.1`) `images-320px.zip`.
 
 ## License and attribution
 

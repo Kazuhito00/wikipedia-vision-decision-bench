@@ -4,8 +4,8 @@
     uv run python -m report.v1_report [--out results/まとめ_v1.html] [--no-images] [--runs-dir results/runs/v1] [--dist-dir dist/v1]
 
 Inputs:
-    <dist-dir>/cases_v1.jsonl, questions_v1.jsonl, manifest_v1.json, images-224px.zip   (the question set; pictures only for thumbnails)
-    <runs-dir>/<model>_v1all_{en,ja}_224[_cpu|_cuda].csv|json   every such pair is a run: models and runs are DETECTED (report/v1_models.py),
+    <dist-dir>/cases_v1.jsonl, questions_v1.jsonl, manifest_v1.json, images-320px.zip   (the question set; pictures only for thumbnails)
+    <runs-dir>/<model>_v1all_{en,ja}_<px>[_cpu|_cuda].csv|json   every such pair is a run: models and runs are DETECTED (report/v1_models.py),
         nothing is listed by hand; a new model only needs its result files. Optional: summary_v1.json, per_question_v1.csv (cross-checks of
         the numbers, written by runner/analyze_v1.py), label_check_v1.md, blocks_v1_cpu.txt (calibration of the CPU blocks).
 All numbers on the page are computed here from those files. The page is one self-contained HTML (no CDN; charts are CSS/inline SVG; light
@@ -50,6 +50,11 @@ KIND_LABEL = {"choice": "choice", "noul": "yes/no", "score": "score"}
 GROUP_ORDER = ["photo", "biz", "rsn", "txt"]
 DIFF_ORDER = ["easy", "medium", "hard"]
 ORIGIN_LABEL = {"base": "base", "new": "new"}
+
+
+def images_zip_of(dist):
+    """images-320px.zip (the model-input pictures), else the earlier images-224px.zip; None when neither is in ``dist``."""
+    return next((p for p in (dist / "images-320px.zip", dist / "images-224px.zip") if p.exists()), None)
 
 
 def read_csv(path):
@@ -115,7 +120,7 @@ def make_thumbs(cases, enabled, dist):
         return seen, [], paths
     from PIL import Image
     uris = []
-    z = zipfile.ZipFile(dist / "images-224px.zip")
+    z = zipfile.ZipFile(images_zip_of(dist))
     for p in paths:
         im = Image.open(io.BytesIO(z.read(p))).convert("RGB")
         im.thumbnail((160, 160))
@@ -200,17 +205,17 @@ def timing_status(run, metas, blocks):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default=str(ROOT / "results" / "まとめ_v1.html"))
-    ap.add_argument("--runs-dir", default=str(RUNS), help="folder with the <model>_v1all_<lang>_224[_cpu|_cuda].csv|json results")
-    ap.add_argument("--dist-dir", default=str(DIST), help="folder with cases_v1.jsonl, questions_v1.jsonl (and images-224px.zip)")
+    ap.add_argument("--runs-dir", default=str(RUNS), help="folder with the <model>_v1all_<lang>_<px>[_cpu|_cuda].csv|json results")
+    ap.add_argument("--dist-dir", default=str(DIST), help="folder with cases_v1.jsonl, questions_v1.jsonl (and images-320px.zip or images-224px.zip)")
     ap.add_argument("--no-images", action="store_true", help="no thumbnails (the page then has no pictures)")
-    ap.add_argument("--images-base", default="", help="folder (relative to the page) holding <base>/224/<path> and <base>/original/<path>: the picture dialog then offers the 224 px and the original files (local use only; never publish)")
+    ap.add_argument("--images-base", default="", help="folder (relative to the page) holding <base>/input/<path> and <base>/original/<path>: the picture dialog then offers the 224 px and the original files (local use only; never publish)")
     ap.add_argument("--all-pairs", action="store_true", help="compare every asked (question, language), not only those every run answered")
     ap.add_argument("--only", default="", help="comma separated run keys (e.g. jevision_cpu,openai): leave the others out")
     args = ap.parse_args(argv)
     runs_dir, dist = pathlib.Path(args.runs_dir), pathlib.Path(args.dist_dir)
-    no_images = args.no_images or not (dist / "images-224px.zip").exists()
+    no_images = args.no_images or images_zip_of(dist) is None
     if no_images and not args.no_images:
-        print("note: %s not found: no pictures on the page" % (dist / "images-224px.zip"))
+        print("note: %s not found: no pictures on the page" % (dist / "images-320px.zip"))
 
     cases = read_jsonl(dist / "cases_v1.jsonl")
     qmeta = {q["id"]: q for q in read_jsonl(dist / "questions_v1.jsonl")}
@@ -223,7 +228,7 @@ def main(argv=None):
         keep = {k.strip() for k in args.only.split(",") if k.strip()}
         found = {k: v for k, v in found.items() if k in keep}
     if not found:
-        print("no <model>_v1all_<lang>_224[_cpu|_cuda].csv|json results in %s" % runs_dir)
+        print("no <model>_v1all_<lang>_<px>[_cpu|_cuda].csv|json results in %s" % runs_dir)
         return 2
     MODELS = v1_models.build_models(found)
     runs = [r for m in MODELS for r in m["runs"]]

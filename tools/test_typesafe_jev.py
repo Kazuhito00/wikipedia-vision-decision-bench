@@ -21,7 +21,7 @@ OPTS = [("cat", "cat"), ("dog", "dog"), ("fox", "fox")]
 class SizeTests(unittest.TestCase):
     def test_fit_size_meets_the_api_limits(self):
         """Every picture size the bench has (224 px longest side, any aspect) maps to a size the API accepts."""
-        for w, h in [(224, 224), (224, 168), (168, 224), (224, 126), (224, 30), (30, 224), (640, 480), (1568, 256), (300, 2000)]:
+        for w, h in [(224, 224), (224, 168), (168, 224), (224, 126), (224, 30), (30, 224), (640, 480), (1568, 280), (300, 2000), (260, 302), (256, 512)]:
             nw, nh = J.fit_size(w, h)
             self.assertTrue(J.MIN_SIDE <= nw <= J.MAX_SIDE and J.MIN_SIDE <= nh <= J.MAX_SIDE, (w, h, nw, nh))
             self.assertTrue(J.MIN_PIXELS <= nw * nh <= J.MAX_PIXELS, (w, h, nw, nh))

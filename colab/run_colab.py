@@ -8,7 +8,7 @@ One-stop (what the notebook does, in one command):
 Steps (--steps, comma separated; default setup,images,bench,report):
   env      print the runtime (GPU, CUDA version, RAM, disk, onnxruntime) and write work/colab/env.json
   setup    install dependencies with uv (`uv pip install --system`): pillow, numpy, onnxruntime-gpu (or onnxruntime), tokenizers (d3 only)
-  images   get images-224px.zip: --images-zip / Drive cache (only with --use-drive) / --images-url / the bench repository's GitHub Release (default:
+  images   get images-320px.zip: --images-zip / Drive cache (only with --use-drive) / --images-url / the bench repository's GitHub Release (default:
            <owner>/wikipedia-vision-decision-bench, tag v0.0.0, like the models' download_model.py); SHA256SUMS or --images-sha256 is checked,
            split parts are joined, an interrupted download resumes; extract, check every question's picture exists
   bench    per model, in order: clone the model repository -> download the weights -> for each device (cpu, cuda): smoke -> full blocks
@@ -25,9 +25,9 @@ download_model.py; with --weights auto they are deleted after each model only wh
 
 Secrets: GITHUB_TOKEN (private repositories), OPENAI_API_KEY (the openai model) and TYPESAFE_API_KEY (the jev model) are read from the environment ONLY; the notebook fills
 them from Colab Secrets. They are never printed, never written to a file, never put in a URL.
-Block names / results are the bench's own (runner/run.py): results/runs/v1/<model>_<set code>_<lang>_224_<cpu|cuda>.json.
+Block names / results are the bench's own (runner/run.py): results/runs/v1/<model>_<set code>_<lang>_320_<cpu|cuda>.json.
 CPU speed reference (a GPU-only run, --devices cuda): a few questions per model are also solved on the CPU, only to give a time per question
-(results/runs/v1/<model>_<set code>_<lang>_224_cpu_speed<N>.json, speed_only: true; never part of an accuracy table, see report/v1_models.py).
+(results/runs/v1/<model>_<set code>_<lang>_320_cpu_speed<N>.json, speed_only: true; never part of an accuracy table, see report/v1_models.py).
 CPU times on Colab are REFERENCE values: the machine is not the one the calibration gate (runner/calibrate.py) was set up on.
 """
 from __future__ import annotations
@@ -95,13 +95,13 @@ SPECS = {
 GLINER = dict(repo="GLiNER2.5-Decide-ONNX-CPU", model_dir="models/onnx", download=["download_model.py"], disk_gb=1.7)   # calibration only
 ALL_MODELS = list(SPECS)
 
-# images-224px.zip of dataset v1 as built on 2026-10-11 (dist/v1/manifest_v1.json). Used only when the Release has no SHA256SUMS and --images-sha256 is not given.
-IMAGES_ZIP = "images-224px.zip"
-BENCH_REPO_NAME = "wikipedia-vision-decision-bench"           # the Release that holds images-224px.zip (public, like the models' repositories)
+# images-320px.zip of dataset v1 as built on 2026-10-15 (tools/make_images_320.py: 320 x 320 letterbox on grey 128). Used only when the Release has no SHA256SUMS and --images-sha256 is not given.
+IMAGES_ZIP = "images-320px.zip"
+BENCH_REPO_NAME = "wikipedia-vision-decision-bench"           # the Release that holds images-320px.zip (public, like the models' repositories)
 DEFAULT_DRIVE_DIR = "/content/drive/MyDrive/wikipedia-vision-decision-bench-colab"
 # exit codes of the images step (the notebook explains each one)
 EXIT_NO_RELEASE, EXIT_DOWNLOAD, EXIT_SHA, EXIT_PICTURES = 3, 4, 5, 6
-IMAGES_SHA256 = "c079de9251aa1eed4c779472b4c515ade955d7553b119c0b848444f73cd299b2"
+IMAGES_SHA256 = "58ff762916d31605a9b25691ccab01e956b3c06d98f8127cbfebf78b68bbae69"
 IMAGES_MEMBERS = 2128
 
 
@@ -340,7 +340,8 @@ def parse_args(argv=None):
                     help="upper limit of the question time of one model's CPU speed block (seconds, model loading not counted; at least 3 questions are answered first)")
     ap.add_argument("--smoke", type=int, default=25, help="questions of the smoke run (device check + quick accuracy); 0 = no smoke (not recommended)")
     ap.add_argument("--threads", type=int, default=0, help="onnxruntime threads (0: min(8, CPU count)); the value used is recorded in every result")
-    ap.add_argument("--px", type=int, default=224)
+    ap.add_argument("--px", type=int, default=320)
+    ap.add_argument("--fit", choices=["letterbox", "thumbnail"], default="letterbox", help="letterbox: px x px square on grey 128 (the 320 px condition)")
     ap.add_argument("--workers", type=int, default=3, help="concurrent requests (openai only)")
     # sources
     ap.add_argument("--owner", default="Kazuhito00")
@@ -349,10 +350,10 @@ def parse_args(argv=None):
     ap.add_argument("--model-ref", action="append", default=[], metavar="REPO=REF", help="branch / tag of a model repository (default: its default branch)")
     ap.add_argument("--model-dir", action="append", default=[], metavar="KEY=PATH", help="weights folder of a model that has no download script (Drive path ok)")
     ap.add_argument("--download-args", action="append", default=[], metavar="KEY=ARGS", help='extra download_model.py arguments, e.g. "strands=--seq-len 384"')
-    ap.add_argument("--images-url", default="", help="URL of images-224px.zip (empty = the default Release: https://github.com/<owner>/%s/releases/download/<--images-tag>/%s)" % (BENCH_REPO_NAME, IMAGES_ZIP))
-    ap.add_argument("--images-tag", default="v0.0.0", help="Release tag of the bench repository that holds images-224px.zip (+ SHA256SUMS; > 2 GiB: %s.partNN parts)" % IMAGES_ZIP)
-    ap.add_argument("--images-zip", default="", help="a local / Drive path of images-224px.zip (takes precedence over every URL)")
-    ap.add_argument("--images-sha256", default="", help="expected sha256 of images-224px.zip (empty: the Release's SHA256SUMS, else the built-in value of the 2026-10-11 build)")
+    ap.add_argument("--images-url", default="", help="URL of images-320px.zip (empty = the default Release: https://github.com/<owner>/%s/releases/download/<--images-tag>/%s)" % (BENCH_REPO_NAME, IMAGES_ZIP))
+    ap.add_argument("--images-tag", default="v0.0.1", help="Release tag of the bench repository that holds images-320px.zip (+ SHA256SUMS; > 2 GiB: %s.partNN parts)" % IMAGES_ZIP)
+    ap.add_argument("--images-zip", default="", help="a local / Drive path of images-320px.zip (takes precedence over every URL)")
+    ap.add_argument("--images-sha256", default="", help="expected sha256 of images-320px.zip (empty: the Release's SHA256SUMS, else the built-in value of the 2026-10-11 build)")
     ap.add_argument("--images-members", type=int, default=IMAGES_MEMBERS)
     # resources / persistence
     ap.add_argument("--use-drive", action="store_true", help="use Google Drive (logs, results, images zip, weights cache; restore + sync). DEFAULT OFF: nothing touches Drive. The notebook mounts it (USE_DRIVE = True)")
@@ -779,7 +780,7 @@ def download_images_zip(args, dest_dir: pathlib.Path) -> tuple[pathlib.Path, str
 
 
 def no_release_help(args) -> str:
-    return ("images-224px.zip could not be fetched from the Release (%s).\n"
+    return ("images-320px.zip could not be fetched from the Release (%s).\n"
             "  - Release not published yet / wrong tag: publish it (colab/README.md: gh release create ...) or pass --images-tag / --images-url.\n"
             "  - Own copy of the zip: --images-zip PATH (IMAGES_ZIP in the notebook).\n"
             "  - Last resort without the Release (covers only the Wikimedia Commons photos, NOT the drawn pictures of biz/rsn): the bench's own tool\n"
@@ -788,7 +789,7 @@ def no_release_help(args) -> str:
 
 
 def check_pictures(args, sets: list[str]) -> list[str]:
-    """Every picture of the questions exists, and the 224 px cache (named by file name only) cannot mix two pictures."""
+    """Every picture of the questions exists, and the px cache (named by file name only) cannot mix two pictures."""
     problems = []
     base = collections.defaultdict(set)
     for s in sets:
@@ -814,12 +815,12 @@ def step_images(args, sets: list[str], sync: DriveSync) -> None:
         say("[dry-run] source order: 1. --images-zip %r  2. Drive cache %s  3. %s/%s" % (
             args.images_zip, cache if cache else "(Drive off)", images_release_base(args), images_asset_name(args)))
         say("[dry-run] the sha256 is checked (SHA256SUMS of the Release, or --images-sha256); a Release with %s.partNN parts is joined; an interrupted download resumes" % IMAGES_ZIP)
-        say("[dry-run] expected: %d members (2127 pictures + ATTRIBUTION.md), about 20 MB" % IMAGES_MEMBERS)
+        say("[dry-run] expected: %d members (2127 pictures + ATTRIBUTION.md), about 65 MB" % IMAGES_MEMBERS)
         if (root / "data").exists():
             probs = check_pictures(args, sets)
             say("pictures check: %s" % ("OK" if not probs else probs[:5]))
         return
-    marker = root / ".images_v1_ok"
+    marker = root / (".images_v1_%dpx_ok" % args.px)
     if marker.exists() and (not args.images_sha256 or marker.read_text().strip() == args.images_sha256):
         say("already extracted (%s)" % marker)
     else:
@@ -994,7 +995,7 @@ def read_json(p: pathlib.Path):
 
 def run_one(args, key, set_name, lang, dev, info, suffix, ids_file, log_dir, cfg_blocks, env, force=False, extra=()) -> tuple[int, str, list[str]]:
     cmd = [sys.executable, "-m", "runner.run", "--model", key, "--set", set_name, "--lang", lang, "--mod", args.mod, "--dataset-version", "v1",
-           "--threads", str(threads_of(args)), "--px", str(args.px), "--log-dir", str(log_dir), "--device", dev, "--suffix", suffix]
+           "--threads", str(threads_of(args)), "--px", str(args.px), "--fit", args.fit, "--log-dir", str(log_dir), "--device", dev, "--suffix", suffix]
     if dev == "cuda":
         cmd.append("--gpu")
     if dev == "remote":
