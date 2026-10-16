@@ -32,6 +32,9 @@ _done*
 # a full report embeds Commons pictures: local only (build it with --no-images for a page without pictures).
 *.html
 !report/*_template.html
+# the GitHub Pages page (docs/index.html): small 160 px preview thumbnails are embedded in it (credits: docs/ATTRIBUTION.md)
+!docs/index.html
+!docs/ATTRIBUTION.md
 results/**/logs/
 results/**/*.log
 

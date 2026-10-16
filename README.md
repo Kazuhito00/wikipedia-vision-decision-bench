@@ -4,9 +4,10 @@
 
 型付き判定モデル（選択 `choice`・はい／いいえ `noul`・段階評価 `score`）の**画像理解**を、Wikimedia Commons の写真（CC0／パブリックドメインのみ）、スクリプトで描いた業務画像（UI・帳票・チャート）、推論用の描画画像で測るベンチマークです。質問は英語と日本語の両方で出します。
 
+- **結果レポート（GitHub Pages）: https://kazuhito00.github.io/wikipedia-vision-decision-bench/** — 12 モデルの正答率・速度・間違い方を、プレビュー画像つきで見られます（320×320 レターボックスでの測定）。
 - 測るもの: 正答率（言語別・問題群別・形式別）と、CPU／GPU での 1 問あたりの時間（較正が合った測定だけ）。
 - モデルとの結合は `adapters/` だけです。各モデルは**自分のリポジトリ（`<OWNER>/<モデル名>-ONNX-CPU`）のパッケージ**を入れた環境で動かします。
-- **画像と Wikipedia の本文は、このリポジトリに入っていません。** 入っているのは一覧（ID・ライセンス・作者・URL・sha256）と質問だけです。画像は Release の zip で配ります（準備中）。
+- **Wikipedia の本文は、このリポジトリに入っていません。** 入っているのは一覧（ID・ライセンス・作者・URL・sha256）と質問だけです。レポートのページ（`docs/index.html`）には、160 px の小さなプレビュー画像だけを埋め込んであります（表記は `docs/ATTRIBUTION.md`）。画像（320 px 版 `images-320px.zip`）は Release の zip で配ります: https://github.com/Kazuhito00/wikipedia-vision-decision-bench/releases/tag/v0.0.1 。
 - **データセットの版**: 現行は **version 1（`v1`）**（2768 問、`datasets/questions/v1/`、`dist/build/`）です。問の ID（`photo-0001`、`biz-1001` など）は版名を含みません。
 
 ## 構成
@@ -18,6 +19,7 @@ wikipedia-vision-decision-bench/
 ├─ runner/          run.py（1 モデル×問題群×言語。再開可能）、batch.py（較正ゲートつきの一括実行）、config.toml（測定条件）
 ├─ report/          v1_report.py ＋ HTML テンプレート（結果のまとめページ。`--no-images` で画像なし）
 ├─ datasets/        questions/（質問）、synthetic/（描画画像）、fetch/（取得と検査）、manifests/（一覧）、tests/、NOTES.md
+├─ docs/           GitHub Pages のレポート（index.html。プレビュー画像は埋め込み。`colab/make_v1_report.py` で作る）
 ├─ release/         make_image_release.py（画像 zip を dist/ に作る。アップロードはしない）
 ├─ results/         集計だけ（runs/<dataset_version>/*.json・*.csv、checks/*.json）。問ごとのログと生成 HTML は載せない
 ├─ colab/           Google Colab で回す（ノートブックと run_colab.py。取得→CPU・GPU 測定→集計を 1 本で。`colab/README.md`）
@@ -35,7 +37,7 @@ copy .env.example .env                              # 必要な値だけ入れ�
 **1. 画像を用意する**（どちらか）
 
 ```powershell
-# (a) Release の zip から（ネットワーク不要・sha256 を 1 枚ずつ照合。Release は準備中）
+# (a) Release の zip から（ネットワーク不要・sha256 を 1 枚ずつ照合。Release `v0.0.1` の `images-320px.zip` を展開したフォルダを指定）
 uv run python -m datasets.fetch fetch --from-release <zip を置いたフォルダ>
 # (b) Commons から取得（WIKIQA_CONTACT 必須: メールアドレスかリポジトリの URL）
 $env:WIKIQA_CONTACT = "<連絡先>"

@@ -4,9 +4,10 @@
 
 A benchmark of the **picture understanding** of typed-decision models (`choice`, yes/no `noul`, graded `score`). It uses Wikimedia Commons photographs (CC0 / public domain only), business-style pictures drawn by script (UI, forms, charts) and drawn reasoning pictures. Every question is asked in English and in Japanese.
 
+- **Results report (GitHub Pages): https://kazuhito00.github.io/wikipedia-vision-decision-bench/** — accuracy, speed and error patterns of 12 models, with preview pictures (measured at 320x320 letterbox).
 - What it measures: accuracy (per language, question group and answer form) and the time per question on CPU / GPU (calibrated blocks only).
 - A model meets the bench only in `adapters/`. Each model runs in an environment that has **its own repository's package** (`<OWNER>/<model name>-ONNX-CPU`).
-- **No pictures and no Wikipedia text are in this repository.** It holds the list (ids, license, author, URL, sha256) and the questions. The pictures are distributed as Release zips (in preparation).
+- **No Wikipedia text is in this repository.** It holds the list (ids, license, author, URL, sha256) and the questions. Pictures: the report page (`docs/index.html`) embeds only small 160 px previews (credits in `docs/ATTRIBUTION.md`). The full 320 px set is the Release zip `images-320px.zip`: https://github.com/Kazuhito00/wikipedia-vision-decision-bench/releases/tag/v0.0.1 .
 - **Dataset version**: the current one is **version 1 (`v1`)** (2768 questions, `datasets/questions/v1/`, `dist/build/`). Question ids (`photo-0001`, `biz-1001`, ...) do not contain a version name.
 
 ## Layout
@@ -18,6 +19,7 @@ wikipedia-vision-decision-bench/
 ├─ runner/          run.py (one model x question group x language; resumable), batch.py (calibration-gated batch), config.toml (measurement conditions)
 ├─ report/          v1_report.py + HTML template (the results page; `--no-images` for a page without pictures)
 ├─ datasets/        questions/, synthetic/ (drawn pictures), fetch/ (download and inspection), manifests/ (lists), tests/, NOTES.md
+├─ docs/           the GitHub Pages report (index.html with embedded previews; built with `colab/make_v1_report.py`)
 ├─ release/         make_image_release.py (builds the picture zips in dist/; never uploads)
 ├─ results/         aggregates only (runs/<dataset_version>/*.json, *.csv; checks/*.json). Per-question logs and generated HTML are not committed
 ├─ colab/           run it on Google Colab (notebook + run_colab.py: fetch -> CPU / GPU runs -> summary in one go; `colab/README.md`, Japanese)
@@ -35,7 +37,7 @@ copy .env.example .env                              # fill in what you need (.en
 **1. Get the pictures** (either)
 
 ```powershell
-# (a) from the Release zips (no network; every picture is checked against its sha256; the Release is in preparation)
+# (a) from the Release zips (no network; every picture is checked against its sha256; use the unpacked `images-320px.zip` of Release `v0.0.1`)
 uv run python -m datasets.fetch fetch --from-release <folder with the zips>
 # (b) from Commons (WIKIQA_CONTACT is required: an e-mail address or the repository URL)
 $env:WIKIQA_CONTACT = "<contact>"
