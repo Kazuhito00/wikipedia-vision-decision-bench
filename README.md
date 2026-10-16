@@ -2,13 +2,14 @@
 
 [English](README_EN.md)
 
-型付き判定モデル（選択 `choice`・はい／いいえ `noul`・段階評価 `score`）の**画像理解**を、Wikimedia Commons の写真（CC0／パブリックドメインのみ）、スクリプトで描いた業務画像（UI・帳票・チャート）、推論用の描画画像で測るベンチマークです。質問は英語と日本語の両方で出します。
+型付き判定モデル（選択 `choice`・はい／いいえ `noul`・段階評価 `score`）の画像理解を、Wikimedia Commons の写真（CC0／パブリックドメインのみ）、スクリプトで描いた業務画像（UI・帳票・チャート）、推論用の描画画像で測るベンチマークです。質問は英語と日本語の両方で出します。
 
-- **結果レポート（GitHub Pages）: https://kazuhito00.github.io/wikipedia-vision-decision-bench/** — 12 モデルの正答率・速度・間違い方を、プレビュー画像つきで見られます（320×320 レターボックスでの測定）。
+- 結果レポート（GitHub Pages）: https://kazuhito00.github.io/wikipedia-vision-decision-bench/
+  12 モデルの正答率・速度・間違い方を見られます（画像は 320×320 のレターボックスで測定）。
 - 測るもの: 正答率（言語別・問題群別・形式別）と、CPU／GPU での 1 問あたりの時間（較正が合った測定だけ）。
-- モデルとの結合は `adapters/` だけです。各モデルは**自分のリポジトリ（`<OWNER>/<モデル名>-ONNX-CPU`）のパッケージ**を入れた環境で動かします。
-- **Wikipedia の本文は、このリポジトリに入っていません。** 入っているのは一覧（ID・ライセンス・作者・URL・sha256）と質問だけです。レポートのページ（`docs/index.html`）には、160 px の小さなプレビュー画像だけを埋め込んであります（表記は `docs/ATTRIBUTION.md`）。画像（320 px 版 `images-320px.zip`）は Release の zip で配ります: https://github.com/Kazuhito00/wikipedia-vision-decision-bench/releases/tag/v0.0.1 。
-- **データセットの版**: 現行は **version 1（`v1`）**（2768 問、`datasets/questions/v1/`、`dist/build/`）です。問の ID（`photo-0001`、`biz-1001` など）は版名を含みません。
+- モデルとの結合は `adapters/` だけです。各モデルは自分のリポジトリ（`<OWNER>/<モデル名>-ONNX-CPU`）のパッケージを入れた環境で動かします。
+- Wikipedia の本文は、このリポジトリに入っていません。入っているのは一覧（ID・ライセンス・作者・URL・sha256）と質問だけです。レポートのページ（`docs/index.html`）には、160 px の小さなプレビュー画像だけを埋め込んであります（表記は `docs/ATTRIBUTION.md`）。画像本体（320 px 版）は Release の `images-320px.zip` です: https://github.com/Kazuhito00/wikipedia-vision-decision-bench/releases/tag/v0.0.1
+- データセットの版: 現行は version 1（`v1`）（2768 問、`datasets/questions/v1/`、`dist/build/`）です。問の ID（`photo-0001`、`biz-1001` など）は版名を含みません。
 
 ## 構成
 
@@ -34,7 +35,7 @@ uv sync                                             # ベンチ本体（pillow, 
 copy .env.example .env                              # 必要な値だけ入れる（.env は git 管理外）
 ```
 
-**1. 画像を用意する**（どちらか）
+1. 画像を用意する（どちらか）
 
 ```powershell
 # (a) Release の zip から（ネットワーク不要・sha256 を 1 枚ずつ照合。Release `v0.0.1` の `images-320px.zip` を展開したフォルダを指定）
@@ -46,7 +47,7 @@ uv run python -m datasets.fetch fetch
 
 画像は `work/data/images/`（Commons の保存画像）と `work/px320lb_v1/`（モデルへの入力: 320×320 のレターボックス）に置かれます。
 
-**2. モデルの環境を作る**（モデルごとに別の venv。モデルの重みは各モデルのリポジトリの Release から取得）
+2. モデルの環境を作る（モデルごとに別の venv。モデルの重みは各モデルのリポジトリの Release から取得）
 
 ```powershell
 uv venv .venv-onejev
@@ -59,7 +60,7 @@ $env:ONEJEV_MODEL_DIR = "<OneJev-ONNX-CPU>/models/onnx"       # モデルの場�
 
 依存は `pyproject.toml` の任意グループ（`onejev` `openjev` `intern` `strands` `clef` `jevision` `qev` `d3`（d3edge / d3lite / d3nano 用） `calibrate`）にも書いてあります。GPU は `onnxruntime` の代わりに `onnxruntime-gpu`（Windows は `onnxruntime-directml` も可）を入れ、`uv run --no-sync` で動かします（CPU 版に戻されないため）。
 
-**3. 測る**
+3. 測る
 
 ```powershell
 .venv-onejev\Scripts\python -m runner.run --model onejev --set photo --lang en            # 1 ブロック
@@ -68,7 +69,7 @@ copy runner\models.example.toml runner\models.local.toml                        
 uv run python -m runner.batch --models onejev,jevision --sets photo,biz,rsn,txt --langs en,ja   # 較正ゲートつきの一括（再開可能）
 ```
 
-**4. 見る**
+4. 見る
 
 ```powershell
 uv run python -m runner.analyze_v1                                   # results/runs/v1/summary_v1.md・per_question_v1.csv
@@ -76,7 +77,7 @@ uv run python -m report.v1_report --out results/まとめ_v1.html          # 結
 uv run python -m report.v1_report --no-images --out results/まとめ_v1.html   # サムネイルなし
 ```
 
-**5. テスト**（ネットワーク不要）
+5. テスト（ネットワーク不要）
 
 ```powershell
 uv run python -m unittest discover -s datasets/tests
@@ -99,7 +100,7 @@ uv run python -m unittest discover -s tools -p "test_*.py"
 
 ## 問題群の構成（v1: 2768 問）
 
-選択肢の数は 2〜16 択、段階の数は 3・5・7・10 段階で、否定・数える・位置関係・「該当なし」の問、日本語固有の問、均等な正解位置、1 問 1 枚を備えます。分類は実写／業務画像／推論／文章のみ。数字は `dist/v1/manifest_v1.json`（`python -m datasets.build_v1`）から取っています。
+選択肢は 2〜16 択、段階評価は 3・5・7・10 段階です。否定、数える、位置関係、「該当なし」の問と、日本語固有の問を含み、正解の位置は均等にしてあります。1 問に画像は 1 枚です。数字は `dist/v1/manifest_v1.json`（`python -m datasets.build_v1`）から取っています。
 
 | 群 | 問数 | 中身 |
 |---|---|---|
@@ -107,12 +108,12 @@ uv run python -m unittest discover -s tools -p "test_*.py"
 | biz（業務画像） | 646 | 描画、本物の Tkinter 画面のスクリーンショット 249、日本語固有 101 |
 | rsn（推論） | 460 | 多択、3/7/10 段階、否定、矛盾、不確かさ |
 | txt（文章のみ） | 186 | 画像問から画像を外した対照 99 ほか |
-| **計** | **2768** | |
+| 計 | 2768 | |
 
 - 形式: 選択 2091 / はい・いいえ 537 / 段階評価 140（3 段階 35・5 段階 45・7 段階 35・10 段階 25）。選択肢数: 2 択 72 / 3 択 125 / 4 択 1495 / 5〜8 択 343 / 9〜16 択 56。
 - 言語: en・ja 両方 2596 問、日本語のみ 172 問。難度: easy 961 / medium 1328 / hard 479。
-- 画像 2127 枚: Commons 写真 1021（CC0・パブリックドメイン）、描画画像 1106（スクリプトで作成）。1 問 1 枚。画像の zip は 320px 版 約 65 MB・原寸版 約 308 MB（Release に置く予定。まだアップロードしていません）。
-- **文章のみの対照の注意**: 対照の `state` には画像にない正確な数値が入るため、文章版は画像版より易しくなり得ます。比較するときは、この点を明記してください。
+- 画像 2127 枚: Commons 写真 1021（CC0・パブリックドメイン）、描画画像 1106（スクリプトで作成）。1 問 1 枚。320 px 版の zip（約 65 MB）を Release `v0.0.1` に置いています。
+- 文章のみの対照では、`state` に画像にない正確な数値が入るため、画像版より易しくなることがあります。比較するときはこの点を書き添えてください。
 - 結果は `(dataset_version, id)` で記録します。
 - 定義・作り方・既知の制約（画像の判読性、フォント、Tkinter 画像の OS 依存、生成スクリプトの `--apply` で jsonl が上書きされる注意）は `datasets/NOTES.md` §11。
 
@@ -137,7 +138,7 @@ $env:WIKIQA_DATA_ROOT = "<展開したフォルダ>"        # <フォルダ>/dat
 | d3-nano 2B | 2.21B / fp32 | Qwen3.5-2B（調整） | 同上 | 同上 | 同上 | 同上（キー `d3nano`）。d3-mini 5B は未対応（export にメモリ約 25GB） |
 | JEVision 0.8B | 0.8B / fp16 | Qwen3.5-0.8B（調整） | 同上 | 4 枚 | 255 | `<OWNER>/JEVision-0.8B-ONNX-CPU`（作成中） |
 | OneJev 0.8B | 0.8B / fp16 | Qwen3.5-0.8B（全体を調整） | 同上 | 未確認 | 255（段階 10） | `<OWNER>/OneJev-ONNX-CPU` |
-| QEV 2B | 2B / fp32 | Qwen3.5-2B（調整） | 同上 | **1 枚** | 2〜16 | `<OWNER>/QEV-2B-ONNX-CPU`（作成中） |
+| QEV 2B | 2B / fp32 | Qwen3.5-2B（調整） | 同上 | 1 枚 | 2〜16 | `<OWNER>/QEV-2B-ONNX-CPU`（作成中） |
 | Strands Decider 2B | 2B / fp32 | Qwen3.5-2B-Base ＋ LoRA | 同上 | 4 枚 | 2〜255（段階 2〜10） | `<OWNER>/Strands-Decider-2B-ONNX-CPU` |
 | OpenJev 4B | 4B / q4f16 | Qwen3.5-4B（無調整） | 同上 | 未確認 | 255 | `<OWNER>/OpenJev-ONNX-CPU` |
 | OneJev 4B | 4B / fp16 | Qwen3.5-4B（調整） | 同上 | 未確認 | 255（段階 10） | `<OWNER>/OneJev-ONNX-CPU` |
@@ -167,15 +168,15 @@ uv run python -m datasets.fetch refresh --apply      # 確認のうえで一覧�
 | ライセンス変更 | CC0／パブリックドメイン以外になった | 一覧と Release から外す |
 | 作者・説明の変更 | 帰属情報が変わった | 一覧を更新 |
 
-注意: 保存画像は Commons の**幅 640px のサムネイル**で、`sha1` は Commons 上のフルサイズ原画のものです。320px 画像の sha256 は Pillow／libjpeg の版で変わりうるため、厳密な再現には Release（`v0.0.1`）の `images-320px.zip` を使ってください。
+注意: 保存画像は Commons の幅 640px のサムネイルで、`sha1` は Commons 上のフルサイズ原画のものです。320px 画像の sha256 は Pillow／libjpeg の版で変わりうるため、厳密な再現には Release（`v0.0.1`）の `images-320px.zip` を使ってください。
 
 ## ライセンスと帰属
 
 - 画像: Wikimedia Commons の CC0／パブリックドメインのみ（一覧の集計: パブリックドメイン 781 枚・CC0 242 枚）。作者・ライセンス・URL は一覧と、各 zip の `ATTRIBUTION.md` にあります。公開前に `check` で、集めた後にライセンス表示が変わっていないかを確認します。
 - Wikipedia の本文（CC BY-SA）は、リポジトリにも Release にも置きません（必要な問だけ、取得コマンドがローカルの `work/` に置きます）。
-- 自作の画像（描画画像 1106 枚）は **CC0-1.0**（Public Domain Dedication）で確定しています。描画スクリプトは `datasets/synthetic`、画像内の日本語は Noto Sans JP / Noto Serif JP（OFL 1.1。フォントは配布しません）で描いています。
-- 透明性の注記: 画像内の文字の描画に Windows 同梱フォントを使った画像が含まれます（Tkinter の画面 249 問: 英語 UI の Segoe UI 203、日本語 UI の Yu Gothic UI 46。画面は自作でスクリーンショットに OS の枠は含みません）。該当 ID の一覧は `datasets/manifests/windows_fonts_images_v1.md` です。事実の記載であり、法的な判断ではありません。
-- 生成した HTML は Commons の画像を含むため**ローカル専用**です（`*.html` は git 管理外）。公開するときは `--public`（画像なし）を使います。
+- 自作の画像（描画画像 1106 枚）は CC0-1.0 です。描画スクリプトは `datasets/synthetic`、画像内の日本語は Noto Sans JP / Noto Serif JP（OFL 1.1。フォントは配布しません）で描いています。
+- 補足: 画像内の文字に Windows 同梱フォントを使ったものがあります（Tkinter の画面 249 問。英語 UI は Segoe UI 203、日本語 UI は Yu Gothic UI 46。画面は自作で、スクリーンショットに OS の枠は含みません）。該当 ID は `datasets/manifests/windows_fonts_images_v1.md` にあります。事実を書いたもので、法的な判断ではありません。
+- 画像つきで生成した HTML は、Commons の画像を含むためローカル専用です（`*.html` は git 管理外。ただし `docs/index.html` だけは例外）。公開用は `--no-images`、またはプレビューだけを埋め込む `--no-image-files` で作ります。
 - OpenAI（`OPENAI_API_KEY`）と Jev（`TYPESAFE_API_KEY`）のキーは環境変数から読みます。`.env` は git 管理外で、`python tools/scan_secrets.py` をコミット前に実行します（キーの文字列は表示しません）。
 
 ## 公開前チェック
@@ -183,5 +184,6 @@ uv run python -m datasets.fetch refresh --apply      # 確認のうえで一覧�
 ```powershell
 uv run python tools/scan_secrets.py                 # キー混入の検査
 uv run python -m datasets.fetch check               # Commons 側の変化
-uv run python -m release.make_image_release --originals work/data/images --px224 work/px224   # dist/ に zip（アップロードはしない）
+uv run python -m datasets.build_v1 --no-zip         # dist/build/ に画像一覧など
+uv run python tools/make_images_320.py              # dist/v1/ に images-320px.zip と SHA256SUMS（アップロードはしない）
 ```

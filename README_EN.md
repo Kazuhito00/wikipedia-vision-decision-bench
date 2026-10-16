@@ -2,13 +2,14 @@
 
 [日本語](README.md)
 
-A benchmark of the **picture understanding** of typed-decision models (`choice`, yes/no `noul`, graded `score`). It uses Wikimedia Commons photographs (CC0 / public domain only), business-style pictures drawn by script (UI, forms, charts) and drawn reasoning pictures. Every question is asked in English and in Japanese.
+A benchmark of the picture understanding of typed-decision models (`choice`, yes/no `noul`, graded `score`). It uses Wikimedia Commons photographs (CC0 / public domain only), business-style pictures drawn by script (UI, forms, charts) and drawn reasoning pictures. Every question is asked in English and in Japanese.
 
-- **Results report (GitHub Pages): https://kazuhito00.github.io/wikipedia-vision-decision-bench/** — accuracy, speed and error patterns of 12 models, with preview pictures (measured at 320x320 letterbox).
+- Results report (GitHub Pages): https://kazuhito00.github.io/wikipedia-vision-decision-bench/
+  Accuracy, speed and error patterns of 12 models (pictures measured at 320x320 letterbox).
 - What it measures: accuracy (per language, question group and answer form) and the time per question on CPU / GPU (calibrated blocks only).
-- A model meets the bench only in `adapters/`. Each model runs in an environment that has **its own repository's package** (`<OWNER>/<model name>-ONNX-CPU`).
-- **No Wikipedia text is in this repository.** It holds the list (ids, license, author, URL, sha256) and the questions. Pictures: the report page (`docs/index.html`) embeds only small 160 px previews (credits in `docs/ATTRIBUTION.md`). The full 320 px set is the Release zip `images-320px.zip`: https://github.com/Kazuhito00/wikipedia-vision-decision-bench/releases/tag/v0.0.1 .
-- **Dataset version**: the current one is **version 1 (`v1`)** (2768 questions, `datasets/questions/v1/`, `dist/build/`). Question ids (`photo-0001`, `biz-1001`, ...) do not contain a version name.
+- A model meets the bench only in `adapters/`. Each model runs in an environment that has its own repository's package (`<OWNER>/<model name>-ONNX-CPU`).
+- No Wikipedia text is in this repository. It holds the list (ids, license, author, URL, sha256) and the questions. Pictures: the report page (`docs/index.html`) embeds only small 160 px previews (credits in `docs/ATTRIBUTION.md`). The pictures themselves (320 px) are the Release zip `images-320px.zip`: https://github.com/Kazuhito00/wikipedia-vision-decision-bench/releases/tag/v0.0.1
+- Dataset version: the current one is version 1 (`v1`) (2768 questions, `datasets/questions/v1/`, `dist/build/`). Question ids (`photo-0001`, `biz-1001`, ...) do not contain a version name.
 
 ## Layout
 
@@ -34,7 +35,7 @@ uv sync                                             # the bench itself (pillow, 
 copy .env.example .env                              # fill in what you need (.env is git-ignored)
 ```
 
-**1. Get the pictures** (either)
+1. Get the pictures (either)
 
 ```powershell
 # (a) from the Release zips (no network; every picture is checked against its sha256; use the unpacked `images-320px.zip` of Release `v0.0.1`)
@@ -46,7 +47,7 @@ uv run python -m datasets.fetch fetch
 
 Pictures go to `work/data/images/` (the stored Commons files) and `work/px320lb_v1/` (the model input: a 320 x 320 letterbox).
 
-**2. Make an environment per model** (one venv per model; the weights come from each model repository's Release)
+2. Make an environment per model (one venv per model; the weights come from each model repository's Release)
 
 ```powershell
 uv venv .venv-onejev
@@ -59,7 +60,7 @@ $env:ONEJEV_MODEL_DIR = "<OneJev-ONNX-CPU>/models/onnx"       # the model locati
 
 The dependencies are also listed as optional groups in `pyproject.toml` (`onejev`, `openjev`, `intern`, `strands`, `clef`, `jevision`, `qev`, `d3` (for d3edge / d3lite / d3nano), `calibrate`). For a GPU, install `onnxruntime-gpu` (on Windows `onnxruntime-directml` also works) instead of `onnxruntime` and run with `uv run --no-sync` (so that uv does not put the CPU build back).
 
-**3. Measure**
+3. Measure
 
 ```powershell
 .venv-onejev\Scripts\python -m runner.run --model onejev --set photo --lang en            # one block
@@ -68,7 +69,7 @@ copy runner\models.example.toml runner\models.local.toml                        
 uv run python -m runner.batch --models onejev,jevision --sets photo,biz,rsn,txt --langs en,ja   # calibration-gated, resumable
 ```
 
-**4. Report**
+4. Report
 
 ```powershell
 uv run python -m runner.analyze_v1                                   # results/runs/v1/summary_v1.md, per_question_v1.csv
@@ -76,7 +77,7 @@ uv run python -m report.v1_report --out results/まとめ_v1.html          # the
 uv run python -m report.v1_report --no-images --out results/まとめ_v1.html   # without thumbnails
 ```
 
-**5. Tests** (no network)
+5. Tests (no network)
 
 ```powershell
 uv run python -m unittest discover -s datasets/tests
@@ -99,7 +100,7 @@ Results are keyed by `(dataset_version, id)` (`results/runs/<dataset_version>/*.
 
 ## Question groups (v1: 2768 questions)
 
-Options range over 2 to 16, score levels are 3 / 5 / 7 / 10, with negation / counting / spatial / "none of the above" questions, Japanese-specific questions, balanced answer positions and one picture per question. Classes: photo / business picture / reasoning / text only. The numbers come from `dist/v1/manifest_v1.json` (`python -m datasets.build_v1`).
+Options range from 2 to 16 and score levels are 3 / 5 / 7 / 10. There are negation, counting, spatial and "none of the above" questions and Japanese-specific ones; answer positions are balanced. Each question has one picture. The numbers come from `dist/v1/manifest_v1.json` (`python -m datasets.build_v1`).
 
 | Group | Questions | What they are |
 |---|---|---|
@@ -107,12 +108,12 @@ Options range over 2 to 16, score levels are 3 / 5 / 7 / 10, with negation / cou
 | biz | 646 | drawn pictures, 249 screenshots of real Tkinter windows, 101 Japanese-specific |
 | rsn | 460 | many options, 3 / 7 / 10 levels, negation, contradiction, uncertainty |
 | txt (text only) | 186 | controls: an image question with the picture removed, and more |
-| **total** | **2768** | |
+| total | 2768 | |
 
 - Formats: choice 2091 / yes-no 537 / score 140 (3 levels 35, 5 levels 45, 7 levels 35, 10 levels 25). Options: 2: 72, 3: 125, 4: 1495, 5-8: 343, 9-16: 56.
 - Languages: en and ja 2596 questions, Japanese only 172. Difficulty: easy 961 / medium 1328 / hard 479.
-- 2127 pictures: 1021 Commons photographs (CC0 / public domain), 1106 drawn by scripts. One picture per question. The zips are about 65 MB (320 px) and about 308 MB (original); they are meant for a Release and have not been uploaded.
-- **Caution on the text-only controls**: their `state` holds exact numbers that the picture does not give, so the text version can be easier than the picture version. Say so when comparing them.
+- 2127 pictures: 1021 Commons photographs (CC0 / public domain), 1106 drawn by scripts. One picture per question. The 320 px zip (about 65 MB) is in Release `v0.0.1`.
+- In the text-only controls the `state` holds exact numbers that the picture does not give, so they can be easier than the picture versions. Say so when comparing.
 - Results are keyed by `(dataset_version, id)`.
 - Definitions, how it was made and known limits (legibility of pictures, fonts, OS dependence of the Tkinter pictures, the generator scripts overwrite the jsonl when run with `--apply`) are in `datasets/NOTES.md` section 11.
 
@@ -137,7 +138,7 @@ $env:WIKIQA_DATA_ROOT = "<unpacked folder>"        # must contain data/images/..
 | d3-nano 2B | 2.21B / fp32 | Qwen3.5-2B (tuned) | same | same | same | same (key `d3nano`). d3-mini 5B is not supported (export needs ~25 GB RAM) |
 | JEVision 0.8B | 0.8B / fp16 | Qwen3.5-0.8B (tuned) | same | 4 | 255 | `<OWNER>/JEVision-0.8B-ONNX-CPU` (in progress) |
 | OneJev 0.8B | 0.8B / fp16 | Qwen3.5-0.8B (full fine-tune) | same | unconfirmed | 255 (score 10) | `<OWNER>/OneJev-ONNX-CPU` |
-| QEV 2B | 2B / fp32 | Qwen3.5-2B (tuned) | same | **1** | 2 to 16 | `<OWNER>/QEV-2B-ONNX-CPU` (in progress) |
+| QEV 2B | 2B / fp32 | Qwen3.5-2B (tuned) | same | 1 | 2 to 16 | `<OWNER>/QEV-2B-ONNX-CPU` (in progress) |
 | Strands Decider 2B | 2B / fp32 | Qwen3.5-2B-Base + LoRA | same | 4 | 2 to 255 (score 2 to 10) | `<OWNER>/Strands-Decider-2B-ONNX-CPU` |
 | OpenJev 4B | 4B / q4f16 | Qwen3.5-4B (not tuned) | same | unconfirmed | 255 | `<OWNER>/OpenJev-ONNX-CPU` |
 | OneJev 4B | 4B / fp16 | Qwen3.5-4B (tuned) | same | unconfirmed | 255 (score 10) | `<OWNER>/OneJev-ONNX-CPU` |
@@ -167,15 +168,15 @@ uv run python -m datasets.fetch refresh --apply      # write them to the list af
 | license changed | no longer CC0 / public domain | remove it from the list and the Release |
 | author / description changed | attribution changed | update the list |
 
-Note: the stored picture is Commons' **640 px wide thumbnail**; `sha1` is that of the full-size original on Commons. The sha256 of a 320 px picture can change with the Pillow / libjpeg version; for an exact reproduction use the Release's (`v0.0.1`) `images-320px.zip`.
+Note: the stored picture is Commons' 640 px wide thumbnail; `sha1` is that of the full-size original on Commons. The sha256 of a 320 px picture can change with the Pillow / libjpeg version; for an exact reproduction use the Release's (`v0.0.1`) `images-320px.zip`.
 
 ## License and attribution
 
 - Pictures: Wikimedia Commons, CC0 / public domain only (counts in the list: public domain 781, CC0 242). Author, license and URL are in the list and in each zip's `ATTRIBUTION.md`. Before publishing, `check` confirms that the license labels have not changed since the pictures were collected.
 - Wikipedia article text (CC BY-SA) is placed neither in the repository nor in a Release (the fetch command puts what a question needs in the local `work/` only).
-- Pictures made by this repository's scripts (1106 drawn pictures) are **CC0-1.0** (Public Domain Dedication), decided. The drawing scripts are in `datasets/synthetic`; Japanese text in the pictures is drawn with Noto Sans JP / Noto Serif JP (OFL 1.1; fonts are not distributed).
-- Transparency note: some pictures have text drawn with fonts bundled with Windows (the Tkinter screens, 249 questions: Segoe UI for the English UI 203, Yu Gothic UI for the Japanese UI 46; the screens are our own and the screenshots contain no OS frame). The ids are listed in `datasets/manifests/windows_fonts_images_v1.md`. This states facts only, not a legal judgement.
-- Generated HTML contains Commons pictures, so it is **local only** (`*.html` is git-ignored). Use `--public` (no pictures) to publish.
+- Pictures made by this repository's scripts (1106 drawn pictures) are CC0-1.0. The drawing scripts are in `datasets/synthetic`; Japanese text in the pictures is drawn with Noto Sans JP / Noto Serif JP (OFL 1.1; fonts are not distributed).
+- Note: some pictures use fonts bundled with Windows for their text (the Tkinter screens, 249 questions: Segoe UI for the English UI 203, Yu Gothic UI for the Japanese UI 46; the screens are our own and the screenshots contain no OS frame). The ids are in `datasets/manifests/windows_fonts_images_v1.md`. This states facts, not a legal judgement.
+- HTML generated with pictures contains Commons pictures, so it is local only (`*.html` is git-ignored, except `docs/index.html`). For publishing, build with `--no-images`, or with `--no-image-files` to embed only the previews.
 - The OpenAI (`OPENAI_API_KEY`) and Jev (`TYPESAFE_API_KEY`) keys are read from the environment. `.env` is git-ignored; run `python tools/scan_secrets.py` before a commit (it never prints a key).
 
 ## Before publishing
@@ -183,5 +184,6 @@ Note: the stored picture is Commons' **640 px wide thumbnail**; `sha1` is that o
 ```powershell
 uv run python tools/scan_secrets.py                 # no key in the files
 uv run python -m datasets.fetch check               # changes on Commons
-uv run python -m release.make_image_release --originals work/data/images --px224 work/px224   # zips in dist/ (never uploaded)
+uv run python -m datasets.build_v1 --no-zip         # picture list etc. in dist/build/
+uv run python tools/make_images_320.py              # images-320px.zip and SHA256SUMS in dist/v1/ (never uploaded)
 ```
